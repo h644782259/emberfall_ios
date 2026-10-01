@@ -127,6 +127,9 @@ namespace Emberfall
         public void Initialize(GameSession gameSession)
         {
             session = gameSession;
+            var targetFeedback=GetComponent<CombatTargetFeedback>();
+            if(targetFeedback==null)targetFeedback=gameObject.AddComponent<CombatTargetFeedback>();
+            targetFeedback.Initialize(session);
             session.Progression.Changed+=InvalidateAttention;
             font = GameFont.Shared;
         }
