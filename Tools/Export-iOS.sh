@@ -33,6 +33,9 @@ done
 [[ "$(uname -s)" == Darwin ]] || { echo 'This script is for macOS. Use Export-iOS.ps1 for the Windows prerequisite check.' >&2; exit 2; }
 [[ -x "$unity_path" ]] || { echo "Unity editor not found: $unity_path. Install $editor_version with Unity Hub, or pass --unity." >&2; exit 2; }
 ios_support="$(dirname -- "$unity_path")/../PlaybackEngines/iOSSupport"
+if [[ ! -d "$ios_support" ]]; then
+  ios_support="$(dirname -- "$unity_path")/../../../PlaybackEngines/iOSSupport"
+fi
 [[ -d "$ios_support" ]] || { echo "Missing iOS Build Support for this editor. Add it in Unity Hub before exporting. No module has been installed by this script." >&2; exit 2; }
 echo "Unity editor: $unity_path"
 echo 'iOS Build Support: present'

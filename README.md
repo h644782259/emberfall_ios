@@ -1,6 +1,6 @@
-# Emberfall iPhone
+# Emberfall iPhone / iPad
 
-Unity 3D 即时战斗 RPG 的 iPhone 源码工程，与 [Windows 主项目](https://github.com/h644782259/emberfall_win) 共享 0.3.1 玩法：四职业、分支技能树、召唤、蓄力、副本、装备养成、多存档选择、地形阻挡与物品快捷栏。
+Unity 3D 即时战斗 RPG 的 iPhone / iPad 源码工程，与 [Windows 主项目](https://github.com/h644782259/emberfall_win) 共享 0.3.1 玩法：四职业、分支技能树、召唤、蓄力、副本、装备养成、多存档选择、地形阻挡与物品快捷栏。
 
 已加入横屏触屏布局、左摇杆、攻击/闪现/跳跃/药剂按钮、十格技能与物品栏、选点施法和多指输入。当前开发与运行验证在 Windows 完成，**尚未导出 Xcode 工程、签名 IPA 或完成 iPhone 真机测试**。
 
@@ -38,3 +38,9 @@ iPhone 存档保存在应用沙盒内，每份 `emberfall-save*.json` 有同名 
 - 验收记录与步骤：[Tests/PLAYTEST.md](Tests/PLAYTEST.md)
 
 只提交源码和 Unity `.meta` 文件。缓存、构建结果、个人存档、证书与签名材料由 `.gitignore` 排除。
+
+## iPad 支持与字体
+
+导出目标为 iPhone + iPad 通用应用，横屏全屏运行，保留按安全区和屏幕比例缩放的界面与多指触控。iPad 安装时在 Xcode 选择对应设备；暂不支持分屏。操作指南在移动端显示触屏说明。界面、场景标签和掉落物使用随包携带的 Noto Sans SC 中文字体，许可位于 `Assets/Resources/Fonts/LICENSE.txt`。设备上的显示与手感仍需实际安装验收。
+
+最新 Windows 开发源码已超出本仓库的 0.3.1 功能范围，尚未同步时装宝箱、部位强化继承、副本祝福/挑战模式、装备词缀和回收保护等新增系统。

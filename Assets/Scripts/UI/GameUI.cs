@@ -127,7 +127,7 @@ namespace Emberfall
         public void Initialize(GameSession gameSession)
         {
             session = gameSession;
-            font = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "微软雅黑", "PingFang SC", "PingFangSC-Regular", "Heiti SC", "SimHei", "Arial" }, 18);
+            font = GameFont.Shared;
         }
 
         // Input and rendering share geometry, including before the first repaint
@@ -207,14 +207,13 @@ namespace Emberfall
             if (trackTexture != null) Destroy(trackTexture);
             for (int i = 0; i < crestTextures.Length; i++) if (crestTextures[i] != null) Destroy(crestTextures[i]);
             UIIconAtlas.Clear();
-            if (font != null) Destroy(font);
         }
 
         private void OnGUI()
         {
             if (session == null || session.Progression == null) return;
             RefreshLayout();
-            if (font == null) font = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "PingFang SC", "Heiti SC", "Arial" }, 18);
+            if (font == null) font = GameFont.Shared;
             if (invisibleButton == null) BuildStyles();
             Matrix4x4 oldMatrix = GUI.matrix;
             Color oldColor = GUI.color;
@@ -1752,7 +1751,8 @@ namespace Emberfall
                 GameAudio.Muted = !GameAudio.Muted;
                 if (!GameAudio.Muted) GameAudio.Play(SoundCue.UI);
             }
-            if (Button(new Rect(w.x + 244, w.y + 350, 188, 37), "自定义快捷键", gold)) OpenBindings();
+            if (Button(new Rect(w.x + 244, w.y + 350, 188, 37), MobileControls.Active ? "触屏操作" : "自定义快捷键", gold))
+            { if (MobileControls.Active) OpenControls(); else OpenBindings(); }
             if (Button(new Rect(w.x + 40, w.y + 401, 392, 37), "存档位置 / 迁移", jade))
             {
                 saveReturnPause = session.Paused;
@@ -1771,8 +1771,32 @@ namespace Emberfall
             session.SetPaused(false);
         }
 
+        private void DrawTouchControls()
+        {
+            Rect w = Modal(1000, 638, "触屏操作指南", "iPhone / iPad · 横屏操作 · 可同时移动与攻击");
+            if (Button(new Rect(w.xMax - 69, w.y + 20, 44, 32), "×", jade)) ClosePanel();
+            string[] titles = { "移动与攻击", "跳跃与闪现", "技能与选点", "快捷栏整理", "药剂与整备", "界面与存档" };
+            string[] descriptions = {
+                "拖动左下摇杆移动，按住右下攻击按钮连续普攻。两根手指可以同时操作。",
+                "点击跳跃或闪现按钮，可越过有安全落点的河段；实体岩石、树木和墙体不能穿过。",
+                "点击快捷栏释放技能。地面技能按住场景调整目标，松开确认，也可点攻击按钮确认；点取消按钮中断选点或蓄力。",
+                "底部箭头切换三页技能栏。拖动技能或药剂到另一格移动或交换，拖到栏外取消；在技能树中学习并配置技能。",
+                "点击药剂按钮回复生命。打开行囊可购买药剂、换装与强化；生命药剂也能放入快捷栏。",
+                "顶部图标打开行囊、技能树和暂停菜单。靠近传送门进入副本；暂停菜单可保存进度或另存新槽。行囊与技能树暂停战斗。"
+            };
+            for (int i = 0; i < titles.Length; i++)
+            {
+                Rect cardRect = new Rect(w.x + 24 + (i % 2) * 482, w.y + 111 + (i / 2) * 143, 470, 131);
+                Fill(cardRect, card);
+                Text(new Rect(cardRect.x + 16, cardRect.y + 12, 438, 27), titles[i], 19, jade, true);
+                Text(new Rect(cardRect.x + 16, cardRect.y + 46, 438, 77), descriptions[i], 16, pale, false, true);
+            }
+            if (Button(new Rect(w.x + 24, w.y + 575, 952, 39), controlsReturnPause ? "返回暂停菜单" : "返回冒险", jade)) ClosePanel();
+        }
+
         private void DrawControls()
         {
+            if (MobileControls.Active) { DrawTouchControls(); return; }
             GameProfile p = session.Progression.Profile;
             Rect w = Modal(1060, 638, "操作指南", "键盘与鼠标 · 当前技能键帽会跟随你的自定义设置");
             if (Button(new Rect(w.xMax - 69, w.y + 20, 44, 32), "×", jade)) ClosePanel();

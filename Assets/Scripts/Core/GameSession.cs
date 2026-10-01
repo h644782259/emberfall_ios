@@ -617,6 +617,7 @@ namespace Emberfall
             ActiveCount++;
             color = tint;
             textMesh = gameObject.AddComponent<TextMesh>();
+            GameFont.Apply(textMesh);
             textMesh.text = value;
             textMesh.fontSize = 40;
             textMesh.characterSize = .055f;

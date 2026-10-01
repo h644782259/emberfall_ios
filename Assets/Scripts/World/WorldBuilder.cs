@@ -440,7 +440,7 @@ namespace Emberfall
         private static void Label(Transform parent,string value,Vector3 p,float size,Color color,bool floor)
         {
             GameObject go=new GameObject(value); go.transform.SetParent(parent); go.transform.position=p;
-            TextMesh text=go.AddComponent<TextMesh>(); text.text=value; text.anchor=TextAnchor.MiddleCenter; text.alignment=TextAlignment.Center; text.fontSize=64; text.characterSize=size; text.color=color;
+            TextMesh text=go.AddComponent<TextMesh>(); GameFont.Apply(text); text.text=value; text.anchor=TextAnchor.MiddleCenter; text.alignment=TextAlignment.Center; text.fontSize=64; text.characterSize=size; text.color=color;
             go.transform.rotation=Quaternion.Euler(floor?90:18,0,0);
         }
 

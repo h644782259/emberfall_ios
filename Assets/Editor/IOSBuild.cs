@@ -45,7 +45,7 @@ namespace Emberfall.Editor
             PlayerSettings.SetApiCompatibilityLevel(NamedBuildTarget.iOS, ApiCompatibilityLevel.NET_Standard_2_0);
             PlayerSettings.SetArchitecture(NamedBuildTarget.iOS, 1); // ARM64 device, not Simulator.
             PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
-            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneOnly;
+            ConfigureDeviceFamily();
             PlayerSettings.iOS.targetOSVersionString = "15.0";
             PlayerSettings.iOS.buildNumber = "1";
             PlayerSettings.iOS.appleEnableAutomaticSigning = true;
@@ -82,6 +82,13 @@ namespace Emberfall.Editor
                 // Keep a CLI-provided personal team out of saved project settings.
                 PlayerSettings.iOS.appleDeveloperTeamID = previousTeam;
             }
+        }
+
+        public static void ConfigureDeviceFamily()
+        {
+            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneAndiPad;
+            // Landscape full screen keeps combat controls usable on every iPad ratio.
+            PlayerSettings.iOS.requiresFullScreen = true;
         }
 
         private static string Argument(string name)
