@@ -1,11 +1,3 @@
-# iOS integration version notice
-
-The current iOS project now targets **6000.6.4f1** from main `bcf3860`.
-The installed cloud editor below is **6000.6.3f1**. These are compatible-source
-checks against installed references, not exact target-patch validation. Keep the
-project version unchanged; target-editor import and iPhone/iPad builds remain
-unrun. See [iOS integration](../Docs/iOS-Integration.md).
-
 # Cloud validation environment — 2026-10-01
 
 ## Installed successfully
@@ -53,7 +45,7 @@ of those results.
 bash Tests/Run-CloudValidation.sh \
   --dotnet /workspace/shared/emberfall-tools/dotnet/dotnet \
   --compile \
-  --unity-editor /workspace/shared/emberfall-tools/unity-6000.6.3f1/Editor/Unity --unity-reference-version 6000.6.3f1
+  --unity-editor /workspace/shared/emberfall-tools/unity-6000.6.3f1/Editor/Unity
 ```
 
 This runs standalone logic tests and compile-only checks against both the

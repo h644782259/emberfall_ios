@@ -1,6 +1,6 @@
 # 第二轮：战斗预算与成长衔接
 
-本轮为源码更新，不是已打包的 Windows 安装包或 iOS 构建。本 iOS 分支另保留最新主线 iPad/字体改动及6000.6.4f1目标版本，现有6000.6.3f1云编译属于兼容性检查，见 [iOS整合说明](iOS-Integration.md)。参数是可复算的工程设计基线，未声称 Unity 实机手感已校准。详细等级、装备、阶数矩阵见 [Combat-Budget.md](Combat-Budget.md) 和 [Combat-Budget.csv](Combat-Budget.csv)。
+本轮为源码更新，不是已打包的 Windows 安装包或 iOS 构建。参数是可复算的工程设计基线，未声称 Unity 实机手感已校准。详细等级、装备、阶数矩阵见 [Combat-Budget.md](Combat-Budget.md) 和 [Combat-Budget.csv](Combat-Budget.csv)。
 
 ## P0：数值与预警
 

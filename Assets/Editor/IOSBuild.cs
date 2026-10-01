@@ -24,7 +24,7 @@ namespace Emberfall.Editor
             string allowedRoot = Path.GetFullPath(Path.Combine(project, "Builds", "iOS"));
             string outputArgument = Argument("-emberfallIosOutput");
             string output = string.IsNullOrWhiteSpace(outputArgument)
-                ? Path.Combine(allowedRoot, "Xcode-" + DateTime.Now.ToString("yyyyMMdd-HHmmss"))
+                ? Path.Combine(allowedRoot, "Xcode")
                 : Path.GetFullPath(Path.IsPathRooted(outputArgument) ? outputArgument : Path.Combine(project, outputArgument));
             string rootPrefix = allowedRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
             if (!output.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))

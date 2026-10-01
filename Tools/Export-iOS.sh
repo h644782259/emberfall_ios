@@ -49,11 +49,10 @@ if $check_only; then
   exit 0
 fi
 
-stamp="$(date +%Y%m%d-%H%M%S)-$$"
-if [[ -z "$output" ]]; then output="$project_root/Builds/iOS/Xcode-$stamp"; fi
+if [[ -z "$output" ]]; then output="$project_root/Builds/iOS/Xcode"; fi
 if [[ "$output" != /* ]]; then output="$project_root/$output"; fi
 mkdir -p "$project_root/Logs"
-log_file="$project_root/Logs/ios-export-$stamp.log"
+log_file="$project_root/Logs/ios-export-latest.log"
 args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$output" -emberfallIosBundleId "$bundle_id")
 if [[ -n "$team_id" ]]; then args+=(-emberfallIosTeamId "$team_id"); fi
 echo 'Close this project in Unity before starting the export.'

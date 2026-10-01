@@ -22,8 +22,7 @@ if (-not (Test-Path -LiteralPath $iosSupport -PathType Container)) {
 Write-Host "iOS Build Support found: $iosSupport"
 Write-Host 'Windows can only export Xcode source with a supported Unity module. Xcode signing and installing on iPhone require your Mac.'
 if ($CheckOnly) { Write-Host 'Prerequisite check only; Unity was not started.'; exit 0 }
-$stamp = (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + $PID
-if (-not $OutputDirectory) { $OutputDirectory = Join-Path $projectRoot "Builds/iOS/Xcode-$stamp" }
+if (-not $OutputDirectory) { $OutputDirectory = Join-Path $projectRoot "Builds/iOS/Xcode" }
 if (-not [IO.Path]::IsPathRooted($OutputDirectory)) { $OutputDirectory = Join-Path $projectRoot $OutputDirectory }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
 $allowed = [IO.Path]::GetFullPath((Join-Path $projectRoot 'Builds/iOS')).TrimEnd([IO.Path]::DirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
@@ -34,7 +33,7 @@ foreach ($argument in @($projectRoot, $OutputDirectory, $BundleId, $TeamId)) {
 }
 $logDirectory = Join-Path $projectRoot 'Logs'
 New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
-$logFile = Join-Path $logDirectory "ios-export-$stamp.log"
+$logFile = Join-Path $logDirectory "ios-export-latest.log"
 $arguments = @('-batchmode', '-quit', '-buildTarget', 'iOS', '-projectPath', ('"' + $projectRoot + '"'), '-executeMethod', 'Emberfall.Editor.IOSBuild.Export', '-logFile', ('"' + $logFile + '"'), '-emberfallIosOutput', ('"' + $OutputDirectory + '"'), '-emberfallIosBundleId', $BundleId)
 if ($TeamId) { $arguments += @('-emberfallIosTeamId', $TeamId) }
 Write-Host 'Close this project in Unity before starting the export.'
