@@ -2,12 +2,12 @@
 
 这是 **0.3.1** 游戏源码的 iPhone 构建流程。[iPhone 独立仓库](https://github.com/h644782259/emberfall_ios)与 [Windows 主项目](https://github.com/h644782259/emberfall_win)共享四职业、技能成长、副本、装备养成、多存档和物品快捷栏玩法。推荐在 Mac 克隆后导出 Xcode 工程，再由 Xcode 直接安装到自己的设备。Windows 发行包不能转换成 iPhone 安装包。
 
-当前 Windows 开发环境安装了 Unity 6000.6.3f1，但只有 Windows/WebGL 模块，没有 iOS Build Support；因此此环境没有生成 Xcode 工程、签名 IPA，也没有完成 iPhone 真机测试。提交构建脚本不代表已经完成这些步骤。
+工程现要求 Unity 6000.6.4f1。当前云端只用已安装的6000.6.3f1程序集做兼容编译；未执行目标版本导入、生成 Xcode 工程、签名 IPA 或 iPhone/iPad 真机测试。差异与整合范围见 [iOS 主线整合说明](iOS-Integration.md)。
 
 ## 1. 准备 Mac 和 iPhone
 
 - 在 Mac 安装支持所连 iPhone iOS 版本的完整 Xcode，并启动一次完成其要求的首次配置和 iOS 平台支持下载；仅 Command Line Tools 不足以安装到 iPhone。
-- 用 Unity Hub 安装 `ProjectSettings/ProjectVersion.txt` 指定的 Unity **6000.6.3f1**，勾选该编辑器的 **iOS Build Support**。脚本不会替你安装或更换模块。
+- 用 Unity Hub 安装 `ProjectSettings/ProjectVersion.txt` 指定的 Unity **6000.6.4f1**，勾选该编辑器的 **iOS Build Support**。脚本不会替你安装或更换模块。
 - 用 USB 连接 iPhone，解锁设备并按提示信任这台 Mac。较新 iOS 若提示需要开发者模式，在 iPhone 的「设置 → 隐私与安全性 → 开发者模式」中按设备提示启用。
 - 在 Xcode → Settings → Accounts 添加自己的 Apple Account。安装到自己的设备可以使用免费的 **Personal Team**，不要求先加入付费 Apple Developer Program，也不需要 TestFlight。
 
@@ -40,7 +40,7 @@ bash Tools/Export-iOS.sh --bundle-id com.yourname.emberfall
 
 ```bash
 bash Tools/Export-iOS.sh \
-  --unity "/Applications/Unity/Hub/Editor/6000.6.3f1/Unity.app/Contents/MacOS/Unity" \
+  --unity "/Applications/Unity/Hub/Editor/6000.6.4f1/Unity.app/Contents/MacOS/Unity" \
   --bundle-id com.yourname.emberfall \
   --output Builds/iOS/MyFirstExport
 ```

@@ -22,6 +22,44 @@ namespace Emberfall
         public const int InventoryCapacity = 72;
         public const int MaximumUpgrade = 10;
         public const int PotionPrice = 20;
+        public const int PendingLootCapacity = 24;
+        public const int RecoveryLootCapacity = 256;
+        public const int MechanicExchangeCost = 12;
+        public const int MaximumMasteryRank = 35;
+        public const int FashionChoiceCost = 30;
+        public const int ReforgeCost = 6;
+        public const int VariantCost = 4;
+        private static readonly int[] WingHealthPercents = { 3, 5, 8, 12 };
+        private static readonly int[] WingArmorPercents = { 2, 3, 5, 8 };
+        private static readonly int[] WeaponPercents = { 2, 4, 6, 9 };
+        // Absolute probabilities per opened dungeon chest: 22% common, 12% rare,
+        // 5% epic, 1% legendary, and 60% without a fashion drop.
+        public static Rarity? RollFashionRarity(int roll)
+        {
+            if (roll < 0 || roll >= 100) throw new ArgumentOutOfRangeException("roll");
+            if (roll < 1) return Rarity.Legendary;
+            if (roll < 6) return Rarity.Epic;
+            if (roll < 18) return Rarity.Rare;
+            if (roll < 40) return Rarity.Common;
+            return null;
+        }
+
+        public static string FashionName(FashionSlot slot, Rarity rarity)
+        {
+            string prefix = new[] { "流光", "星纹", "苍穹", "烬王" }[(int)rarity];
+            return prefix + (slot == FashionSlot.Wings ? "之翼" : "兵装");
+        }
+
+        public static string FashionBonus(FashionSlot slot, Rarity rarity)
+        {
+            int rank = (int)rarity;
+            int primary = slot == FashionSlot.Wings ? WingHealthPercents[rank] : WeaponPercents[rank];
+            int secondary = slot == FashionSlot.Wings ? WingArmorPercents[rank] : WeaponPercents[rank];
+            return slot == FashionSlot.Wings ? "生命 +" + primary + "% · 防御 +" + secondary + "%"
+                : "攻击 +" + primary + "% · 暴击几率 ×" + (100 + secondary) + "%";
+        }
+
+        public static int WeaponFashionPercent(Rarity rarity) { return WeaponPercents[(int)rarity]; }
         private const int MaximumGold = 999999999;
         private const int MaximumEquipmentStat = 10000;
         private const int MaximumEquipmentHealth = 100000;
@@ -43,6 +81,9 @@ namespace Emberfall
         }
 
         public GameProfile Profile { get; private set; }
+        public ChestReward LastChestReward { get { return Profile.lastChestReward; } }
+        public int RecoveryLootCount { get { return Profile.recoveryLoot.Count; } }
+        public bool CanEnterDungeon { get { return RecoveryLootCount == 0 && CanReceiveProtectedLoot; } }
         public event Action Changed;
         public event Action<int> LeveledUp;
         public string LastError { get; private set; }
@@ -352,7 +393,461 @@ namespace Emberfall
                     stats.MoveSpeed *= 1f + (passiveRank == 1 ? .03f : passiveRank == 2 ? .06f : .10f);
                 }
             }
+            FashionData wings = StrongestFashion(FashionSlot.Wings);
+            if (wings != null)
+            {
+                int rank = (int)wings.rarity;
+                stats.MaxHealth *= 1f + WingHealthPercents[rank] / 100f;
+                stats.Armor *= 1f + WingArmorPercents[rank] / 100f;
+            }
+            FashionData weaponFashion = StrongestFashion(FashionSlot.Weapon);
+            if (weaponFashion != null)
+            {
+                float bonus = WeaponPercents[(int)weaponFashion.rarity] / 100f;
+                stats.Damage *= 1f + bonus;
+                stats.CritChance = Math.Min(1f, stats.CritChance * (1f + bonus));
+            }
+            if (Profile.masteryRanks != null && Profile.masteryRanks.Length >= 3)
+            {
+                stats.Damage *= 1f + Clamp(Profile.masteryRanks[0], 0, MaximumMasteryRank) * .003f;
+                stats.MaxHealth *= 1f + Clamp(Profile.masteryRanks[1], 0, MaximumMasteryRank) * .005f;
+                stats.Armor *= 1f + Clamp(Profile.masteryRanks[2], 0, MaximumMasteryRank) * .0075f;
+            }
             return stats;
+        }
+
+        public FashionData EquippedFashion(FashionSlot slot)
+        {
+            string id = slot == FashionSlot.Wings ? Profile.wingsFashionId : Profile.weaponFashionId;
+            return Profile.fashions == null ? null : Profile.fashions.Find(value => value != null && value.id == id && value.slot == slot);
+        }
+
+        public bool EquipFashion(string id)
+        {
+            FashionData fashion = Profile.fashions == null ? null : Profile.fashions.Find(value => value != null && value.id == id);
+            if (fashion == null) return Fail("尚未获得这件时装。");
+            if (fashion.slot == FashionSlot.Wings) Profile.wingsFashionId = id;
+            else Profile.weaponFashionId = id;
+            Commit();
+            return true;
+        }
+
+        public bool UnequipFashion(FashionSlot slot)
+        {
+            if (slot == FashionSlot.Wings) Profile.wingsFashionId = null;
+            else if (slot == FashionSlot.Weapon) Profile.weaponFashionId = null;
+            else return Fail("无效的时装部位。");
+            Commit();
+            return true;
+        }
+
+        public bool SetSpecialization(ElementalistSpecialization specialization, bool inCamp)
+        {
+            if (!inCamp) return Fail("只能在营地免费切换专精。");
+            if (Profile.heroClass != HeroClass.Arcanist) return Fail("只有元素师可切换冰火专精。");
+            if (!Enum.IsDefined(typeof(ElementalistSpecialization), specialization)) return Fail("无效的专精。");
+            Profile.specialization = specialization;
+            Commit();
+            return true;
+        }
+
+        public bool HasMechanic(EquipmentMechanic mechanic)
+        {
+            if (mechanic == EquipmentMechanic.None || !Enum.IsDefined(typeof(EquipmentMechanic), mechanic) ||
+                BuildCatalog.MechanicClass(mechanic) != Profile.heroClass) return false;
+            ItemData equipped = Equipped(BuildCatalog.MechanicSlot(mechanic));
+            return equipped != null && equipped.mechanic == mechanic;
+        }
+
+        public bool HasDiscoveredMechanic(EquipmentMechanic mechanic)
+        {
+            return Profile.discoveredMechanics != null && Profile.discoveredMechanics.Contains(mechanic);
+        }
+
+        public bool SetItemLocked(string id, bool locked)
+        {
+            ItemData item = FindItem(id);
+            if (item == null && Profile.pendingLoot != null) item = Profile.pendingLoot.Find(value => value != null && value.id == id);
+            if (item == null && Profile.recoveryLoot != null) item = Profile.recoveryLoot.Find(value => value != null && value.id == id);
+            if (item == null) return Fail("找不到这件装备。");
+            item.locked = locked;
+            Commit();
+            return true;
+        }
+
+        public bool SetAutoSell(Rarity rarity, bool enabled)
+        {
+            if (rarity == Rarity.Common) Profile.autoSellCommon = enabled;
+            else if (rarity == Rarity.Rare) Profile.autoSellRare = enabled;
+            else return Fail("只可自动出售普通或稀有装备；机制、锁定和已强化装备始终受保护。");
+            Commit();
+            return true;
+        }
+
+        public int BulkSellLowQuality()
+        {
+            int sold = 0;
+            for (int index = Profile.inventory.Count - 1; index >= 0; index--)
+            {
+                ItemData item = Profile.inventory[index];
+                if (item == null || IsEquipped(Profile, item.id) || IsProtectedLoot(item) || item.rarity > Rarity.Rare) continue;
+                Profile.gold = (int)Math.Min(MaximumGold, (long)Profile.gold + SellValue(item));
+                Profile.inventory.RemoveAt(index);
+                sold++;
+            }
+            if (sold > 0) Commit();
+            else Fail("没有可批量出售的普通/稀有装备；穿戴、锁定、机制和强化装备受保护。");
+            return sold;
+        }
+
+        public static bool IsProtectedLoot(ItemData item)
+        {
+            return item != null && (item.locked || item.mechanic != EquipmentMechanic.None || item.rarity >= Rarity.Epic || item.upgradeLevel > 0);
+        }
+
+        public bool CanReceiveProtectedLoot
+        {
+            get { return Profile.inventory.Count < InventoryCapacity || Profile.pendingLoot.Count < PendingLootCapacity; }
+        }
+
+        public bool ClaimPendingLoot(string id)
+        {
+            ItemData item = Profile.pendingLoot.Find(value => value != null && value.id == id);
+            if (item == null) return Fail("找不到待领取的装备。");
+            if (Profile.inventory.Count >= InventoryCapacity) return Fail("背包已满，请先腾出位置再领取。");
+            // Claims deliberately bypass pickup autosell: this is a player's explicit item claim.
+            int pendingIndex = Profile.pendingLoot.IndexOf(item);
+            Profile.pendingLoot.Remove(item);
+            Profile.inventory.Add(item);
+            string failure;
+            if (!TryWriteProfile(Profile, savePath, false, out failure))
+            {
+                Profile.inventory.Remove(item);
+                Profile.pendingLoot.Insert(Math.Min(pendingIndex, Profile.pendingLoot.Count), item);
+                return Fail(failure);
+            }
+            LastError = string.Empty;
+            RaiseChanged();
+            return true;
+        }
+
+        public int ClaimAllPendingLoot()
+        {
+            int claimed = 0;
+            var moved = new List<ItemData>();
+            while (Profile.pendingLoot.Count > 0 && Profile.inventory.Count < InventoryCapacity)
+            {
+                ItemData item = Profile.pendingLoot[0];
+                Profile.pendingLoot.RemoveAt(0);
+                Profile.inventory.Add(item);
+                moved.Add(item);
+                claimed++;
+            }
+            if (claimed > 0)
+            {
+                string failure;
+                if (!TryWriteProfile(Profile, savePath, false, out failure))
+                {
+                    foreach (ItemData item in moved) Profile.inventory.Remove(item);
+                    Profile.pendingLoot.InsertRange(0, moved);
+                    Fail(failure);
+                    return 0;
+                }
+                LastError = string.Empty;
+                RaiseChanged();
+            }
+            else Fail(Profile.pendingLoot.Count == 0 ? "没有待领取装备。" : "背包已满，请先腾出位置。");
+            return claimed;
+        }
+
+        /// <summary>Emergency exit/death/quit capture. A single active expedition can
+        /// populate this bounded mailbox; entry stays blocked until it is emptied.</summary>
+        public bool PreserveGroundLoot(IEnumerable<ItemData> items)
+        {
+            if (items == null) return Fail("无法读取待保管的地面装备。");
+            var known = new HashSet<string>(collectedLootIds, StringComparer.Ordinal);
+            foreach (ItemData item in Profile.inventory) known.Add(item.id);
+            foreach (ItemData item in Profile.pendingLoot) known.Add(item.id);
+            foreach (ItemData item in Profile.recoveryLoot) known.Add(item.id);
+            var incoming = new List<ItemData>();
+            foreach (ItemData item in items)
+            {
+                if (item == null || string.IsNullOrWhiteSpace(item.id) || item.id.Length > 80 ||
+                    !Enum.IsDefined(typeof(ItemSlot), item.slot) || !Enum.IsDefined(typeof(Rarity), item.rarity) ||
+                    !Enum.IsDefined(typeof(EquipmentMechanic), item.mechanic)) return Fail("地面装备数据无效；尚未收取或删除任何装备。");
+                if (known.Add(item.id)) incoming.Add(item);
+            }
+            if (incoming.Count == 0) { LastError = string.Empty; return true; }
+            if (incoming.Count > RecoveryLootCapacity - Profile.recoveryLoot.Count)
+                return Fail("临时保管栏已满，尚未删除地面装备；请领取保管装备后再离开。");
+            GameProfile candidate = JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true));
+            foreach (ItemData item in incoming)
+                candidate.recoveryLoot.Add(JsonUtility.FromJson<ItemData>(JsonUtility.ToJson(item, true)));
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure)) return Fail(failure);
+            Profile = candidate;
+            foreach (ItemData item in incoming) collectedLootIds.Add(item.id);
+            LastError = string.Empty;
+            RaiseChanged();
+            return true;
+        }
+
+        public bool ClaimRecoveryLoot(string id)
+        {
+            if (!Profile.recoveryLoot.Exists(item => item.id == id)) return Fail("找不到临时保管的装备。");
+            if (Profile.inventory.Count >= InventoryCapacity) return Fail("背包已满，请先腾出位置再领取保管装备。");
+            GameProfile candidate = JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true));
+            ItemData item = candidate.recoveryLoot.Find(value => value.id == id);
+            candidate.recoveryLoot.Remove(item);
+            candidate.inventory.Add(item);
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure)) return Fail(failure);
+            Profile = candidate;
+            LastError = string.Empty;
+            RaiseChanged();
+            return true;
+        }
+
+        public int ClaimAllRecoveryLoot()
+        {
+            int count = Math.Min(Profile.recoveryLoot.Count, Math.Max(0, InventoryCapacity - Profile.inventory.Count));
+            if (count == 0)
+            {
+                Fail(Profile.recoveryLoot.Count == 0 ? "没有临时保管的装备。" : "背包已满，请先腾出位置。");
+                return 0;
+            }
+            GameProfile candidate = JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true));
+            candidate.inventory.AddRange(candidate.recoveryLoot.GetRange(0, count));
+            candidate.recoveryLoot.RemoveRange(0, count);
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure)) { Fail(failure); return 0; }
+            Profile = candidate;
+            LastError = string.Empty;
+            RaiseChanged();
+            return count;
+        }
+
+        public ItemData CreateMechanicItem(EquipmentMechanic mechanic)
+        {
+            if (mechanic == EquipmentMechanic.None || !Enum.IsDefined(typeof(EquipmentMechanic), mechanic)) return null;
+            int level = Clamp(Profile.level, 1, MaximumLevel);
+            ItemSlot slot = BuildCatalog.MechanicSlot(mechanic);
+            var item = new ItemData { id = Guid.NewGuid().ToString("N"), name = BuildCatalog.MechanicName(mechanic),
+                level = level, rarity = Rarity.Epic, slot = slot, mechanic = mechanic, locked = true };
+            SetRolledStats(item);
+            EnsureUpgradeBasis(item);
+            return item;
+        }
+
+        public bool ClaimFirstClearReward(EquipmentMechanic mechanic)
+        {
+            if (!Profile.pendingFirstClearReward || Profile.firstClearRewardClaimed) return Fail("当前没有首通自选奖励。");
+            if (mechanic == EquipmentMechanic.None || !Enum.IsDefined(typeof(EquipmentMechanic), mechanic) ||
+                BuildCatalog.MechanicClass(mechanic) != Profile.heroClass) return Fail("请选择本职业的机制装备。");
+            if (!CanReceiveProtectedLoot) return Fail("背包与待领取栏均已满；首通选择保留，请先腾出位置。");
+            Profile.firstClearRewardClaimed = true;
+            Profile.pendingFirstClearReward = false;
+            if (CollectLoot(CreateMechanicItem(mechanic))) return true;
+            Profile.firstClearRewardClaimed = false;
+            Profile.pendingFirstClearReward = true;
+            return false;
+        }
+
+        public bool ExchangeMechanic(EquipmentMechanic mechanic)
+        {
+            if (mechanic == EquipmentMechanic.None || !Enum.IsDefined(typeof(EquipmentMechanic), mechanic) ||
+                BuildCatalog.MechanicClass(mechanic) != Profile.heroClass) return Fail("只能兑换本职业的机制装备。");
+            if (Profile.mechanicMaterials < MechanicExchangeCost) return Fail("需要12枚星烬碎片；每次遗迹通关获得3枚。");
+            if (!CanReceiveProtectedLoot) return Fail("背包与待领取栏均已满，请先腾出位置；尚未扣除碎片。");
+            Profile.mechanicMaterials -= MechanicExchangeCost;
+            if (CollectLoot(CreateMechanicItem(mechanic))) return true;
+            Profile.mechanicMaterials += MechanicExchangeCost;
+            return false;
+        }
+
+        public static int MasteryCap(int level)
+        { return level < 50 ? 0 : level < 65 ? 10 : level < 80 ? 20 : level < 95 ? 30 : MaximumMasteryRank; }
+
+        public bool HasMasteryCore(MasteryType mastery)
+        { return Profile.masteryCore == (int)mastery && Profile.masteryRanks[(int)mastery] >= 20; }
+
+        public string MasteryLockReason(MasteryType mastery)
+        {
+            if (!Enum.IsDefined(typeof(MasteryType), mastery)) return "无效的精通。";
+            int cap = MasteryCap(Profile.level);
+            if (cap == 0) return "50级开放精通；与技能共用点数，营地免费重置。";
+            if (Profile.masteryRanks[(int)mastery] >= cap) return "已达当前等级精通上限 " + cap + "；65/80/95级继续开放。";
+            if (Profile.skillPoints < 1) return "需要1点技能点；可在营地重置精通。";
+            return string.Empty;
+        }
+
+        public bool LearnMastery(MasteryType mastery)
+        {
+            string reason = MasteryLockReason(mastery);
+            if (!string.IsNullOrEmpty(reason)) return Fail(reason);
+            GameProfile candidate = Snapshot();
+            candidate.masteryRanks[(int)mastery]++;
+            return CommitCandidate(candidate);
+        }
+
+        public bool SelectMasteryCore(MasteryType mastery, bool inCamp)
+        {
+            if (!inCamp) return Fail("只能在营地切换精通核心。");
+            if (!Enum.IsDefined(typeof(MasteryType), mastery) || Profile.masteryRanks[(int)mastery] < 20)
+                return Fail("该方向投入20点后可启用核心；只能启用一个。");
+            GameProfile candidate = Snapshot(); candidate.masteryCore = (int)mastery;
+            return CommitCandidate(candidate);
+        }
+
+        public bool ResetMastery(bool inCamp)
+        {
+            if (!inCamp) return Fail("只能在营地免费重置精通。");
+            GameProfile candidate = Snapshot(); candidate.masteryRanks = new int[4]; candidate.masteryCore = -1;
+            return CommitCandidate(candidate);
+        }
+
+        private GameProfile Snapshot() { return JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true)); }
+        private bool CommitCandidate(GameProfile candidate)
+        {
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure)) return Fail(failure);
+            Profile = candidate; LastError = string.Empty; RaiseChanged(); return true;
+        }
+
+        public bool SetSummonerRoute(SummonerRoute route, bool inCamp)
+        {
+            if (!inCamp || Profile.heroClass != HeroClass.Summoner || !Enum.IsDefined(typeof(SummonerRoute), route))
+                return Fail("在营地可选择群契或双契伙伴路线。");
+            GameProfile candidate = Snapshot(); candidate.summonerRoute = route; return CommitCandidate(candidate);
+        }
+
+        public FashionData StrongestFashion(FashionSlot slot)
+        {
+            FashionData best = null;
+            foreach (FashionData fashion in Profile.fashions)
+                if (fashion != null && fashion.slot == slot && (best == null || fashion.rarity > best.rarity)) best = fashion;
+            return best;
+        }
+
+        public bool ChooseLegendaryFashion(FashionSlot slot, bool inCamp)
+        {
+            if (!inCamp || !Enum.IsDefined(typeof(FashionSlot), slot)) return Fail("请在营地选择有效的时装部位。");
+            string id = "fashion-" + (int)slot + "-3";
+            if (Profile.fashions.Exists(x => x.id == id)) return Fail("已拥有该部位传说外观，无需兑换。");
+            if (Profile.fashionThreads < FashionChoiceCost) return Fail("需要30缕星纹；每次开箱+1，重复时装额外增加。");
+            GameProfile candidate = Snapshot(); candidate.fashionThreads -= FashionChoiceCost;
+            candidate.fashions.Add(new FashionData { id = id, slot = slot, rarity = Rarity.Legendary, name = FashionName(slot, Rarity.Legendary) });
+            return CommitCandidate(candidate);
+        }
+
+        public bool ReforgeMechanic(string id, bool inCamp)
+        {
+            ItemData existing = FindItem(id);
+            if (!inCamp || existing == null || existing.mechanic == EquipmentMechanic.None || !HasDiscoveredMechanic(existing.mechanic))
+                return Fail("在营地可将已发现配方的机制装备重铸。");
+            if (existing.level >= Profile.level) return Fail("装备已达到当前角色等级。");
+            if (Profile.mechanicMaterials < ReforgeCost) return Fail("重铸需要6枚星烬碎片。");
+            GameProfile candidate = Snapshot(); candidate.mechanicMaterials -= ReforgeCost;
+            ItemData item = candidate.inventory.Find(x => x.id == id); item.level = candidate.level;
+            item.upgradeLevel = 0; item.upgradeBaseInitialized = false; SetRolledStats(item); EnsureUpgradeBasis(item);
+            if (IsEquipped(candidate, id)) ApplyUpgradeRank(item, candidate.slotUpgradeRanks[(int)item.slot]);
+            return CommitCandidate(candidate);
+        }
+
+        public bool ToggleMechanicVariant(string id, bool inCamp)
+        {
+            ItemData existing = FindItem(id);
+            if (!inCamp || existing == null || (existing.mechanic != EquipmentMechanic.FrostEcho && existing.mechanic != EquipmentMechanic.CinderTrail))
+                return Fail("在营地可切换元素机制装备的互斥变体。");
+            if (!existing.mechanicVariantUnlocked && Profile.mechanicMaterials < VariantCost) return Fail("首次解锁变体需要4枚碎片，之后免费切换。");
+            GameProfile candidate = Snapshot(); ItemData item = candidate.inventory.Find(x => x.id == id);
+            if (!item.mechanicVariantUnlocked) candidate.mechanicMaterials -= VariantCost;
+            item.mechanicVariantUnlocked = true; item.mechanicVariant = 1 - item.mechanicVariant;
+            return CommitCandidate(candidate);
+        }
+
+        public void PrepareDungeonChest()
+        {
+            Profile.pendingFashionChest = true;
+            if (Profile.clearedRuns > Profile.materialRewardedClears)
+            {
+                Profile.mechanicMaterials = Clamp(Profile.mechanicMaterials + 3, 0, 999999);
+                Profile.materialRewardedClears = Profile.clearedRuns;
+            }
+            if (!Profile.firstClearRewardClaimed && Profile.clearedRuns > 0) Profile.pendingFirstClearReward = true;
+            Commit();
+        }
+
+        // Exactly-once reward transaction: roll and grant in a detached snapshot,
+        // durably save its receipt, then publish it to the animation/UI. A failed write
+        // cannot consume the chest, expose a reward, mutate currency or emit a change.
+        public string OpenDungeonChest(int choice)
+        {
+            if (choice < 0 || choice >= 3 || !Profile.pendingFashionChest)
+            {
+                Fail("当前没有可开启的通关宝箱。");
+                return null;
+            }
+            if (Profile.pendingChestReveal)
+            {
+                Fail("请先收起上一次的宝箱奖励展示；该奖励已保存，不会重新抽取。");
+                return null;
+            }
+            GameProfile candidate = JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true));
+            candidate.pendingFashionChest = false;
+            candidate.fashionThreads = Clamp(candidate.fashionThreads + 1, 0, 999999);
+            var receipt = new ChestReward { id = Guid.NewGuid().ToString("N"), choice = choice, gold = 60 + random.Next(41), name = "金币" };
+            Rarity? rarity = RollFashionRarity(random.Next(100));
+            if (!rarity.HasValue) receipt.summary = "宝箱 " + (choice + 1) + "：获得 " + receipt.gold + " 金币";
+            else
+            {
+                FashionSlot slot = (FashionSlot)random.Next(2);
+                string id = "fashion-" + (int)slot + "-" + (int)rarity.Value;
+                FashionData owned = candidate.fashions.Find(value => value != null && value.id == id);
+                receipt.rarityIndex = (int)rarity.Value;
+                receipt.slotIndex = (int)slot;
+                receipt.name = FashionName(slot, rarity.Value);
+                receipt.duplicate = owned != null;
+                if (receipt.duplicate)
+                {
+                    int duplicateGold = new[] { 40, 100, 250, 800 }[(int)rarity.Value];
+                    candidate.fashionThreads = Clamp(candidate.fashionThreads + new[] { 1, 2, 4, 8 }[(int)rarity.Value], 0, 999999);
+                    receipt.summary = "宝箱 " + (choice + 1) + "：" + receipt.name + " 已拥有，转化 " + duplicateGold + " 金币；另得 " + receipt.gold + " 金币";
+                    receipt.gold += duplicateGold;
+                }
+                else
+                {
+                    candidate.fashions.Add(new FashionData { id = id, slot = slot, rarity = rarity.Value, name = receipt.name });
+                    receipt.summary = "宝箱 " + (choice + 1) + "：获得" + GameBalance.RarityName(rarity.Value) + "时装「" + receipt.name + "」及 " + receipt.gold + " 金币";
+                }
+            }
+            receipt.summary += " · 星纹 " + candidate.fashionThreads + "/30";
+            candidate.gold = (int)Math.Min(MaximumGold, (long)candidate.gold + receipt.gold);
+            candidate.lastChestReward = receipt;
+            candidate.pendingChestReveal = true;
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure))
+            {
+                Fail(failure);
+                return null;
+            }
+            Profile = candidate;
+            LastError = string.Empty;
+            RaiseChanged();
+            return receipt.summary;
+        }
+
+        public bool AcknowledgeChestReward()
+        {
+            if (!Profile.pendingChestReveal) return Fail("当前没有待展示的宝箱奖励。");
+            GameProfile candidate = JsonUtility.FromJson<GameProfile>(JsonUtility.ToJson(Profile, true));
+            candidate.pendingChestReveal = false;
+            string failure;
+            if (!TryWriteProfile(candidate, savePath, false, out failure)) return Fail(failure);
+            Profile = candidate;
+            LastError = string.Empty;
+            RaiseChanged();
+            return true;
         }
 
         public void GrantExperience(int amount)
@@ -396,7 +891,6 @@ namespace Emberfall
                 ? (roll < 55 ? Rarity.Rare : roll < 92 ? Rarity.Epic : Rarity.Legendary)
                 : (roll < 54 ? Rarity.Common : roll < 85 ? Rarity.Rare : roll < 98 ? Rarity.Epic : Rarity.Legendary);
             ItemSlot slot = (ItemSlot)random.Next(3);
-            float multiplier = new[] { 1f, 1.35f, 1.8f, 2.5f }[(int)rarity];
             var item = new ItemData
             {
                 id = Guid.NewGuid().ToString("N"),
@@ -405,8 +899,26 @@ namespace Emberfall
                 level = level,
                 name = new[] { "旅者", "苍蓝", "星辉", "烬王" }[(int)rarity] + ItemBaseName(slot, Profile.heroClass)
             };
-            if (slot == ItemSlot.Weapon) item.attack = Round((5 + level * 2.5f) * multiplier);
-            else if (slot == ItemSlot.Armor)
+            EquipmentMechanic[] mechanics = BuildCatalog.MechanicsFor(Profile.heroClass);
+            if (mechanics.Length > 0 && ((boss && random.Next(100) < 25) || (!boss && rarity >= Rarity.Epic && random.Next(100) < 12)))
+            {
+                item.mechanic = mechanics[random.Next(mechanics.Length)];
+                item.slot = BuildCatalog.MechanicSlot(item.mechanic);
+                item.name = BuildCatalog.MechanicName(item.mechanic);
+                item.locked = true;
+            }
+            SetRolledStats(item);
+            EnsureUpgradeBasis(item);
+            return item;
+        }
+
+        private static void SetRolledStats(ItemData item)
+        {
+            float multiplier = new[] { 1f, 1.35f, 1.8f, 2.5f }[(int)item.rarity];
+            int level = item.level;
+            item.attack = item.defense = item.health = 0;
+            if (item.slot == ItemSlot.Weapon) item.attack = Round((5 + level * 2.5f) * multiplier);
+            else if (item.slot == ItemSlot.Armor)
             {
                 item.defense = Round((3 + level * 1.2f) * multiplier);
                 item.health = Round((10 + level * 4) * multiplier);
@@ -416,24 +928,43 @@ namespace Emberfall
                 item.attack = Round((2 + level) * multiplier);
                 item.health = Round((6 + level * 3) * multiplier);
             }
-            EnsureUpgradeBasis(item);
-            return item;
         }
 
-        /// <summary>Collect an existing drop once, preserving the full-bag gold fallback.</summary>
+        /// <summary>Protected overflow is persisted for claiming. A full pending queue rejects
+        /// acquisition without consuming the drop; the caller must retain it or block departure.</summary>
         public bool CollectLoot(ItemData item)
         {
-            if (item == null || string.IsNullOrWhiteSpace(item.id) || !Enum.IsDefined(typeof(ItemSlot), item.slot) || !Enum.IsDefined(typeof(Rarity), item.rarity))
+            if (item == null || string.IsNullOrWhiteSpace(item.id) || item.id.Length > 80 || !Enum.IsDefined(typeof(ItemSlot), item.slot) ||
+                !Enum.IsDefined(typeof(Rarity), item.rarity) || !Enum.IsDefined(typeof(EquipmentMechanic), item.mechanic))
                 return Fail("掉落装备无效。");
-            if (collectedLootIds.Contains(item.id) || FindItem(item.id) != null)
+            if (collectedLootIds.Contains(item.id) || FindItem(item.id) != null || Profile.pendingLoot.Exists(value => value != null && value.id == item.id) ||
+                Profile.recoveryLoot.Exists(value => value != null && value.id == item.id))
                 return Fail("这件装备已经拾取。");
             bool overflow = Profile.inventory.Count >= InventoryCapacity;
-            if (overflow) Profile.gold = (int)Math.Min(MaximumGold, (long)Profile.gold + SellValue(item));
+            bool protectedLoot = IsProtectedLoot(item);
+            if (overflow && protectedLoot && Profile.pendingLoot.Count >= PendingLootCapacity)
+                return Fail("背包与待领取栏均已满；珍贵装备仍在地上，请先整理再离开。");
+            bool sold = !protectedLoot && (overflow || (item.rarity == Rarity.Common && Profile.autoSellCommon) || (item.rarity == Rarity.Rare && Profile.autoSellRare));
+            int previousGold = Profile.gold;
+            bool newlyDiscovered = item.mechanic != EquipmentMechanic.None && !Profile.discoveredMechanics.Contains(item.mechanic);
+            if (sold) Profile.gold = (int)Math.Min(MaximumGold, (long)Profile.gold + SellValue(item));
+            else if (overflow) Profile.pendingLoot.Add(item);
             else Profile.inventory.Add(item);
+            if (newlyDiscovered) Profile.discoveredMechanics.Add(item.mechanic);
+            string failure;
+            if (!TryWriteProfile(Profile, savePath, false, out failure))
+            {
+                Profile.gold = previousGold;
+                Profile.inventory.Remove(item);
+                Profile.pendingLoot.Remove(item);
+                if (newlyDiscovered) Profile.discoveredMechanics.Remove(item.mechanic);
+                return Fail(failure); // The world still owns the item and may retry safely.
+            }
             collectedLootIds.Add(item.id);
-            Commit();
-            if (overflow && string.IsNullOrEmpty(LastError))
-                LastError = "背包已满，" + item.name + "已自动出售，获得 " + SellValue(item) + " 金币。";
+            LastError = string.Empty;
+            RaiseChanged();
+            if (sold) LastError = (overflow ? "背包已满，" : "低品质自动出售：") + item.name + "已自动出售，获得 " + SellValue(item) + " 金币。";
+            else if (overflow) LastError = "背包已满，" + item.name + "已保护至待领取栏（" + Profile.pendingLoot.Count + "/" + PendingLootCapacity + "）。";
             return true;
         }
 
@@ -449,9 +980,41 @@ namespace Emberfall
             ItemData item = FindItem(id);
             if (item == null) return Fail("找不到这件装备。");
             if (item.level > Profile.level) return Fail("需要角色等级 " + item.level + " 才能装备。");
+            ItemData previous = Equipped(item.slot);
+            ItemData previousState = previous == null ? null : PreviewUpgrade(previous, previous.upgradeLevel);
+            ItemData itemState = PreviewUpgrade(item, item.upgradeLevel);
+            string previousId = previous == null ? null : previous.id;
+            if (previous != null && previous != item) ApplyUpgradeRank(previous, 0);
+            EnsureUpgradeBasis(item);
+            ApplyUpgradeRank(item, SlotUpgradeRank(item.slot));
             SetEquipped(Profile, item);
-            Commit();
+            string failure;
+            if (!TryWriteProfile(Profile, savePath, false, out failure))
+            {
+                RestoreUpgradeState(item, itemState);
+                if (previous != null) RestoreUpgradeState(previous, previousState);
+                if (item.slot == ItemSlot.Weapon) Profile.weaponId = previousId;
+                else if (item.slot == ItemSlot.Armor) Profile.armorId = previousId;
+                else Profile.relicId = previousId;
+                return Fail(failure);
+            }
+            LastError = string.Empty;
+            RaiseChanged();
             return true;
+        }
+
+        public int SlotUpgradeRank(ItemSlot slot)
+        {
+            int index = (int)slot;
+            return index < 0 || index > 2 || Profile.slotUpgradeRanks == null || index >= Profile.slotUpgradeRanks.Length
+                ? 0 : Clamp(Profile.slotUpgradeRanks[index], 0, MaximumUpgrade);
+        }
+
+        /// <summary>Prospective equipped stats at the permanent slot rank. Never
+        /// mutates the item, profile or disk, including legacy baseline metadata.</summary>
+        public ItemData PreviewEquippedItem(ItemData item)
+        {
+            return item == null || !Enum.IsDefined(typeof(ItemSlot), item.slot) ? null : PreviewUpgrade(item, SlotUpgradeRank(item.slot));
         }
 
         public bool Sell(string id)
@@ -459,6 +1022,7 @@ namespace Emberfall
             ItemData item = FindItem(id);
             if (item == null) return Fail("找不到这件装备。");
             if (IsEquipped(Profile, item.id)) return Fail("请先替换身上的装备，再出售。");
+            if (item.locked) return Fail("装备已锁定，请先手动解锁再出售。");
             Profile.gold = (int)Math.Min(MaximumGold, (long)Profile.gold + SellValue(item));
             Profile.inventory.Remove(item);
             Commit();
@@ -469,41 +1033,44 @@ namespace Emberfall
         {
             ItemData item = FindItem(id);
             if (item == null) return Fail("找不到这件装备。");
-            if (item.upgradeLevel >= MaximumUpgrade) return Fail("装备已达到强化上限 +10。");
+            int rank = SlotUpgradeRank(item.slot);
+            if (rank >= MaximumUpgrade) return Fail("该部位已达到强化上限 +10；换装会自动继承。");
             int cost = UpgradeCost(item);
-            if (Profile.gold < cost) return Fail("金币不足，强化需要 " + cost + " 金币。");
-            EnsureUpgradeBasis(item);
+            if (Profile.gold < cost) return Fail("金币不足，部位强化需要 " + cost + " 金币。");
+            ItemData equipped = Equipped(item.slot);
+            ItemData oldEquipped = equipped == null ? null : PreviewUpgrade(equipped, equipped.upgradeLevel);
+            int oldGold = Profile.gold;
             Profile.gold -= cost;
-            ApplyUpgradeRank(item, item.upgradeLevel + 1);
-            Commit();
+            Profile.slotUpgradeRanks[(int)item.slot] = rank + 1;
+            if (equipped != null) { EnsureUpgradeBasis(equipped); ApplyUpgradeRank(equipped, rank + 1); }
+            string failure;
+            if (!TryWriteProfile(Profile, savePath, false, out failure))
+            {
+                Profile.gold = oldGold;
+                Profile.slotUpgradeRanks[(int)item.slot] = rank;
+                if (equipped != null) RestoreUpgradeState(equipped, oldEquipped);
+                return Fail(failure);
+            }
+            LastError = string.Empty;
+            RaiseChanged();
             return true;
         }
 
-        /// <summary>
-        /// Moves the source's rank onto another item of the same slot for free.
-        /// An upgraded destination returns its old rank to the source: no ranks are
-        /// added, copied or destroyed, and each item's own base attributes stay put.
-        /// </summary>
+        /// <summary>Compatibility entry point for old UI callers. Training now
+        /// belongs to the slot and is applied automatically when equipment changes.</summary>
         public bool TransferUpgrade(string sourceId, string targetId)
         {
-            ItemData source = FindItem(sourceId);
-            ItemData target = FindItem(targetId);
-            if (source == null || target == null) return Fail("找不到来源或目标装备，可能已经出售。");
-            if (source == target || source.id == target.id) return Fail("请选择两件不同的装备。");
-            if (source.slot != target.slot) return Fail("只有相同部位的装备可以转移强化。");
-            if (source.upgradeLevel <= 0) return Fail("来源装备没有可转移的强化等级。");
-            if (source.upgradeLevel > MaximumUpgrade || target.upgradeLevel < 0 || target.upgradeLevel > MaximumUpgrade)
-                return Fail("装备强化等级无效，请重新读取存档。");
+            return Fail("强化等级已绑定装备部位；更换装备会自动继承，无需单独转移。");
+        }
 
-            // Validate the entire request before initializing or changing either item.
-            EnsureUpgradeBasis(source);
-            EnsureUpgradeBasis(target);
-            int sourceRank = source.upgradeLevel;
-            int targetRank = target.upgradeLevel;
-            ApplyUpgradeRank(source, targetRank);
-            ApplyUpgradeRank(target, sourceRank);
-            Commit();
-            return true;
+        private static void RestoreUpgradeState(ItemData item, ItemData state)
+        {
+            item.attack = state.attack; item.defense = state.defense; item.health = state.health;
+            item.upgradeLevel = state.upgradeLevel; item.upgradeBaseInitialized = state.upgradeBaseInitialized;
+            item.balanceRevision = state.balanceRevision;
+            item.baseAttack = state.baseAttack; item.baseDefense = state.baseDefense; item.baseHealth = state.baseHealth;
+            item.upgradeAnchorLevel = state.upgradeAnchorLevel; item.upgradeAnchorAttack = state.upgradeAnchorAttack;
+            item.upgradeAnchorDefense = state.upgradeAnchorDefense; item.upgradeAnchorHealth = state.upgradeAnchorHealth;
         }
 
         /// <summary>Returns an independent preview; never mutates items, gold, saves or events.</summary>
@@ -513,6 +1080,8 @@ namespace Emberfall
             var preview = new ItemData
             {
                 id = item.id, name = item.name, slot = item.slot, rarity = item.rarity, level = item.level,
+                mechanic = item.mechanic, locked = item.locked,
+                mechanicVariant = item.mechanicVariant, mechanicVariantUnlocked = item.mechanicVariantUnlocked, balanceRevision = item.balanceRevision,
                 attack = item.attack, defense = item.defense, health = item.health, upgradeLevel = item.upgradeLevel,
                 upgradeBaseInitialized = item.upgradeBaseInitialized,
                 baseAttack = item.baseAttack, baseDefense = item.baseDefense, baseHealth = item.baseHealth,
@@ -534,14 +1103,12 @@ namespace Emberfall
 
         private static int UpgradeValue(int basis, int anchor, int anchorRank, int rank, int minimumIncrease, int cap)
         {
-            // A legacy value can be capped or not exactly invertible. Its recorded
-            // anchor guarantees returning to the original rank restores it exactly.
-            // Normal legacy values are exact on both sides of the same growth curve.
-            return rank >= anchorRank ? GrowUpgradeStat(anchor, rank - anchorRank, minimumIncrease, cap)
-                : GrowUpgradeStat(basis, rank, minimumIncrease, cap);
+            // The recorded unenhanced basis is the sole authority after migration.
+            // Rank changes always reevaluate the linear curve, never compound caches.
+            return CombatBalance.UpgradeValue(basis, rank, minimumIncrease, cap);
         }
 
-        private static int GrowUpgradeStat(int value, int ranks, int minimumIncrease, int cap)
+        private static int GrowLegacyUpgradeStat(int value, int ranks, int minimumIncrease, int cap)
         {
             if (value <= 0) return 0;
             for (int i = 0; i < ranks; i++)
@@ -560,7 +1127,7 @@ namespace Emberfall
             while (low <= high)
             {
                 int middle = low + (high - low) / 2;
-                int grown = GrowUpgradeStat(middle, rank, minimumIncrease, int.MaxValue);
+                int grown = GrowLegacyUpgradeStat(middle, rank, minimumIncrease, int.MaxValue);
                 if (grown <= value) { best = middle; low = middle + 1; }
                 else high = middle - 1;
             }
@@ -579,39 +1146,57 @@ namespace Emberfall
             item.attack = Clamp(item.attack, 0, MaximumEquipmentStat);
             item.defense = Clamp(item.defense, 0, MaximumEquipmentStat);
             item.health = Clamp(item.health, 0, MaximumEquipmentHealth);
-            int anchorRank = item.upgradeAnchorLevel;
-            bool valid = item.upgradeBaseInitialized && anchorRank >= 0 && anchorRank <= MaximumUpgrade &&
-                ValidUpgradeBasis(item.baseAttack, item.upgradeAnchorAttack, anchorRank, 1, MaximumEquipmentStat) &&
-                ValidUpgradeBasis(item.baseDefense, item.upgradeAnchorDefense, anchorRank, 1, MaximumEquipmentStat) &&
-                ValidUpgradeBasis(item.baseHealth, item.upgradeAnchorHealth, anchorRank, 2, MaximumEquipmentHealth);
-            if (valid &&
-                item.attack == UpgradeValue(item.baseAttack, item.upgradeAnchorAttack, anchorRank, item.upgradeLevel, 1, MaximumEquipmentStat) &&
-                item.defense == UpgradeValue(item.baseDefense, item.upgradeAnchorDefense, anchorRank, item.upgradeLevel, 1, MaximumEquipmentStat) &&
-                item.health == UpgradeValue(item.baseHealth, item.upgradeAnchorHealth, anchorRank, item.upgradeLevel, 2, MaximumEquipmentHealth)) return;
+            bool old = item.balanceRevision < 1;
+            bool validOld = item.upgradeBaseInitialized && item.upgradeAnchorLevel >= 0 && item.upgradeAnchorLevel <= MaximumUpgrade &&
+                ValidUpgradeBasis(item.baseAttack, item.upgradeAnchorAttack, item.upgradeAnchorLevel, 1, MaximumEquipmentStat) &&
+                ValidUpgradeBasis(item.baseDefense, item.upgradeAnchorDefense, item.upgradeAnchorLevel, 1, MaximumEquipmentStat) &&
+                ValidUpgradeBasis(item.baseHealth, item.upgradeAnchorHealth, item.upgradeAnchorLevel, 2, MaximumEquipmentHealth);
+            bool validNew = item.upgradeBaseInitialized && item.baseAttack >= 0 && item.baseAttack <= MaximumEquipmentStat &&
+                item.baseDefense >= 0 && item.baseDefense <= MaximumEquipmentStat && item.baseHealth >= 0 && item.baseHealth <= MaximumEquipmentHealth &&
+                item.attack == CombatBalance.UpgradeValue(item.baseAttack, item.upgradeLevel, 1, MaximumEquipmentStat) &&
+                item.defense == CombatBalance.UpgradeValue(item.baseDefense, item.upgradeLevel, 1, MaximumEquipmentStat) &&
+                item.health == CombatBalance.UpgradeValue(item.baseHealth, item.upgradeLevel, 2, MaximumEquipmentHealth);
+            if (!old && validNew) return;
+            if (old && validOld) { /* Preserve the saved unenhanced item, not compounded inflation. */ }
+            else
+            {
+                item.baseAttack = old ? RecoverUpgradeBase(item.attack, item.upgradeLevel, 1) : RecoverLinearBase(item.attack, item.upgradeLevel, 1);
+                item.baseDefense = old ? RecoverUpgradeBase(item.defense, item.upgradeLevel, 1) : RecoverLinearBase(item.defense, item.upgradeLevel, 1);
+                item.baseHealth = old ? RecoverUpgradeBase(item.health, item.upgradeLevel, 2) : RecoverLinearBase(item.health, item.upgradeLevel, 2);
+            }
+            item.upgradeBaseInitialized = true; item.balanceRevision = 1;
+            item.upgradeAnchorLevel = 0;
+            item.upgradeAnchorAttack = item.baseAttack; item.upgradeAnchorDefense = item.baseDefense; item.upgradeAnchorHealth = item.baseHealth;
+            ApplyUpgradeRank(item, item.upgradeLevel);
+        }
 
-            // Initialize old saves (or repair inconsistent metadata) without changing
-            // their currently visible attributes. The anchor remains immutable across
-            // future upgrades, rank transfers, previews and save/load round trips.
-            item.upgradeAnchorLevel = item.upgradeLevel;
-            item.upgradeAnchorAttack = item.attack;
-            item.upgradeAnchorDefense = item.defense;
-            item.upgradeAnchorHealth = item.health;
-            item.baseAttack = RecoverUpgradeBase(item.attack, item.upgradeLevel, 1);
-            item.baseDefense = RecoverUpgradeBase(item.defense, item.upgradeLevel, 1);
-            item.baseHealth = RecoverUpgradeBase(item.health, item.upgradeLevel, 2);
-            item.upgradeBaseInitialized = true;
+        private static int RecoverLinearBase(int value, int rank, int minimumIncrease)
+        {
+            int low = 0, high = value, best = 0;
+            while (low <= high)
+            {
+                int middle = low + (high - low) / 2;
+                if (CombatBalance.UpgradeValue(middle, rank, minimumIncrease, int.MaxValue) <= value) { best = middle; low = middle + 1; }
+                else high = middle - 1;
+            }
+            return best;
         }
 
         public int UpgradeCost(ItemData item)
         {
-            if (item == null || item.upgradeLevel >= MaximumUpgrade) return 0;
-            return (18 + Clamp(item.level, 1, MaximumLevel) * 6) * (Clamp(item.upgradeLevel, 0, MaximumUpgrade) + 1) * ((int)item.rarity + 1);
+            if (item == null || !Enum.IsDefined(typeof(ItemSlot), item.slot)) return 0;
+            int rank = SlotUpgradeRank(item.slot);
+            if (rank >= MaximumUpgrade) return 0;
+            // Every item of a slot trains the same permanent slot rank. Price never
+            // depends on a donor's level, rarity, or cached item upgradeLevel.
+            int slotPrice = item.slot == ItemSlot.Weapon ? 60 : item.slot == ItemSlot.Armor ? 50 : 45;
+            return slotPrice * (rank + 1);
         }
 
         public int SellValue(ItemData item)
         {
             if (item == null) return 0;
-            return (8 + Clamp(item.level, 1, MaximumLevel) * 4) * (Clamp((int)item.rarity, 0, 3) + 1) + Clamp(item.upgradeLevel, 0, MaximumUpgrade) * 10;
+            return (8 + Clamp(item.level, 1, MaximumLevel) * 4) * (Clamp((int)item.rarity, 0, 3) + 1);
         }
 
         public static float EquipmentScore(ItemData item)
@@ -828,7 +1413,10 @@ namespace Emberfall
                 SaveFile data = JsonUtility.FromJson<SaveFile>(File.ReadAllText(path, Encoding.UTF8));
                 if (data == null || data.format != SaveFormat || data.version != 1 || data.profile == null || data.profile.version != 1)
                 { error = "unsupported format"; return false; }
+                bool balanceChanged = HasLegacyEnhancement(data.profile.inventory) || HasLegacyEnhancement(data.profile.pendingLoot) || HasLegacyEnhancement(data.profile.recoveryLoot);
+                bool masteryRefund = data.profile.masteryRevision < 1 && data.profile.masteryRanks != null && Array.Exists(data.profile.masteryRanks, rank => rank > 0);
                 int refundedRanks = ValidateProfile(data.profile);
+                if (balanceChanged || masteryRefund) error = "战斗平衡已更新：部位强化等级与装备基础保留，强化属性按新曲线重算；旧精通投入已返还，可在营地重新选择。";
                 if (refundedRanks > 0) error = "部分技能阶级尚未达到新的解锁等级，已调整并返还技能点；角色与装备进度均已保留。";
                 profile = data.profile;
                 return true;
@@ -839,6 +1427,9 @@ namespace Emberfall
                 return false;
             }
         }
+
+        private static bool HasLegacyEnhancement(List<ItemData> items)
+        { return items != null && items.Exists(item => item != null && item.balanceRevision < 1 && item.upgradeLevel > 0); }
 
         private static int ValidateProfile(GameProfile profile)
         {
@@ -852,6 +1443,28 @@ namespace Emberfall
             profile.kills = Clamp(profile.kills, 0, int.MaxValue);
             profile.clearedRuns = Clamp(profile.clearedRuns, 0, 999999);
             profile.bestFloor = Clamp(profile.bestFloor, 0, 999999);
+            profile.tutorialMask = Math.Max(0, profile.tutorialMask) & 15;
+            if (profile.heroClass != HeroClass.Arcanist || !Enum.IsDefined(typeof(ElementalistSpecialization), profile.specialization))
+                profile.specialization = ElementalistSpecialization.None;
+            profile.mechanicMaterials = Clamp(profile.mechanicMaterials, 0, 999999);
+            profile.materialRewardedClears = Clamp(profile.materialRewardedClears, 0, profile.clearedRuns);
+            profile.pendingFirstClearReward = profile.clearedRuns > 0 && !profile.firstClearRewardClaimed;
+            ChestReward receipt = profile.lastChestReward;
+            if (receipt == null || string.IsNullOrWhiteSpace(receipt.id) || receipt.id.Length > 80 ||
+                receipt.gold < 60 || receipt.gold > 900 || receipt.rarityIndex < -1 || receipt.rarityIndex > 3 ||
+                (receipt.rarityIndex >= 0 && (receipt.slotIndex < 0 || receipt.slotIndex > 1)))
+            {
+                profile.lastChestReward = null;
+                profile.pendingChestReveal = false;
+            }
+            else
+            {
+                receipt.choice = Clamp(receipt.choice, 0, 2);
+                if (receipt.rarityIndex < 0) { receipt.slotIndex = -1; receipt.duplicate = false; receipt.name = "金币"; }
+                else receipt.name = FashionName((FashionSlot)receipt.slotIndex, (Rarity)receipt.rarityIndex);
+                if (string.IsNullOrWhiteSpace(receipt.summary)) receipt.summary = receipt.name + " · " + receipt.gold + " 金币";
+                if (receipt.summary.Length > 240) receipt.summary = receipt.summary.Substring(0, 240);
+            }
             // Version 1 saves originally held three skills. Preserve their ranks while adding
             // seven unlearned entries; the character, gear, experience and currencies stay intact.
             int[] ranks = new int[GameBalance.SkillCount];
@@ -866,7 +1479,24 @@ namespace Emberfall
                 remaining -= ranks[slot];
             }
             profile.skillRanks = ranks;
-            // All points originate from levels; reconstruct unspent points after repairing ranks.
+            int[] mastery = new int[4];
+            // Old three-track maximum-level allocations are refunded once: the new
+            // four-track capacity and exclusive core require a deliberate choice.
+            if (profile.masteryRevision >= 1 && profile.level >= 50)
+                for (int track = 0; track < mastery.Length; track++)
+                {
+                    int oldRank = profile.masteryRanks != null && track < profile.masteryRanks.Length ? profile.masteryRanks[track] : 0;
+                    mastery[track] = Math.Min(Clamp(oldRank, 0, MasteryCap(profile.level)), remaining);
+                    remaining -= mastery[track];
+                }
+            profile.masteryRanks = mastery;
+            if (profile.masteryRevision < 1 || profile.masteryCore < 0 || profile.masteryCore >= mastery.Length || mastery[profile.masteryCore] < 20)
+                profile.masteryCore = -1;
+            profile.masteryRevision = 1;
+            profile.fashionThreads = Clamp(profile.fashionThreads, 0, 999999);
+            if (!Enum.IsDefined(typeof(SummonerRoute), profile.summonerRoute)) profile.summonerRoute = SummonerRoute.Bonded;
+            // No saved free-point counter is trusted. Levels pay for both skills and
+            // bounded mastery, so loading/repeated saves can neither mint nor lose points.
             profile.skillPoints = remaining;
             profile.equippedSkills = RepairLoadout(profile.equippedSkills);
             profile.hotbarKeys = RepairHotbarKeys(profile.hotbarKeys);
@@ -882,17 +1512,65 @@ namespace Emberfall
                     item.id = Guid.NewGuid().ToString("N");
                     ids.Add(item.id);
                 }
-                item.level = Clamp(item.level, 1, MaximumLevel);
-                item.attack = Clamp(item.attack, 0, 10000);
-                item.defense = Clamp(item.defense, 0, 10000);
-                item.health = Clamp(item.health, 0, 100000);
-                item.upgradeLevel = Clamp(item.upgradeLevel, 0, MaximumUpgrade);
-                EnsureUpgradeBasis(item);
-                if (string.IsNullOrWhiteSpace(item.name)) item.name = "无名" + ItemBaseName(item.slot, profile.heroClass);
-                if (item.name.Length > 60) item.name = item.name.Substring(0, 60);
+                RepairItem(item, profile.heroClass);
                 items.Add(item);
             }
             profile.inventory = items;
+            var pending = new List<ItemData>();
+            if (profile.pendingLoot != null)
+            {
+                foreach (ItemData item in profile.pendingLoot)
+                {
+                    if (item == null || !Enum.IsDefined(typeof(ItemSlot), item.slot) || !Enum.IsDefined(typeof(Rarity), item.rarity)) continue;
+                    if (string.IsNullOrWhiteSpace(item.id) || item.id.Length > 80) item.id = Guid.NewGuid().ToString("N");
+                    if (!ids.Add(item.id)) continue; // A duplicated receipt never creates another copy.
+                    RepairItem(item, profile.heroClass);
+                    pending.Add(item);
+                }
+            }
+            if (pending.Count > PendingLootCapacity) throw new ArgumentException("待领取栏超过安全容量；保留原存档，请从备份恢复。");
+            profile.pendingLoot = pending;
+            var recovery = new List<ItemData>();
+            if (profile.recoveryLoot != null)
+            {
+                foreach (ItemData item in profile.recoveryLoot)
+                {
+                    if (item == null || !Enum.IsDefined(typeof(ItemSlot), item.slot) || !Enum.IsDefined(typeof(Rarity), item.rarity)) continue;
+                    if (string.IsNullOrWhiteSpace(item.id) || item.id.Length > 80) item.id = Guid.NewGuid().ToString("N");
+                    if (!ids.Add(item.id)) continue;
+                    RepairItem(item, profile.heroClass);
+                    recovery.Add(item);
+                }
+            }
+            if (recovery.Count > RecoveryLootCapacity) throw new ArgumentException("临时保管栏超过安全容量；保留原存档，请从备份恢复。");
+            profile.recoveryLoot = recovery;
+            var discovered = new List<EquipmentMechanic>();
+            if (profile.discoveredMechanics != null)
+                foreach (EquipmentMechanic mechanic in profile.discoveredMechanics)
+                    if (mechanic != EquipmentMechanic.None && Enum.IsDefined(typeof(EquipmentMechanic), mechanic) && !discovered.Contains(mechanic)) discovered.Add(mechanic);
+            foreach (ItemData item in items)
+                if (item.mechanic != EquipmentMechanic.None && !discovered.Contains(item.mechanic)) discovered.Add(item.mechanic);
+            foreach (ItemData item in pending)
+                if (item.mechanic != EquipmentMechanic.None && !discovered.Contains(item.mechanic)) discovered.Add(item.mechanic);
+            foreach (ItemData item in recovery)
+                if (item.mechanic != EquipmentMechanic.None && !discovered.Contains(item.mechanic)) discovered.Add(item.mechanic);
+            profile.discoveredMechanics = discovered;
+            if (profile.fashions == null) profile.fashions = new List<FashionData>();
+            var validFashions = new List<FashionData>();
+            var fashionIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (FashionData fashion in profile.fashions)
+            {
+                if (fashion == null || !Enum.IsDefined(typeof(FashionSlot), fashion.slot) ||
+                    !Enum.IsDefined(typeof(Rarity), fashion.rarity)) continue;
+                string expectedId = "fashion-" + (int)fashion.slot + "-" + (int)fashion.rarity;
+                if (!fashionIds.Add(expectedId)) continue;
+                fashion.id = expectedId;
+                fashion.name = FashionName(fashion.slot, fashion.rarity);
+                validFashions.Add(fashion);
+            }
+            profile.fashions = validFashions;
+            if (!validFashions.Exists(value => value.id == profile.wingsFashionId && value.slot == FashionSlot.Wings)) profile.wingsFashionId = null;
+            if (!validFashions.Exists(value => value.id == profile.weaponFashionId && value.slot == FashionSlot.Weapon)) profile.weaponFashionId = null;
             // Prefer preserving existing valid equipped gear if a damaged save exceeds the cap.
             for (int slot = 0; slot < 3; slot++)
             {
@@ -903,12 +1581,64 @@ namespace Emberfall
                 if (equipped == null) AddStarterItem(profile, itemSlot);
                 else SetEquipped(profile, equipped);
             }
+            InitializeSlotUpgrades(profile);
+            // Repair malformed over-capacity inventories by removing ordinary overflow
+            // first. Never silently truncate locked, enhanced, epic or mechanic gear.
+            for (int index = items.Count - 1; items.Count > InventoryCapacity && index >= 0; index--)
+            {
+                if (IsEquipped(profile, items[index].id) || IsProtectedLoot(items[index])) continue;
+                items.RemoveAt(index);
+            }
             for (int index = items.Count - 1; items.Count > InventoryCapacity && index >= 0; index--)
             {
                 if (IsEquipped(profile, items[index].id)) continue;
+                if (pending.Count < PendingLootCapacity) pending.Add(items[index]);
+                else if (recovery.Count < RecoveryLootCapacity) recovery.Add(items[index]);
+                else throw new ArgumentException("珍贵装备超过安全容量；保留原存档，请从备份恢复。");
                 items.RemoveAt(index);
             }
             return refundedRanks;
+        }
+
+        private static void InitializeSlotUpgrades(GameProfile profile)
+        {
+            int[] previous = profile.slotUpgradeRanks;
+            bool migrate = !profile.slotUpgradesInitialized || previous == null || previous.Length != 3;
+            int[] ranks = new int[3];
+            for (int slot = 0; slot < ranks.Length; slot++)
+                ranks[slot] = previous != null && slot < previous.Length ? Clamp(previous[slot], 0, MaximumUpgrade) : 0;
+            var all = new List<ItemData>(profile.inventory);
+            all.AddRange(profile.pendingLoot);
+            all.AddRange(profile.recoveryLoot);
+            if (migrate)
+            {
+                foreach (ItemData item in all)
+                {
+                    ranks[(int)item.slot] = Math.Max(ranks[(int)item.slot], Clamp(item.upgradeLevel, 0, MaximumUpgrade));
+                    // Retain intentional protection on once-invested legacy gear;
+                    // ordinary future drops do not inherit this lock or sale value.
+                    if (item.upgradeLevel > 0) item.locked = true;
+                }
+            }
+            profile.slotUpgradeRanks = ranks;
+            profile.slotUpgradesInitialized = true;
+            foreach (ItemData item in all)
+                ApplyUpgradeRank(item, IsEquipped(profile, item.id) ? ranks[(int)item.slot] : 0);
+        }
+
+        private static void RepairItem(ItemData item, HeroClass hero)
+        {
+            item.level = Clamp(item.level, 1, MaximumLevel);
+            item.attack = Clamp(item.attack, 0, MaximumEquipmentStat);
+            item.defense = Clamp(item.defense, 0, MaximumEquipmentStat);
+            item.health = Clamp(item.health, 0, MaximumEquipmentHealth);
+            item.upgradeLevel = Clamp(item.upgradeLevel, 0, MaximumUpgrade);
+            if (!Enum.IsDefined(typeof(EquipmentMechanic), item.mechanic) ||
+                (item.mechanic != EquipmentMechanic.None && BuildCatalog.MechanicSlot(item.mechanic) != item.slot)) item.mechanic = EquipmentMechanic.None;
+            item.mechanicVariant = item.mechanicVariantUnlocked && (item.mechanic == EquipmentMechanic.FrostEcho || item.mechanic == EquipmentMechanic.CinderTrail) ? Clamp(item.mechanicVariant, 0, 1) : 0;
+            EnsureUpgradeBasis(item);
+            if (string.IsNullOrWhiteSpace(item.name)) item.name = "无名" + ItemBaseName(item.slot, hero);
+            if (item.name.Length > 60) item.name = item.name.Substring(0, 60);
         }
 
         private static int[] RepairLoadout(int[] previous)
