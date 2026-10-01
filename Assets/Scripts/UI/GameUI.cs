@@ -349,7 +349,7 @@ namespace Emberfall
             Color previousTextColor = style.normal.textColor;
             // Keep the global tint neutral; the style owns the intended text color.
             GUI.contentColor = Color.white;
-            style.normal.textColor = color;
+            color.a*=controlOpacity;style.normal.textColor = color;
             GUI.Label(rect, value ?? "", style);
             style.normal.textColor = previousTextColor;
             GUI.contentColor = previous;
@@ -387,10 +387,11 @@ namespace Emberfall
             return "";
         }
 
+        private static float controlOpacity=1f;
         private static void Fill(Rect rect, Color color)
         {
             Color previous = GUI.color;
-            GUI.color = color;
+            color.a*=controlOpacity;GUI.color = color;
             GUI.DrawTexture(rect, Texture2D.whiteTexture);
             GUI.color = previous;
         }
@@ -1031,7 +1032,7 @@ namespace Emberfall
         {
             if (texture == null) return;
             Color previous = GUI.color;
-            GUI.color = tint;
+            tint.a*=controlOpacity;GUI.color = tint;
             GUI.DrawTexture(r, texture, ScaleMode.ScaleToFit, true);
             GUI.color = previous;
         }
