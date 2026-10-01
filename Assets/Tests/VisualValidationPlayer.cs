@@ -230,6 +230,10 @@ namespace Emberfall
                     yaw.SetValue(camera, 58f); pitch.SetValue(camera, 27f); distance.SetValue(camera, 14f);
                     camera.Snap();
                     yield return Capture("camera-orbit-low-angle");
+                    pitch.SetValue(camera, AdventureCamera.MinimumPitch);
+                    camera.Snap();
+                    Check(camera.transform.forward.y > 0f, "Lowest orbit angle looks upward");
+                    yield return Capture("camera-look-up");
                     yaw.SetValue(camera, priorYaw); pitch.SetValue(camera, priorPitch); distance.SetValue(camera, priorDistance);
                     camera.Snap();
                 }
@@ -255,23 +259,62 @@ namespace Emberfall
                 ResetPanels();
                 OpenPanel("Inventory");
                 yield return Capture(label + "-inventory");
-                ItemData transferSource = session.Progression.Equipped(ItemSlot.Weapon);
-                var transferTarget = new ItemData {
-                    id = "visual-transfer-target-" + hero, name = "传承试炼武器",
+                if (hero == 0)
+                {
+                    session.Progression.Profile.fashions.Add(new FashionData {
+                        id = "fashion-0-3", slot = FashionSlot.Wings, rarity = Rarity.Legendary, name = "烬王之翼"
+                    });
+                    session.Progression.Profile.fashions.Add(new FashionData {
+                        id = "fashion-1-2", slot = FashionSlot.Weapon, rarity = Rarity.Epic, name = "苍穹兵装"
+                    });
+                    Check(session.Progression.EquipFashion("fashion-0-3") && session.Progression.EquipFashion("fashion-1-2"),
+                        "Both fashion slots equip without a level gate");
+                    ResetPanels();
+                    yield return Capture("vanguard-fashion-world");
+                    OpenPanel("Fashion");
+                    yield return Capture("vanguard-fashion-collection");
+                    ResetPanels();
+                    OpenPanel("Inventory");
+                }
+                ItemData previousWeapon = session.Progression.Equipped(ItemSlot.Weapon);
+                var replacementWeapon = new ItemData {
+                    id = "visual-slot-target-" + hero, name = "部位强化试炼武器",
                     slot = ItemSlot.Weapon, rarity = Rarity.Epic, level = 10, attack = 40
                 };
-                session.Progression.Profile.inventory.Add(transferTarget);
+                session.Progression.Profile.inventory.Add(replacementWeapon);
                 session.Progression.Profile.gold = 100000;
-                while (transferSource.upgradeLevel < 3) Check(session.Progression.Upgrade(transferSource.id), "Prepare reinforced source for inheritance");
-                Check(session.Progression.Upgrade(transferTarget.id), "Prepare reinforced destination for exchange preview");
-                Invoke("OpenUpgradeTransfer", transferTarget);
-                SetField("transferSourceId", transferSource.id);
-                Check(GetField("panel").ToString() == "UpgradeTransfer", "Inheritance panel opens with the selected destination");
-                yield return Capture(label + "-upgrade-transfer-preview");
-                Invoke("ConfirmUpgradeTransfer");
-                Check(GetField("panel").ToString() == "Inventory" && transferSource.upgradeLevel == 1 && transferTarget.upgradeLevel == 3,
-                    "Inheritance confirmation returns to inventory and preserves both enhancement levels");
-                yield return Capture(label + "-upgrade-transfer-result");
+                while (session.Progression.SlotUpgradeRank(ItemSlot.Weapon) < 3)
+                    Check(session.Progression.Upgrade(previousWeapon.id), "Prepare permanent weapon-slot reinforcement");
+                Check(session.Progression.Upgrade(replacementWeapon.id) && session.Progression.SlotUpgradeRank(ItemSlot.Weapon) == 4 &&
+                    previousWeapon.upgradeLevel == 4 && replacementWeapon.upgradeLevel == 0,
+                    "Reinforcing a bag selection trains the slot and updates the currently worn weapon");
+                SetField("inventoryFilter", 0);
+                SetField("inventorySort", 0);
+                SetField("selectedItem", replacementWeapon.id);
+                Invoke("RebuildBagItems");
+                string candidateBefore = JsonUtility.ToJson(replacementWeapon);
+                ItemData replacementPreview = (ItemData)typeof(GameUI).GetMethod("EquipmentPreview", PrivateInstance).Invoke(ui, new object[] { replacementWeapon });
+                Check(replacementPreview.upgradeLevel == 4 && replacementPreview.attack > replacementWeapon.attack &&
+                    JsonUtility.ToJson(replacementWeapon) == candidateBefore,
+                    "Inventory comparison previews automatic slot inheritance without changing the bag item");
+                Check(GetField("panel").ToString() == "Inventory", "Automatic inheritance preview stays in the inventory");
+                yield return Capture(label + "-slot-reinforcement-preview");
+                Check(JsonUtility.ToJson(replacementWeapon) == candidateBefore, "Rendering the slot-enhanced preview leaves candidate attributes unchanged");
+                int goldBeforeEquip = session.Progression.Profile.gold;
+                int inventoryCountBeforeEquip = session.Progression.Profile.inventory.Count;
+                Check(session.Progression.Equip(replacementWeapon.id) && replacementWeapon.upgradeLevel == 4 && previousWeapon.upgradeLevel == 0 &&
+                    replacementWeapon.attack == replacementPreview.attack && replacementWeapon.defense == replacementPreview.defense && replacementWeapon.health == replacementPreview.health,
+                    "Equipping automatically matches the slot-enhanced preview and restores outgoing gear to its baseline");
+                Check(session.Progression.Equip(previousWeapon.id) && previousWeapon.upgradeLevel == 4 && replacementWeapon.upgradeLevel == 0 &&
+                    previousWeapon.attack != replacementPreview.attack,
+                    "Swapping back retains the same rank while each weapon uses its own baseline attributes");
+                Check(session.Progression.Equip(replacementWeapon.id) && session.Progression.Equip(replacementWeapon.id) &&
+                    replacementWeapon.attack == replacementPreview.attack && session.Progression.SlotUpgradeRank(ItemSlot.Weapon) == 4 &&
+                    session.Progression.Profile.gold == goldBeforeEquip && session.Progression.Profile.inventory.Count == inventoryCountBeforeEquip,
+                    "Repeated automatic inheritance is free, preserves items and cannot compound reinforcement");
+                Check(GetField("panel").ToString() == "Inventory" && (string)GetField("selectedItem") == replacementWeapon.id,
+                    "Automatic inheritance keeps the selected item visible in the inventory");
+                yield return Capture(label + "-slot-reinforcement-result");
                 ResetPanels();
                 OpenPanel("Skills");
                 Invoke("OpenBindings");
@@ -292,6 +335,12 @@ namespace Emberfall
                 ResetPanels();
                 session.Player.Teleport(new Vector3(0,0,11));
                 session.EnterDungeon();
+                Check(session.DungeonSelectionOpen && !session.InDungeon && session.InputBlocked,
+                    "Portal displays a blocking dungeon selector before entry");
+                yield return Capture(label + "-dungeon-selection");
+                session.ConfirmDungeonSelection();
+                Check(session.InDungeon && !session.DungeonSelectionOpen && session.DungeonWave == 1,
+                    "Confirming dungeon selection enters the first wave");
                 session.Player.enabled = false;
                 foreach(var enemy in session.Enemies) if(enemy!=null) enemy.enabled=false;
                 for(int i=0;i<3;i++) session.SpawnGroundLoot(new ItemData {
@@ -299,6 +348,53 @@ namespace Emberfall
                     level=50, rarity=(Rarity)(i+1), slot=(ItemSlot)i, attack=60
                 }, new Vector3(-3+i*3,0,1));
                 yield return Capture(label + "-dungeon-ground-loot");
+                if (hero == 0)
+                {
+                    session.Progression.PrepareDungeonChest();
+                    yield return null;
+                    Check(GetField("panel").ToString() == "Chests", "A pending clear opens the three-chest choice panel");
+                    yield return Capture("dungeon-chest-choice");
+                    Check(session.Progression.OpenDungeonChest(1) != null && !session.Progression.Profile.pendingFashionChest && session.Progression.Profile.pendingChestReveal,
+                        "Opening one visual-validation chest saves its receipt before presentation");
+                    string receiptId = session.Progression.LastChestReward.Id;
+                    int receiptGold = session.Progression.Profile.gold;
+                    var savedReward = new ProgressionService(session.Progression.SaveDirectory);
+                    Check(savedReward.Load() && savedReward.Profile.pendingChestReveal && savedReward.LastChestReward.Id == receiptId && savedReward.Profile.gold == receiptGold,
+                        "Reload preserves the same pending reward without granting it again");
+                    Invoke("ResetChestReveal");
+                    yield return Capture("dungeon-chest-receipt-restored");
+                    ResetPanels();
+                    Check(!session.Progression.Profile.pendingChestReveal && GetField("panel").ToString() == "None" && session.Progression.Profile.gold == receiptGold,
+                        "Closing a restored receipt acknowledges it without regranting currency");
+                }
+                if (hero == 1 && session.Enemies.Count > 1)
+                {
+                    EnemyController visualEnemy = session.Enemies[0];
+                    visualEnemy.transform.position = session.Player.transform.position + Vector3.forward * 3f;
+                    Vector3 effectAt = visualEnemy.transform.position;
+                    CombatArea.Spawn(session.Player, session, effectAt, 2f, .1f, 0f, 0f, 1.1f, .35f,
+                        new Color(1f, .5f, .2f));
+                    yield return Capture("elemental-fire-on-enemy", .35f);
+                    yield return Capture("elemental-burning-body", 1.1f);
+                    yield return new WaitForSecondsRealtime(2.4f);
+                    CombatArea.Spawn(session.Player, session, effectAt, 2f, .1f, 0f, 0f, 1.1f, .3f,
+                        new Color(.65f, .5f, 1f));
+                    yield return Capture("elemental-lightning", .2f);
+                    yield return new WaitForSecondsRealtime(1.2f);
+                    CombatArea.Spawn(session.Player, session, effectAt, 2f, .1f, 0f, 0f, 1.1f, .35f,
+                        new Color(.7f, 1f, .59f));
+                    visualEnemy.StatusEffects.Poison(session.Player, 2f, .1f);
+                    yield return Capture("elemental-poison-bubbles", .35f);
+                    yield return new WaitForSecondsRealtime(1.15f);
+                    visualEnemy.TakeDamage(visualEnemy.Health + 1f, Vector3.forward);
+                    Check(!session.Enemies.Contains(visualEnemy) && visualEnemy != null,
+                        "Enemy leaves combat immediately but its body remains visible");
+                    yield return Capture("enemy-death-fall", .3f);
+                    yield return Capture("enemy-death-rest", 1.1f);
+                    yield return Capture("enemy-death-dissolve", 1.35f);
+                    yield return new WaitForSecondsRealtime(.55f);
+                    Check(visualEnemy == null, "Enemy body evaporates after the death animation");
+                }
                 if(hero==3)
                 {
                     SummonedCompanion.Summon(session.Player,session,SummonedCompanion.Kind.Wolf,3,session.Player.transform.position+new Vector3(-2,0,2),50);
@@ -347,7 +443,7 @@ namespace Emberfall
             List<SaveSlotInfo> saveChoices = session.Progression.GetSaveSlots();
             Check(saveChoices.Exists(slot => slot.CanLoad && slot.RecoveredFromBackup) && saveChoices.Exists(slot => !slot.CanLoad), "Save selection displays recoverable and unreadable slots distinctly");
             yield return Capture("save-selection-recovery");
-            Check(result.screenshots.Count == 84, "Eighty-four full-frame captures include four heroes, encounters, mobile, saves, potion hotbar and camera orbit");
+            Check(result.screenshots.Count >= 88, "Full-frame captures include four heroes, fashion, chest choice, encounters, mobile, saves and camera orbit");
         }
 
         private IEnumerator SetResolution(int width, int height)
