@@ -177,6 +177,7 @@ namespace Emberfall
             if (bodyMaterial != null) Destroy(bodyMaterial);
             if (accentMaterial != null) Destroy(accentMaterial);
             if (glowMaterial != null) Destroy(glowMaterial);
+            GameFont.Release(ref font);
         }
     }
 }

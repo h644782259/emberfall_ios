@@ -27,7 +27,7 @@ namespace Emberfall
             if(game==null||game.Player==null||!game.HasStarted||game.IsDead){CameraOcclusionSurface.RestoreAll();return;}
             CameraOcclusionSurface.Advance(transform.position,game.Player.transform.position+Vector3.up,Time.unscaledDeltaTime);
         }
-        private void RestoreVisibility(){CameraOcclusionSurface.RestoreAll();if(viewCamera!=null)viewCamera.ResetProjectionMatrix();occlusionFont=null;occlusionLabel=null;}
+        private void RestoreVisibility(){CameraOcclusionSurface.RestoreAll();if(viewCamera!=null)viewCamera.ResetProjectionMatrix();GameFont.Release(ref occlusionFont);occlusionLabel=null;}
         private void OnGUI()
         {
             var game=GameSession.Instance;
