@@ -1,0 +1,57 @@
+[
+  {
+    "name": "mobile-layout",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "mobile-skills-workshop-layout",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "mobile-collection-layout",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "mobile-save-location",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "mobile-room-objective",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "world-label-production",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "returning-counter-production",
+    "baselineAvailable": false,
+    "sameFailureSignature": false
+  },
+  {
+    "name": "practice-action-settlement",
+    "baselineAvailable": false,
+    "sameFailureSignature": false
+  },
+  {
+    "name": "room-seal-hud-production",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "blender-skill-vfx-production",
+    "baselineAvailable": true,
+    "sameFailureSignature": true
+  },
+  {
+    "name": "opportunity-channels-round2",
+    "baselineAvailable": false,
+    "sameFailureSignature": false
+  }
+]

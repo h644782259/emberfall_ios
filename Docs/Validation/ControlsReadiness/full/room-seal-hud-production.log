@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/workspace/emberfall_ios_controls/Tests/RoomSealHudProductionTests.py", line 27, in <module>
+    build();q=subprocess.run([args.dotnet,str(t/'bin/Debug/net8.0/Tests.dll')],env=env,capture_output=True,text=True);print(q.stdout);assert q.returncode==0,q.stderr
+    ^^^^^^^
+  File "/workspace/emberfall_ios_controls/Tests/RoomSealHudProductionTests.py", line 26, in build
+    q=subprocess.run([args.dotnet,'build',str(project),'--configfile',str(t/'NuGet.Config'),'-v:q'],env=env,capture_output=True,text=True);assert q.returncode==0,q.stdout+q.stderr
+                                                                                                                                                  ^^^^^^^^^^^^^^^
+AssertionError: /tmp/room-seal-hud-f83w0rr_/MobileControlLayout.cs(19,50): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/room-seal-hud-f83w0rr_/Tests.csproj]
+/tmp/room-seal-hud-f83w0rr_/MobileControlLayout.cs(47,36): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/room-seal-hud-f83w0rr_/Tests.csproj]
+
+Build FAILED.
+
+/tmp/room-seal-hud-f83w0rr_/MobileControlLayout.cs(19,50): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/room-seal-hud-f83w0rr_/Tests.csproj]
+/tmp/room-seal-hud-f83w0rr_/MobileControlLayout.cs(47,36): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/room-seal-hud-f83w0rr_/Tests.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.19
+

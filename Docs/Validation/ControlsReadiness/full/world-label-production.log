@@ -1,0 +1,10 @@
+/tmp/world-label-0hxpt2l3/WorldLabelPresentation.cs(17,33): error CS1061: 'TextMesh' does not contain a definition for 'font' and no accessible extension method 'font' accepting a first argument of type 'TextMesh' could be found (are you missing a using directive or an assembly reference?) [/tmp/world-label-0hxpt2l3/Test.csproj]
+
+The build failed. Fix the build errors and run again.
+Traceback (most recent call last):
+  File "/workspace/emberfall_ios_controls/Tests/WorldLabelProductionTests.py", line 9, in <module>
+    env=dict(os.environ,DOTNET_CLI_HOME=str(p/'cli'),DOTNET_NOLOGO='1');subprocess.run([dotnet,'restore',str(p/'Test.csproj'),'--configfile',str(p/'NuGet.Config'),'-v:q'],env=env,check=True);subprocess.run([dotnet,'run','--project',str(p/'Test.csproj'),'--no-restore'],env=env,check=True)
+                                                                                                                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/emberfall-dotnet/dotnet', 'run', '--project', '/tmp/world-label-0hxpt2l3/Test.csproj', '--no-restore']' returned non-zero exit status 1.
