@@ -38,6 +38,7 @@ namespace Emberfall {
   bool presetSaleOpen=>false;void CancelPresetSale(){throw new InvalidOperationException("chapter-only fixture entered preset-sale cancellation");}
   enum Panel{None,Chapter,Camp,Inventory,Skills,Chests,Fashion,PotionAssignment,Bindings,SaveLocation,SaveSelection,Controls,TravelMap}
   int ordinaryDeaths;void DrawDeath(){ordinaryDeaths++;}void ReplayDeadSurface() DEAD_DISPATCH
+  bool merchantShopOpen,smithShopOpen;HubNpcKind inventoryHubNpc;
   Panel panel,bindingReturnPanel;SessionStub session;int campTab,rebindingSlot,blocks,cancels;
   bool opaqueFrame;bool UITransitionBlocked=false,saveSelectionFromPause,chestDetails,bindingReturnPause,saveReturnPause,controlsReturnPause;float chestRevealedAt;const float ChestDuration=1;bool ChestAnimationDone=>true;
   float width=568,height=320,TouchRatio=1;Color gold=new Color(),jade=new Color(),pale=new Color(),muted=new Color();string click;bool insideScroll;Rect viewport,content;

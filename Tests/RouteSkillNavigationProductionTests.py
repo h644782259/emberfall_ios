@@ -21,7 +21,9 @@ public static class GameBalance{public const int SkillCount=10;public static str
 public class Profile{public bool pendingFashionChest,pendingChestReveal;public int heroClass;public int[] skillRanks=new int[10];}
 public class ProgressionService{public string CurrentSlotId="slot-a";public Profile Profile=new Profile();public bool SaveSucceeds=true;public string LastError;public bool LearnSkill(int skill){LastError=SaveSucceeds?null:"SAVE_FAILED_FOR_SKILL_"+skill;if(SaveSucceeds)Profile.skillRanks[skill]++;return SaveSucceeds;}}
 public class Session{public bool IsInCamp=true,HasStarted=true,Blocked=true;public ProgressionService Progression=new ProgressionService();public void SetUIBlocking(bool b){Blocked=b;}public void SetPaused(bool b){}}
+public enum HubNpcKind{None}
 public partial class GameUI{
+bool merchantShopOpen,smithShopOpen;HubNpcKind inventoryHubNpc;
 enum Panel{None,Skills,Camp,Inventory,SaveSelection,Chests,Fashion,PotionAssignment,Bindings,SaveLocation,Controls}
 Panel panel=Panel.Camp,bindingReturnPanel;Session session=new Session();int campTab=2,selectedSkill,desktopDetailSkill=-1,rebindingSlot,blocks;
 bool presetSaleOpen;bool mobileSkillDetail,saveSelectionFromPause,chestDetails,bindingReturnPause,saveReturnPause,controlsReturnPause;bool ChestAnimationDone=true;float chestRevealedAt,ChestDuration=1;
