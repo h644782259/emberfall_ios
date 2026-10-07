@@ -93,7 +93,7 @@ namespace Emberfall
                 case 4:
                     if (hero == HeroClass.Vanguard) ink.Shield();
                     else if (hero == HeroClass.Arcanist) ink.Polygon(new[] { V(35, 5), V(15, 35), V(29, 33), V(24, 60), V(50, 25), V(36, 27) });
-                    else if (hero == HeroClass.Arcanist) ink.Polygon(new[] { V(35, 5), V(15, 35), V(29, 33), V(24, 60), V(50, 25), V(36, 27) });
+                    else { ink.Disc(30,12,5); ink.Line(30,19,34,31,6); ink.Line(34,31,46,37,5); ink.Arrow(16,15,16,39); ink.color=new Color(1f,.63f,.22f); ink.Polygon(new[]{V(8,53),V(20,39),V(30,49),V(42,39),V(57,53)}); }
                     break;
                 case 5:
                     if (hero == HeroClass.Arcanist) { ink.color=new Color(1f,.35f,.12f); ink.Polygon(new[]{V(7,51),V(16,28),V(24,40),V(39,19),V(36,39),V(56,29),V(49,54)}); ink.color=new Color(1f,.9f,.46f); ink.Disc(28,11,5); ink.Line(28,19,30,31,6); ink.Line(30,31,42,32,5); ink.Line(42,32,43,42,4); }
