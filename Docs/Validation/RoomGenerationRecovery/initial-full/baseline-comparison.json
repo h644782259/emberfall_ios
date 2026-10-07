@@ -1,0 +1,103 @@
+[
+  {
+    "name": "mobile-layout",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "mobile-skills-workshop-layout",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "mobile-collection-layout",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "mobile-save-location",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "mobile-room-objective",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "world-label-production",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "error CS1061: 'TextMesh' does not contain a definition for 'font' and no accessible extension method 'font' accepting a first argument of type 'TextMesh' could be found (are you missing a using directive or an assembly reference?) "
+    ],
+    "mainSignature": [
+      "error CS1061: 'TextMesh' does not contain a definition for 'font' and no accessible extension method 'font' accepting a first argument of type 'TextMesh' could be found (are you missing a using directive or an assembly reference?) "
+    ]
+  },
+  {
+    "name": "mobile-opportunity-input",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "System.Exception: visible hint is reported as UI control"
+    ],
+    "mainSignature": [
+      "System.Exception: visible hint is reported as UI control"
+    ]
+  },
+  {
+    "name": "room-seal-hud-production",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "AssertionError: <temporary>: error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [<temporary>",
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ],
+    "mainSignature": [
+      "AssertionError: <temporary>: error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [<temporary>",
+      "error CS0103: The name 'MobileSkillPolicy' does not exist in the current context "
+    ]
+  },
+  {
+    "name": "blender-skill-vfx-production",
+    "baselineExitCode": 1,
+    "sameFailureSignature": true,
+    "candidateSignature": [
+      "Exception: Object reference not set to an instance of an object."
+    ],
+    "mainSignature": [
+      "Exception: Object reference not set to an instance of an object."
+    ]
+  }
+]
