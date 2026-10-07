@@ -32,3 +32,9 @@ Each unchanged failure was replayed on this platform main; `initial-full/baselin
 ## Frozen full validation
 
 Completed 2026-10-07T11:11:04.440112+00:00: **277/286 passed**, 9 failed; `sourceChangedDuringRun` is empty. Every final failure matches the archived main baseline: **True**. See `frozen-full/report.json` and `frozen-full/baseline-comparison.json`. This remains managed/reference-API evidence, not Unity/native/device acceptance.
+
+## Independent review follow-up
+
+Generation failures now take priority over ineffective ember/frost advice. The short cause and expandable readable detail use the same font height calculation as their card and scroll extent; seeds and stack traces remain developer diagnostics. First-entry generation failure cannot be overwritten by a success notice.
+
+The frozen-full result above is for the **pre-review source** and is not a full validation of this follow-up. All nine affected suites and the platform reference-API compile passed on isolated commit `c2d855bd64759c3a413ff3c51b1560a3c15ba3dd`; the integrated runtime source hashes match exactly. See `review-followup/report.json` and logs. Checks include nonzero ineffective mechanisms, initial entry/transition/retry failures and mutation controls, repeated detail toggling, narrow widths, increased text scale and scroll containment. Font/GUI tests use managed boundaries; Unity/device rendering remains unverified.
