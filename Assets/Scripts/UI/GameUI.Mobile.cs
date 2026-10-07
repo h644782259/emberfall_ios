@@ -90,8 +90,8 @@ namespace Emberfall
             Text(TouchRect(22,17,68,18),GameBalance.ClassName(p.heroClass)+" "+p.level,TouchFont(12),pale,true);
             float hp=session.Player==null?0:session.Player.Health,max=session.Player==null?1:session.Player.MaxHealth;
             Text(TouchRect(90,17,87,18),Mathf.CeilToInt(hp)+"/"+Mathf.CeilToInt(max),TouchFont(11),pale,true,false,TextAnchor.MiddleRight);
-            Bar(TouchRect(22,39,155,8),hp/Mathf.Max(1,max),jade);
-            Bar(TouchRect(22,52,155,5),session.Player==null?0:session.Player.Energy/Mathf.Max(1,session.Player.MaxEnergy),new Color(.35f,.63f,1));
+            Bar(TouchRect(MobilePassiveStatusLayout.HealthBar),hp/Mathf.Max(1,max),jade);
+            Bar(TouchRect(MobilePassiveStatusLayout.EnergyBar),session.Player==null?0:session.Player.Energy/Mathf.Max(1,session.Player.MaxEnergy),new Color(.35f,.63f,1));
             if(MobileIcon(l.Inventory,"inventory",jade))TogglePanel(Panel.Inventory);
             if(MobileIcon(l.SkillsMenu,"skills",p.skillPoints>0?gold:jade))TogglePanel(Panel.Skills);
             if(MobileIcon(l.Menu,"pause",muted))session.SetPaused(true);
@@ -150,7 +150,19 @@ namespace Emberfall
                 DrawMobileSkillAvailability(r,skill);
                 if(mobileTap.Skill==skill&&mobileTap.Active)Border(r,gold,2*TouchRatio);
             }
+            DrawMobilePassiveIdentities();
             controlOpacity=priorOpacity;
+        }
+        private void DrawMobilePassiveIdentities()
+        {
+            var profile=session.Progression.Profile;
+            for(int i=0;i<MobilePassiveStatusLayout.Count;i++)
+            {
+                int skill=MobilePassiveStatusLayout.SkillAtIndicator(i),rank=profile.skillRanks[skill];
+                Rect area=TouchRect(MobilePassiveStatusLayout.Indicator(i));blockedRects.Add(area);
+                DrawSkillIdentity(new Rect(area.x,area.y,area.width,24*TouchRatio),profile.heroClass,skill,rank,rank>0,24);
+                Text(new Rect(area.x,area.y+24*TouchRatio,area.width,10*TouchRatio),rank>0?"被动":"未学",TouchFont(9),rank>0?pale:muted,false,false,TextAnchor.MiddleCenter);
+            }
         }
         private string mobileNoticeDetail;
         private Vector2 mobileNoticeScroll;

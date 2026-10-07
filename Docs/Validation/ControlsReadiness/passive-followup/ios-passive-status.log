@@ -1,0 +1,8 @@
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.11
+PASS 4392 real passive renderer/geometry/active mapping/pointer assertions; managed GUI and input boundary
+PASS compiled negative: missing passive HUD blocker rejected
