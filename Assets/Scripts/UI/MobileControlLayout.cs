@@ -39,7 +39,7 @@ namespace Emberfall
             Jump=Centered(attackX-188*clusterScale,attackY-1,56);
             Cancel=Jump;
             Potion=Centered(72,Height-211,54);
-            Interact=new Area(100,Height-244,108,48);
+            Interact=new Area(102,82,60,48);
             float groupShift=positionPreset<0?-Math.Min(16,Math.Max(0,Height-416)):positionPreset>0?2:0;
             float skillSize=Tablet?72:60;
             // Two staggered thumb arcs around the large attack button, outer four

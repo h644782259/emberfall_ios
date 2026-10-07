@@ -7,6 +7,17 @@ namespace Emberfall
     public static class UIIconAtlas
     {
         private static readonly Dictionary<int, Texture2D> cache = new Dictionary<int, Texture2D>();
+        // Skill identity colors are shared by glyphs, borders and rank marks.
+        private static readonly Color[,] skillColors = {
+            { new Color(1f,.68f,.32f), new Color(.9f,.48f,.28f), new Color(1f,.4f,.48f), new Color(.83f,.72f,1f), new Color(1f,.89f,.48f), new Color(.48f,.86f,.92f), new Color(.48f,1f,.65f), new Color(.87f,.65f,.4f), new Color(.73f,.83f,1f), new Color(1f,.82f,.4f) },
+            { new Color(.48f,.91f,1f), new Color(1f,.48f,.26f), new Color(.79f,.56f,1f), new Color(.91f,.69f,1f), new Color(1f,.91f,.36f), new Color(.59f,.76f,1f), new Color(.48f,1f,.65f), new Color(.96f,.43f,.84f), new Color(.62f,.88f,.94f), new Color(1f,.82f,.4f) },
+            { new Color(.65f,1f,.57f), new Color(1f,.67f,.31f), new Color(.46f,.85f,1f), new Color(1f,.76f,.52f), new Color(.48f,1f,.85f), new Color(.79f,.92f,.29f), new Color(.48f,1f,.65f), new Color(.84f,.61f,1f), new Color(.64f,.86f,1f), new Color(1f,.82f,.4f) },
+            { new Color(.81f,.58f,1f), new Color(.77f,.94f,.34f), new Color(.52f,.88f,1f), new Color(.95f,.67f,.88f), new Color(1f,.86f,.43f), new Color(.58f,.73f,1f), new Color(.48f,1f,.65f), new Color(.95f,.48f,.77f), new Color(.67f,.9f,.9f), new Color(.68f,1f,.46f) }
+        };
+        public static Color SkillColor(HeroClass hero, int skill)
+        {
+            return skill >= 0 && skill < GameBalance.SkillCount ? skillColors[(int)hero, skill] : Color.white;
+        }
         public static Texture2D Skill(HeroClass hero, int skill) { return Skill(hero, skill, 48); }
         public static Texture2D Skill(HeroClass hero, int skill, int requestedSize)
         { return BuildSkill(hero,skill,requestedSize,false); }
@@ -18,7 +29,7 @@ namespace Emberfall
             int key = rasterSize * 1000 + (int)hero * 10 + skill + (monochrome?1000000:0);
             Texture2D texture;
             if (cache.TryGetValue(key, out texture)) return texture;
-            var ink = new Icon(GameBalance.ClassColor(hero), rasterSize);
+            var ink = new Icon(SkillColor(hero,skill), rasterSize);
             if (hero == HeroClass.Summoner && skill != 3 && skill != 6 && skill != 8 && skill != 9)
             {
                 if (skill == 0)
@@ -82,10 +93,10 @@ namespace Emberfall
                 case 4:
                     if (hero == HeroClass.Vanguard) ink.Shield();
                     else if (hero == HeroClass.Arcanist) ink.Polygon(new[] { V(35, 5), V(15, 35), V(29, 33), V(24, 60), V(50, 25), V(36, 27) });
-                    else { ink.Arrow(12, 32, 53, 32); ink.Line(10, 18, 30, 18, 3); ink.Line(7, 46, 33, 46, 3); }
+                    else if (hero == HeroClass.Arcanist) ink.Polygon(new[] { V(35, 5), V(15, 35), V(29, 33), V(24, 60), V(50, 25), V(36, 27) });
                     break;
                 case 5:
-                    if (hero == HeroClass.Arcanist) { ink.Shield(); ink.Radial(0, 0, 16, 3); ink.Radial(90, 0, 16, 3); ink.Radial(180, 0, 16, 3); ink.Radial(270, 0, 16, 3); }
+                    if (hero == HeroClass.Arcanist) { ink.color=new Color(1f,.35f,.12f); ink.Polygon(new[]{V(7,51),V(16,28),V(24,40),V(39,19),V(36,39),V(56,29),V(49,54)}); ink.color=new Color(1f,.9f,.46f); ink.Disc(28,11,5); ink.Line(28,19,30,31,6); ink.Line(30,31,42,32,5); ink.Line(42,32,43,42,4); }
                     else if (hero == HeroClass.Vanguard) { ink.Arrow(6, 43, 54, 20); ink.Line(6, 21, 22, 21, 3); ink.Line(10, 53, 31, 53, 3); }
                     else { ink.Line(32, 56, 32, 9, 4); for (int i = 0; i < 3; i++) { ink.Line(32, 22 + i * 12, 14, 12 + i * 12, 4); ink.Line(32, 28 + i * 10, 51, 16 + i * 10, 4); } }
                     break;
@@ -143,6 +154,23 @@ namespace Emberfall
             texture = ink.Finish("Utility " + name); cache[key] = texture; return texture;
         }
 
+        public static Texture2D EquipmentLock(bool locked)
+        {
+            int key=locked?-4010:-4011;Texture2D texture;if(cache.TryGetValue(key,out texture))return texture;
+            var ink=new Icon(locked?new Color(1f,.78f,.25f):new Color(.66f,.76f,.78f));
+            ink.Polygon(new[]{V(16,29),V(48,29),V(48,56),V(16,56)});
+            ink.Arc(locked?32:42,29,13,180,360,5);ink.color=new Color(.09f,.15f,.19f);ink.Line(32,39,32,48,4);
+            texture=ink.Finish(locked?"Locked equipment":"Unlocked equipment");cache[key]=texture;return texture;
+        }
+        public static Texture2D EquipmentCardIcon(ItemSlot slot)
+        {
+            int key=-3000-(int)slot;Texture2D texture;if(cache.TryGetValue(key,out texture))return texture;
+            var ink=new Icon(Color.white);
+            if(slot==ItemSlot.Weapon){ink.Sword(32,32);ink.color=new Color(1f,.74f,.3f);ink.Line(18,42,46,42,5);}
+            else if(slot==ItemSlot.Armor){ink.Polygon(new[]{V(20,9),V(26,16),V(38,16),V(44,9),V(58,23),V(47,34),V(45,56),V(19,56),V(17,34),V(6,23)});ink.color=new Color(.35f,.72f,1f);ink.Line(32,22,32,49,6);}
+            else{ink.Ring(32,25,19,4);ink.Polygon(new[]{V(32,28),V(46,43),V(32,59),V(18,43)});ink.color=new Color(.86f,.45f,1f);ink.Disc(32,43,6);}
+            texture=ink.Finish("Equipment slot "+slot);cache[key]=texture;return texture;
+        }
         public static Texture2D Reward(int kind)
         {
             int key=-1000-kind;Texture2D texture;if(cache.TryGetValue(key,out texture))return texture;

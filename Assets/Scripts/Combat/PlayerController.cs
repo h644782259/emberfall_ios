@@ -42,8 +42,12 @@ namespace Emberfall
         private float healingProtectionTime, healingReduction, mobilityTime;
         private float slowTime, slowStrength;
         private bool jumping;
+        private bool rangerVault;
+        private CombatDamage rangerVaultDamage;
+        private float rangerVaultRange;
+        private int rangerVaultCast, rangerVaultRank;
         private float jumpAge, movementSkillLock;
-        private Vector3 jumpOrigin;
+        private Vector3 jumpOrigin, jumpDestination;
         private int traversalFrame = -1;
         private float passiveCooldown, passiveTime, passiveReduction, passiveSpeed;
         private Vector3 aimPoint;
@@ -156,6 +160,7 @@ namespace Emberfall
             transform.position = position;
             if (model != null) model.ResetLocomotion();
             jumping = false;
+            rangerVault = false;
             jumpAge = movementSkillLock = 0;
             aimPoint = position+transform.forward*5f;
             guardTime = healingProtectionTime = mobilityTime = passiveTime = 0;guardCastId=0;
@@ -259,6 +264,7 @@ namespace Emberfall
                 if (charge != null) charge.Cancel();
                 if (jumping) transform.position = WorldTraversal.NearestWalkable(transform.position, .45f);
                 jumping = false;
+            rangerVault = false;
                 AimTarget = null;
                 focusedEnemy = null; focusTime = blinkBufferTime = 0;
                 model.SetBlenderPilotOwnerAlive(false); // Restore procedural visuals before the final death pose.
@@ -337,9 +343,9 @@ namespace Emberfall
                 if (guardPulseTimer <= 0)
                 {
                     guardPulseTimer = guardRank==3?1f:guardRank==2?1.2f:1.5f;
-                    if (Specialization == ElementalistSpecialization.Burn)
-                        CombatArea.Spawn(this, session, transform.position, guardRadius, CombatAttack * .18f, 0, 0, 1.5f, .5f, new Color(1f,.5f,.25f),castId:guardCastId,visual:SkillVisualRecipe.Fire);
-                    else
+                    // Fire ride owns one capped trail clock; overlapping footprints
+                    // never create independent stacking damage areas.
+                    if (Specialization != ElementalistSpecialization.Burn)
                     {
                         ControlArea(transform.position,guardRadius,.25f);
                         foreach (EnemyController enemy in session.Enemies)
@@ -418,7 +424,7 @@ namespace Emberfall
                     }
             }
             bool suppressBasic = targeting != null && targeting.TickInput();
-            if (!TraversalStartedThisFrame && wantsBasic && !suppressBasic && (charge == null || (!charge.IsCharging && !charge.ConsumedThisFrame)))
+            if (!jumping && !TraversalStartedThisFrame && wantsBasic && !suppressBasic && (charge == null || (!charge.IsCharging && !charge.ConsumedThisFrame)))
             {
                 FaceAim();
                 if (attackCooldown <= 0) BasicAttack();
@@ -1042,12 +1048,29 @@ namespace Emberfall
             AdvancedSkillVfx.Beam(this,previous+Vector3.up,transform.position+Vector3.up,GameBalance.ClassColor(HeroClass),.55f,.35f);
         }
 
+        private void BeginRangerVault(int rank,int castId,CombatDamage damage,float range)
+        {
+            // Destination was validated before resource consumption. Reuse the real
+            // traversal arc; no teleport or damage before the landing frame.
+            jumpOrigin=transform.position;
+            jumpDestination=Vector3.ClampMagnitude(CombatFx.Flat(jumpOrigin)+transform.forward*5f*range,session.ArenaRadius-.65f);
+            jumpDestination.y=0;
+            jumpAge=0;jumping=true;rangerVault=true;traversalFrame=Time.frameCount;
+            rangerVaultRank=rank;rangerVaultCast=castId;rangerVaultRange=range;rangerVaultDamage=damage;
+            invulnerability=Mathf.Max(invulnerability,.18f);
+            if(rank==3)
+            {
+                var tail=SkillDamageBudgets.AdvancedTail(HeroClass.Ranger,4,rank);
+                CombatArea.Spawn(this,session,jumpOrigin,3f*range,Damage((1f+(rank-1)*.3f)*.32f*tail.TickCoefficient),1.2f,tail.Startup,tail.Duration,tail.Interval,new Color(.35f,1f,.75f),castId:castId);
+            }
+        }
+
         internal bool TryJump()
         {
             if (session == null || IsDead || !session.HasStarted || session.InputBlocked || jumping || TraversalStartedThisFrame || movementSkillLock > 0 || (charge != null && charge.IsCharging)) return false;
             Vector3 origin = CombatFx.Flat(transform.position);
             if (!WorldTraversal.IsWalkable(origin, .45f)) return false;
-            jumpOrigin = origin;
+            jumpOrigin = origin; jumpDestination = origin;
             jumpAge = 0;
             jumping = true;
             traversalFrame = Time.frameCount;
@@ -1114,11 +1137,19 @@ namespace Emberfall
             if (!jumping || deltaTime <= 0 || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime)) return;
             jumpAge += deltaTime;
             float progress = Mathf.Clamp01(jumpAge / .55f);
-            transform.position = jumpOrigin + Vector3.up * (Mathf.Sin(progress * Mathf.PI) * 1.65f);
+            transform.position = Vector3.Lerp(jumpOrigin,jumpDestination,progress) + Vector3.up * (Mathf.Sin(progress * Mathf.PI) * 1.65f);
             if (progress >= 1f)
             {
                 jumping = false;
-                transform.position = jumpOrigin;
+                transform.position = jumpDestination;
+                if(rangerVault)
+                {
+                    rangerVault=false;
+                    HitArea(transform.position,3.2f*rangerVaultRange,rangerVaultDamage,2.4f,.45f,rangerVaultCast);
+                    FilledSkillVfx.Impact(this,transform.position,3.2f*rangerVaultRange,SkillVisualRecipes.Filled(SkillVisualRecipe.Neutral),new Color(1f,.66f,.24f),CombatVisualPriority.ActionBody);
+                    CombatFx.Ring(transform.position,3.2f*rangerVaultRange,new Color(.35f,1f,.75f),.55f,.22f);
+                    MobilityBuff(rangerVaultRank);
+                }
             }
         }
 
@@ -1299,7 +1330,9 @@ namespace Emberfall
             }
             if (slot >= 3)
             {
-                if (HeroClass == HeroClass.Vanguard && slot == 4)
+                if (HeroClass == HeroClass.Ranger && slot == 4)
+                { BeginRangerVault(rank,castId,Damage(SkillDamageBudgets.RangerVault(rank)),range); }
+                else if (HeroClass == HeroClass.Vanguard && slot == 4)
                 {
                     guardTime = 6f+(rank-1)*2f; guardPower = 1.2f * power;
                     guardReduction=.55f+rank*.05f; guardRadius=3.2f*range; guardRank=rank;guardCastId=castId;HoldCastReceipt(ref guardCastReceipt,castId);
@@ -1309,7 +1342,7 @@ namespace Emberfall
                 {
                     guardTime=6f+(rank-1)*2f; guardRank=rank;guardCastId=castId;HoldCastReceipt(ref guardCastReceipt,castId); guardReduction=.25f+rank*.1f;
                     guardRadius=2.8f*range; guardPulseTimer=0;
-                    if (Specialization == ElementalistSpecialization.Burn) { guardReduction=.3f; burnStrideTime=guardTime; }
+                    if (Specialization == ElementalistSpecialization.Burn) { guardReduction=.3f; burnStrideTime=guardTime; FlameRide.Spawn(this,session,guardTime,CombatAttack,castId); }
                     AdvancedSkillVfx.Protection(this,transform.position,guardRadius,Specialization==ElementalistSpecialization.Burn?new Color(1f,.55f,.25f):new Color(.55f,.92f,1f),guardTime,rank+1,()=>guardTime>0);
                 }
                 else AdvancedSkillSequence.Spawn(this,session,slot,rank,target,transform.forward,Damage(power * SkillDamageBudgets.AdvancedScale(HeroClass,slot)),color,castId);

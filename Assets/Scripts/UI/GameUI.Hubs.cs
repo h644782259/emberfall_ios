@@ -7,6 +7,7 @@ namespace Emberfall
         private bool travelReturnPause;
         private string travelError;
         private HubNpcKind inventoryHubNpc;
+        private bool merchantShopOpen;
 
         private static string HubNpcLabel(HubNpcKind kind)
         {
@@ -24,7 +25,7 @@ namespace Emberfall
             HubNpcKind kind = session.NearbyHubNpc;
             if (kind == HubNpcKind.None) return;
             CancelHotbarPointer();
-            inventoryHubNpc = kind;
+            inventoryHubNpc = kind;merchantShopOpen=kind==HubNpcKind.Merchant;smithShopOpen=kind==HubNpcKind.Blacksmith;npcShopScroll=Vector2.zero;
             if (kind == HubNpcKind.Exchange) { OpenChapterSelection();return; }
             else
             {
@@ -36,13 +37,57 @@ namespace Emberfall
             BlockUITransition();
         }
 
+        private bool smithShopOpen;
+        private Vector2 npcShopScroll;
+        private void DrawMerchantShop()
+        {
+            var layout=MobilePanelGeometry();var p=session.Progression;
+            if(DrawMobilePanelChrome(layout,"商人 · 药剂与出售","金币 "+p.Profile.gold+" · 锁定和已穿装备不可出售")){merchantShopOpen=false;return;}
+            bool near=session.NearbyHubNpc==HubNpcKind.Merchant&&!session.InDungeon;
+            RebuildBagItems();string sell=null;
+            float w=layout.Body.Width-18,u=TouchRatio;
+            npcShopScroll=BeginTouchScroll("merchant-stock",MobilePanelRect(layout.Body),npcShopScroll,new Rect(0,0,w*u,Mathf.Max(layout.Body.Height,bagItems.Count*64+56)*u));
+            Text(TouchRect(8,4,w-16,44),"生命药剂 × "+p.Profile.potions+" · 每瓶 "+ProgressionService.PotionPrice+" 金币",TouchFont(16),pale,true);
+            for(int i=0;i<bagItems.Count;i++)
+            {
+                var item=bagItems[i];float y=56+i*64;bool protectedItem=item.locked||IsEquipped(item);
+                DrawIcon(TouchRect(6,y+8,36,36),UIIconAtlas.EquipmentCardIcon(item.slot),GameBalance.RarityColor(item.rarity));
+                Text(TouchRect(50,y+4,w-210,52),item.name+(item.locked?" · 已锁定":IsEquipped(item)?" · 已穿戴":""),TouchFont(14),pale,true,true);
+                if(DangerButton(TouchRect(w-148,y+6,140,48),"出售 "+p.SellValue(item)+" 金",gold,near&&!protectedItem))sell=item.id;
+            }
+            EndTouchScroll();
+            if(sell!=null)SellInventoryItem(sell);
+            if(InventoryAction(MobilePanelRect(layout.FooterButton(0,2)),"购买药剂",near&&p.Profile.gold>=ProgressionService.PotionPrice))Feedback(p.BuyPotion(),"已购买生命药剂");
+            if(Button(MobilePanelRect(layout.FooterButton(1,2)),"结束对话",jade))ClosePanel();
+        }
+        private void DrawBlacksmithShop()
+        {
+            var layout=MobilePanelGeometry();var p=session.Progression;
+            if(DrawMobilePanelChrome(layout,"铁匠 · 部位强化","金币 "+p.Profile.gold+" · 换装继承部位等级")){smithShopOpen=false;return;}
+            bool near=session.NearbyHubNpc==HubNpcKind.Blacksmith&&!session.InDungeon;
+            float w=layout.Body.Width-18,u=TouchRatio;string upgrade=null;
+            npcShopScroll=BeginTouchScroll("smith-upgrades",MobilePanelRect(layout.Body),npcShopScroll,new Rect(0,0,w*u,Mathf.Max(layout.Body.Height,360)*u));
+            for(int i=0;i<3;i++)
+            {
+                var slot=(ItemSlot)i;var item=p.Equipped(slot);int rank=p.SlotUpgradeRank(slot);float y=i*120;
+                Text(TouchRect(8,y+4,w-16,26),GameBalance.SlotName(slot)+" +"+rank+(item==null?" · 未穿装备":" · "+item.name),TouchFont(16),pale,true);
+                if(item==null)continue;
+                bool capped=rank>=ProgressionService.MaximumUpgrade;int cost=p.UpgradeCost(item);
+                var next=p.PreviewUpgrade(item,Mathf.Min(rank+1,ProgressionService.MaximumUpgrade));
+                Text(TouchRect(8,y+34,w-16,26),"攻击 "+item.attack+" → "+next.attack+" · 防御 "+item.defense+" → "+next.defense+" · 生命 "+item.health+" → "+next.health,TouchFont(13),muted);
+                if(InventoryAction(TouchRect(8,y+65,w-16,44),capped?"部位已满级":"强化 · "+cost+" 金",near&&!capped&&p.Profile.gold>=cost))upgrade=item.id;
+            }
+            EndTouchScroll();
+            if(upgrade!=null)Feedback(p.Upgrade(upgrade),"部位强化已更新");
+        }
+
         private string HubInventoryTitle
         {
             get
             {
-                if (session.InDungeon || session.NearbyHubNpc != inventoryHubNpc) return "行囊与装备";
+                if (session.InDungeon || session.NearbyHubNpc != inventoryHubNpc) return "行囊";
                 return inventoryHubNpc == HubNpcKind.Merchant ? "商人 · 行囊与补给" :
-                    inventoryHubNpc == HubNpcKind.Blacksmith ? "铁匠 · 装备与强化" : "行囊与装备";
+                    inventoryHubNpc == HubNpcKind.Blacksmith ? "铁匠 · 装备与强化" : "行囊";
             }
         }
 

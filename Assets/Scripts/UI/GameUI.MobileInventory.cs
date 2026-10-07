@@ -68,48 +68,43 @@ namespace Emberfall
             EnsureMobileBagItems();
             ItemData picked = ResolveSelectedItem();
             var layout = MobilePanelGeometry();
-            bool wide = MobileCollectionLayout.SideBySideInventory(layout.Width);
-            bool detail = mobileInventoryDetail && !wide && mobileInventoryTab != 2;
-            if (DrawMobilePanelChrome(layout, detail ? "装备详情" : HubInventoryTitle,
-                "Lv." + profile.level + "  ·  " + Money(profile.gold) + " 金币  ·  " + profile.inventory.Count + "/" + ProgressionService.InventoryCapacity)) return;
-            if (detail)
+            if(DrawMobilePanelChrome(layout,HubInventoryTitle,"Lv."+profile.level+" · "+Money(profile.gold)+" 金币 · "+profile.inventory.Count+"/"+ProgressionService.InventoryCapacity))return;
+            float leftWidth=Mathf.Clamp(layout.Body.Width*.28f,156,232);
+            var wear=new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y,leftWidth,layout.Height-layout.Body.Y-12);
+            var bag=new MobilePanelLayout.Area(wear.XMax+12,layout.Body.Y,layout.Body.Width-leftWidth-12,wear.Height);
+            DrawCurrentWear(MobilePanelRect(wear),TouchRatio);
+            if(inventoryFashionOpen){DrawBagFashion(bag);return;}
+            Rect equipmentTab=MobilePanelRect(new MobilePanelLayout.Area(bag.X,bag.Y,64,36));
+            Rect supplyTab=MobilePanelRect(new MobilePanelLayout.Area(bag.X+70,bag.Y,64,36));
+            if(TabButton(equipmentTab,"装备",mobileInventoryTab!=2)){mobileInventoryTab=0;mobileInventoryDetail=false;}
+            if(TabButton(supplyTab,"补给",mobileInventoryTab==2)){mobileInventoryTab=2;mobileInventoryDetail=false;}
+            var content=new MobilePanelLayout.Area(bag.X,bag.Y+42,bag.Width,bag.Height-42);
+            if(mobileInventoryTab==2)
             {
-                if (DrawMobileInventoryDetail(layout.Body, picked)) return;
-                DrawMobileEquipmentActions(layout, picked, true);
+                DrawBagSupplies(content);
                 return;
             }
-            if (mobileInventoryPicker != 0) { DrawMobileInventoryPicker(layout); return; }
-            string[] tabs = { "背包", "穿戴", "补给", "收藏" };
-            for (int i = 0; i < tabs.Length; i++)
-                if (TabButton(MobilePanelRect(layout.Tab(i, tabs.Length)), tabs[i], mobileInventoryTab == i))
+            if(inventoryComparisonOpen&&picked!=null)
+            {
+                float dock=Mathf.Min(144,content.Height*.46f);
+                var comparison=new MobilePanelLayout.Area(content.X,content.Y+content.Height-dock,content.Width,dock);
+                content=new MobilePanelLayout.Area(content.X,content.Y,content.Width,content.Height-dock-6);
+                DrawInventoryComparison(MobilePanelRect(comparison),picked,TouchRatio);
+            }
+            if(mobileInventoryPicker!=0)
+            {
+                string[] choices=mobileInventoryPicker==1?new[]{"全部","武器","护甲","饰品"}:new[]{"评分","等级","品质"};
+                for(int choice=0;choice<choices.Length;choice++)
                 {
-                    if (i == 3) { panel = Panel.Fashion; BlockUITransition(); return; }
-                    mobileInventoryTab = i; mobileInventoryDetail = false; mobileInventoryListScroll = Vector2.zero;
-                    BlockUITransition(); return;
+                    Rect target=MobilePanelRect(new MobilePanelLayout.Area(content.X+(choice%2)*(content.Width*.5f),content.Y+(choice/2)*54,content.Width*.5f-6,48));
+                    if(Button(target,choices[choice],jade)){if(mobileInventoryPicker==1)inventoryFilter=choice-1;else inventorySort=choice;mobileInventoryPicker=0;mobileInventoryListScroll=Vector2.zero;CancelMobileScroll();BlockUITransition();return;}
                 }
-            if (mobileInventoryTab == 2)
-            {
-                DrawMobileSupplies(layout);
                 return;
             }
-            if (DrawMobileInventoryList(wide ? layout.Left : layout.TabbedBody, wide)) return;
-            picked = ResolveSelectedItem();
-            if (wide)
-            {
-                if (DrawMobileInventoryDetail(layout.Right, picked)) return;
-                DrawMobileEquipmentActions(layout, picked, false);
-            }
-            else
-            {
-                if (Button(MobilePanelRect(layout.FooterButton(0, 3)), "分类 · " + MobileInventoryFilterLabel, jade, mobileInventoryTab == 0))
-                { CycleMobileInventoryFilter(); return; }
-                if (Button(MobilePanelRect(layout.FooterButton(1, 3)), "排序 · " + MobileInventorySortLabel, jade, mobileInventoryTab == 0))
-                { CycleMobileInventorySort(); return; }
-                Rect catalog = MobilePanelRect(layout.FooterButton(2, 3));
-                bool openCatalog = Button(catalog, "图鉴 / 待领", gold);
-                Badge(catalog, Attention.Rewards);
-                if (openCatalog) { panel = Panel.Camp; campTab = 1; BlockUITransition(); }
-            }
+            if(DrawMobileEquipmentGrid(content,false))return;
+            if(Button(MobilePanelRect(new MobilePanelLayout.Area(bag.X+140,bag.Y,90,36)),MobileInventoryFilterLabel,jade)){CycleMobileInventoryFilter();return;}
+            if(Button(MobilePanelRect(new MobilePanelLayout.Area(bag.X+236,bag.Y,Mathf.Max(66,bag.Width-236),36)),MobileInventorySortLabel,jade)){CycleMobileInventorySort();return;}
+
         }
 
         private string MobileInventoryFilterLabel { get { return inventoryFilter < 0 ? "全部" : GameBalance.SlotName((ItemSlot)inventoryFilter); } }
@@ -142,9 +137,11 @@ namespace Emberfall
 
         private bool DrawMobileInventoryList(MobilePanelLayout.Area viewport, bool wide)
         {
+            if(mobileInventoryTab==0)return DrawMobileEquipmentGrid(viewport,wide);
             float contentWidth = viewport.Width - 18, y = 8;
             bool equipped = mobileInventoryTab == 1;
             if (wide && !equipped) y += 56;
+            if (equipped) y += 158;
             int count = equipped ? 3 : bagItems.Count;
             float cardWidth=(contentWidth-8)/2;
             float[] rowHeights=new float[(count+1)/2],rowTops=new float[(count+1)/2];
@@ -156,11 +153,17 @@ namespace Emberfall
             mobileInventoryListScroll = BeginTouchScroll("mobile-inventory-list", MobilePanelRect(viewport), mobileInventoryListScroll,
                 new Rect(0, 0, contentWidth * u, Mathf.Max(viewport.Height, y) * u));
             y = 8; string selected = null; int filterAction = 0;
+            if(equipped)
+            {
+                selected=DrawWearMap(TouchRect(8,y,contentWidth-16,150),u);
+                if(selected!=null){}
+                y+=158;
+            }
             if (wide && !equipped)
             {
                 if (Button(MobilePanelRect(MobileCollectionLayout.Split(contentWidth, y, 0, 2)), MobileInventoryFilterLabel, jade)) filterAction = 1;
                 if (Button(MobilePanelRect(MobileCollectionLayout.Split(contentWidth, y, 1, 2)), MobileInventorySortLabel, jade)) filterAction = 2;
-                y += 56;
+
             }
             for (int i = 0; i < count; i++)
             {
@@ -174,6 +177,7 @@ namespace Emberfall
                 Color availableRarity=levelLocked?Color.Lerp(rarity,new Color(.30f,.35f,.4f),.68f):rarity;
                 if (DrawButton(row,"",selectedItem==(item==null?null:item.id)?ButtonRole.SelectedRow:ButtonRole.Row,item!=null)) selected = item.id;
                 Fill(TouchRect(cardX,y,3,rowHeight),availableRarity);
+                DrawIcon(TouchRect(8,y+8,34,34),UIIconAtlas.EquipmentCardIcon(item==null?(ItemSlot)i:item.slot),availableRarity);
                 float at = y + 8;
                 DrawIcon(TouchRect(cardX+10,at,40,40),UIIconAtlas.Utility(item==null?"inventory":item.slot==ItemSlot.Weapon?"attack":item.slot==ItemSlot.Armor?"shield":"skills"),availableRarity);
                 float nameHeight=DrawMobileParagraph(cardX+58,at,cardWidth-74,item==null?GameBalance.SlotName((ItemSlot)i)+" · 空槽":ItemTitle(MobileEquipmentPreview(item)),14,availableRarity,true);
@@ -220,7 +224,6 @@ namespace Emberfall
         private bool DrawMobileInventoryDetail(MobilePanelLayout.Area viewport, ItemData item)
         {
             if (mobileDetailItem != (item == null ? null : item.id)) { mobileDetailItem = item == null ? null : item.id; mobileInventoryDetailScroll = Vector2.zero; }
-            if(item!=null&&equipmentAppearanceOpen){DrawMobileEquipmentAppearance(MobilePanelRect(viewport),item,TouchRatio);return false;}
             float contentWidth = viewport.Width - 18;
             int ignored;
             float contentHeight = MobileItemDetailContent(item, contentWidth, false, out ignored);
@@ -229,21 +232,7 @@ namespace Emberfall
             int action;
             MobileItemDetailContent(item, contentWidth, true, out action);
             EndTouchScroll();
-            if (item == null || action == 0) return false;
-            string id = item.id;
-            if (action == 1)
-            {
-                bool locked = !item.locked;
-                MobileInventoryResult(session.Progression.SetItemLocked(id, locked), locked ? "装备已锁定" : "装备已解锁");
-            }
-            else
-            {
-                SellInventoryItem(id);
-                if(presetSaleOpen)return true;
-                bool sold = !session.Progression.Profile.inventory.Exists(value => value != null && value.id == id);
-                MobileInventoryResult(sold, "已出售 " + item.name, false, false);
-            }
-            BlockUITransition(); return true;
+            return false;
         }
 
         private float MobileItemDetailContent(ItemData item, float width, bool draw, out int action)
@@ -254,7 +243,6 @@ namespace Emberfall
                 y += MobileDetailParagraph(draw, 8, y, width - 16, status, 14,
                     mobileInventoryFailed || string.IsNullOrEmpty(mobileInventoryStatus) ? gold : jade, true) + 12;
             if (item == null) return y + MobileDetailParagraph(draw, 8, y, width - 16, "选择装备查看比较与操作", 16, muted) + 16;
-            if(draw&&Button(TouchRect(8,y,width-16,48),"外观比较",jade)){equipmentAppearanceOpen=true;collectionOwner=session.Player;BlockUITransition();}
             y+=56;
             var progression = session.Progression;
             ItemData preview = MobileEquipmentPreview(item), current = progression.Equipped(item.slot);
@@ -279,14 +267,7 @@ namespace Emberfall
             y += MobileDetailParagraph(draw, 8, y, available, "换装后机制：" + EquipmentComparisonPresentation.Description(item,progression.Profile.heroClass), 14, item.mechanic == EquipmentMechanic.None ? muted : gold) + 8;
             if (!worn && !EquipmentComparisonPresentation.SameMechanism(current,item,progression.Profile.heroClass))
                 y += MobileDetailParagraph(draw, 8, y, available, "当前机制：" + EquipmentComparisonPresentation.Description(current,progression.Profile.heroClass), 14, muted) + 8;
-            if (draw)
-            {
-                var lockArea = MobileCollectionLayout.Split(available, y, 0, 2);
-                var saleArea = MobileCollectionLayout.Split(available, y, 1, 2);
-                if (Button(TouchRect(8 + lockArea.X, y, lockArea.Width, lockArea.Height), item.locked ? "解锁装备" : "锁定装备", item.locked ? gold : jade)) action = 1;
-                if (DangerButton(TouchRect(8 + saleArea.X, y, saleArea.Width, saleArea.Height), worn ? "穿戴中不可售" : item.locked ? "已锁定不可售" : "出售 · " + progression.SellValue(item) + " 金", gold, !worn && !item.locked)) action = 2;
-            }
-            y += 56;
+
             y += MobileDetailParagraph(draw, 8, y, available, "强化绑定部位；同一强化等级的加成按每件装备自身基础属性计算。", 14, jade) + 8;
             return y;
         }
@@ -314,21 +295,6 @@ namespace Emberfall
             }
         }
 
-        private void DrawMobileEquipmentActions(MobilePanelLayout layout, ItemData item, bool back)
-        {
-            int count = back ? 3 : 2, first = back ? 1 : 0;
-            if (back && NavigationButton(MobilePanelRect(layout.FooterButton(0, count)), "返回列表", jade))
-            { ClosePanel(); return; }
-            bool canEquip = item != null && !IsEquipped(item) && ProgressionAttention.LevelEligible(session.Progression.Profile, item);
-            string equip = item == null ? "选择装备" : IsEquipped(item) ? "已穿戴" : canEquip ? "穿戴" : "需要 " + item.level + " 级";
-            if (Button(MobilePanelRect(layout.FooterButton(first, count)), equip, jade, canEquip, null, true))
-            { MobileInventoryResult(session.Progression.Equip(item.id), "已装备 " + item.name); BlockUITransition(); return; }
-            int rank = item == null ? 0 : session.Progression.SlotUpgradeRank(item.slot), cost = item == null ? 0 : session.Progression.UpgradeCost(item);
-            bool capped = rank >= ProgressionService.MaximumUpgrade;
-            if (Button(MobilePanelRect(layout.FooterButton(first + 1, count)), capped ? "部位已满级" : "强化 · " + cost + " 金", gold, item != null && !capped && session.Progression.Profile.gold >= cost))
-            { MobileInventoryResult(session.Progression.Upgrade(item.id), GameBalance.SlotName(item.slot) + "部位强化 +" + (rank + 1)); BlockUITransition(); }
-        }
-
         private void MobileInventoryResult(bool accepted, string message, bool supplies = false, bool notify = true)
         {
             if (accepted) { mobileRowHeights.Clear(); mobileEquipmentPreviews.Clear(); }
@@ -344,29 +310,5 @@ namespace Emberfall
             if (notify) Feedback(accepted, status);
         }
 
-        private void DrawMobileSupplies(MobilePanelLayout layout)
-        {
-            var p = session.Progression.Profile; var stats = session.Progression.GetStats();
-            string summary = "生命药剂 × " + p.potions + "\n恢复 50% 最大生命" + (session.ChallengeRun && session.InDungeon ? "\n本局治疗充能 " + session.HealingCharges + "/3" : "");
-            string attributes = "攻击 " + Mathf.RoundToInt(stats.Damage) + "   防御 " + Mathf.RoundToInt(stats.Armor) + "\n生命上限 " + Mathf.RoundToInt(stats.MaxHealth) + "   暴击 " + (stats.CritChance * 100).ToString("0.#") + "%\n当前护甲减伤 " + ((1 - CombatBalance.ArmorDamageMultiplier(stats.Armor, p.level)) * 100).ToString("0.#") + "%";
-            float w = layout.TabbedBody.Width - 34;
-            string status = string.IsNullOrEmpty(mobileSupplyStatus) ? session.Progression.LastError : mobileSupplyStatus;
-            float statusHeight = string.IsNullOrEmpty(status) ? 0 : MeasureMobileParagraph(status, w, 14, true) + 12;
-            float content = 32 + statusHeight + MeasureMobileParagraph(summary, w, 16, true) + MeasureMobileParagraph(attributes, w, 16);
-            mobileSupplyScroll = BeginTouchScroll("mobile-inventory-supplies", MobilePanelRect(layout.TabbedBody), mobileSupplyScroll,
-                new Rect(0, 0, (w + 16) * TouchRatio, Mathf.Max(layout.TabbedBody.Height, content) * TouchRatio));
-            float y = 8;
-            if (statusHeight > 0) y += DrawMobileParagraph(8, y, w, status, 14,
-                mobileSupplyFailed || string.IsNullOrEmpty(mobileSupplyStatus) ? gold : jade, true) + 12;
-            y += DrawMobileParagraph(8, y, w, summary, 16, pale, true) + 12;
-            DrawMobileParagraph(8, y, w, attributes, 16, muted);
-            EndTouchScroll();
-            if (Button(MobilePanelRect(layout.FooterButton(0, 2)), "购买药剂 · " + ProgressionService.PotionPrice + " 金", gold, p.gold >= ProgressionService.PotionPrice))
-            { MobileInventoryResult(session.Progression.BuyPotion(), "已购买生命药剂", true); BlockUITransition(); return; }
-            Rect rewards = MobilePanelRect(layout.FooterButton(1, 2));
-            bool openRewards = Button(rewards, "机制图鉴 / 待领取", jade);
-            Badge(rewards, Attention.Rewards);
-            if (openRewards) { panel = Panel.Camp; campTab = 1; BlockUITransition(); }
-        }
     }
 }
