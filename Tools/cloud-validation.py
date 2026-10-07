@@ -17,8 +17,11 @@ import sys
 import tempfile
 from xml.sax.saxutils import escape, quoteattr
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parent.parent
+EXECUTOR = None
+PENDING = []
 PACKAGE_URL = ("https://api.nuget.org/v3-flatcontainer/unityengine.modules/"
                "2021.3.33/unityengine.modules.2021.3.33.nupkg")
 PACKAGE_SHA512 = ("ad7eBwkG66RQ0ToAMD/ak8MZ6pfgrYXxcPGftN8H7ydkn5TdrwlU5qgZTkHpjOGYo"
@@ -99,17 +102,21 @@ def main():
                         help=".NET 8 SDK executable (or set DOTNET)")
     parser.add_argument("--only", action="append", default=[], metavar="CHECK",
                         help="run only named checks; repeat for multiple checks; exact-unity-compile selects all installed Unity variants")
+    parser.add_argument("--output", type=Path, help="isolated report directory")
+    parser.add_argument("--jobs", type=int, default=1, help="independent check processes (1-4)")
     parser.add_argument("--compile", action="store_true", help="also compile all runtime sources against Unity references")
     parser.add_argument("--compile-android", action="store_true", help="compile the UNITY_ANDROID runtime branch against pinned references; does not build an APK")
     parser.add_argument("--compile-ios", action="store_true", help="compile the UNITY_IOS runtime branch against pinned references; does not build an IPA")
     parser.add_argument("--download-references", action="store_true", help="download pinned Unity reference DLLs if missing; implies --compile")
     parser.add_argument("--unity-editor", type=Path, help="also compile Windows/iOS/Android runtime, Editor, and visual-validation source using installed Unity 6000.6 DLLs (does not launch Unity)")
     args = parser.parse_args()
+    global EXECUTOR
+    EXECUTOR = ThreadPoolExecutor(max_workers=max(1,min(4,args.jobs))) if args.jobs>1 else None
     dotnet = shutil.which(args.dotnet)
     if not dotnet:
         parser.error(".NET 8 SDK is required. Install it from https://dotnet.microsoft.com/download/dotnet/8.0 or set --dotnet.")
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    output = ROOT / "Tests/TestResults" / "Cloud-Latest"
+    output = args.output or ROOT / "Tests/TestResults" / "Cloud-Latest"
     output.mkdir(parents=True, exist_ok=True)
     initial_sources = source_hashes()
     report = {"startedUtc": timestamp, "project": str(ROOT), "checks": [],
@@ -505,6 +512,10 @@ def main():
                                 [dotnet, "build", str(project), "--no-restore", "--configuration", "Release", "--verbosity", "minimal"]]
                     passed = run_check(name, commands, env, output, report)
                     failed = failed or not passed
+        for future in PENDING:
+            failed = not future.result() or failed
+        if EXECUTOR is not None:
+            EXECUTOR.shutdown()
     final_sources = source_hashes()
     if args.only:
         matched = {check["name"] for check in report["checks"]}
@@ -541,6 +552,13 @@ def run_check(name, commands, env, output, report):
     if selected and name not in selected and not ("exact-unity-compile" in selected and name.startswith("exact-unity-")):
         report["skippedChecks"].append(name)
         return True
+    if EXECUTOR is not None:
+        PENDING.append(EXECUTOR.submit(execute_check,name,commands,env,output,report))
+        return True
+    return execute_check(name,commands,env,output,report)
+
+
+def execute_check(name, commands, env, output, report):
     chunks = []
     passed = True
     for command in commands:

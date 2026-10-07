@@ -16,7 +16,7 @@ namespace Emberfall
         public readonly bool Tablet;
         public readonly Area Joystick, MoveZone, Attack, Dodge, Potion, Jump, Cancel, Menu, Inventory, SkillsMenu, Catalog, Interact;
         public readonly Area EncounterText, BossHealth, Notice, AdventureStatus, FocusCommand, RecallCommand, CombatView, PlayerStatus, Map;
-        public readonly Area[] Skills = new Area[MobileSkillPolicy.ButtonCount];
+        public readonly Area[] Skills = new Area[8];
         public readonly Area[] SkillOpportunities = new Area[10];
         public readonly Area CounterOpportunity, ComboOpportunity;
         public MobileControlLayout(float pixelWidth,float pixelHeight,float dpi,int positionPreset=0)
@@ -25,7 +25,7 @@ namespace Emberfall
             Tablet=pixelWidth/pixelHeight<1.65f;
             float fallback=pixelHeight/(Tablet?768f:390f);
             // Screen.dpi is advisory; reject missing/implausible values and constrain
-            // density so compact phones still fit the inset thumb arcs.
+            // density so 320-point compact phones still fit the full combat cluster.
             float density=dpi>=120&&dpi<=700?dpi/163f:fallback;
             Scale=Math.Max(.25f,Math.Min(density,Math.Min(pixelHeight/320f,pixelWidth/568f)));
             Width=pixelWidth/Scale;Height=pixelHeight/Scale;
@@ -48,8 +48,8 @@ namespace Emberfall
                 float size=i==7?54:48;
                 Skills[i]=Centered(Width-dx[i],Height-dy[i]+shift,size);
                 Area key=Skills[i];
-                SkillOpportunities[identities[i]]=i==7?new Area(key.X-28,key.Y+17,24,14):
-                    new Area(key.X,i==0?key.Y-15:key.Y+key.Height+1,key.Width/2,14);
+                SkillOpportunities[identities[i]]=i==7?new Area(key.X-52,key.Y+17,48,14):
+                    new Area(key.X,(i==0||i==1||i==5)?key.Y-15:key.Y+key.Height+1,key.Width,14);
             }
             CounterOpportunity=new Area(Attack.X,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             ComboOpportunity=new Area(Attack.X+Attack.Width/2,Attack.Y+Attack.Height+1,Attack.Width/2,13);
