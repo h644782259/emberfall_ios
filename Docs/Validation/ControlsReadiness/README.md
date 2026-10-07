@@ -13,3 +13,11 @@ The compile uses pinned UnityEngine 2021.3.33 reference assemblies, not the proj
 ## Frozen full validation
 
 Completed 2026-10-07T11:21:13.357612+00:00: **276/287 passed**, 11 failed; `sourceChangedDuringRun` is empty. Every final failure matches the archived main baseline: **False**. See `full/report.json` and `full/baseline-comparison.json`. False requires investigation; it is never a passing certification. No Unity/native/device acceptance is claimed.
+
+## Follow-up scope and retained failures
+
+The full report above is frozen at `08e2298214040a767f08006f74ef6395c6f518b3` and excludes subsequent fixture repairs and the two passive iOS identities. The original failures remain unchanged. Returning-counter and practice-action settlement fixtures now include the split production target-reason method; actual behavior and compiled negative controls pass in the separately archived affected runs. These follow-ups did not rerun the entire suite.
+
+Seven existing geometry/policy suites now pass with the missing MobileSkillPolicy dependency included. Passive identities pass 4392 actual renderer/geometry/pointer assertions plus a missing-HUD-blocker negative control; the iOS runtime reference compile passes. Eight active buttons and their mapping remain unchanged.
+
+Unity Editor, native platform builds, real rendering and device input/performance acceptance remain not run.
