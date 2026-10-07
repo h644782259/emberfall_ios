@@ -14,7 +14,7 @@ namespace UnityEngine{public enum TextAnchor{MiddleCenter}}
 namespace Emberfall{
  public partial class GameUI{
   GameSession session;enum Panel{None}Panel panel;float scale=1;Vector2 guiOffset;List<Rect> blockedRects=new List<Rect>();Rect[] hotbarSlots=new Rect[8];MobileSkillTap mobileTap=new MobileSkillTap();Color pale,muted;
-  public bool LifecycleTouchBlocked,CompanionCommandsVisible;public void RefreshTouchViewport(){}public void ActivateFreeCommand(bool b){}public void ActivateMobileInteraction(int f){}
+  public bool LifecycleTouchBlocked,CompanionCommandsVisible,MobileInteractionVisible;public void RefreshTouchViewport(){}public void ActivateFreeCommand(bool b){}public void ActivateMobileInteraction(int f){}
   float TouchRatio=>MobileControls.Layout.Scale/scale;Rect TouchRect(MobileControlLayout.Area a)=>new Rect(a.X*TouchRatio,a.Y*TouchRatio,a.Width*TouchRatio,a.Height*TouchRatio);int TouchFont(float s)=>Mathf.RoundToInt(s*TouchRatio);
   public bool TryBeginTouchSkill(int f,Vector2 p)=>BeginMobileCast(f,p);public void UpdateTouchSkill(int f,Vector2 p,bool ended,bool cancelled)=>ContinueMobileCast(f,p,ended,cancelled);
   public List<int> Identities=new List<int>();public List<bool> Learned=new List<bool>();public List<Rect> Glyphs=new List<Rect>();public List<string> Captions=new List<string>();
@@ -35,7 +35,7 @@ public static class MobilePassiveStatusTests{
    var target=new EnemyController(8);game.Enemies.Add(target);hero.PinMobileTarget(target);var hud=new GameUI(game);var controls=new MobileControls(game,hud);MobileControls.ResetInput();hud.DrawPassives();float energy=hero.Energy;
    C(hud.Identities.Count==2&&hud.Identities[0]==3&&hud.Identities[1]==8,"two passive identities remain separate from eight active buttons");C(hud.Learned.TrueForAll(v=>v==(rank>0))&&hud.Captions.TrueForAll(v=>v==(rank>0?"被动":"未学")),"passive state reflects learned rank without promising a cast");
    for(int i=0;i<2;i++){
-    var a=MobilePassiveStatusLayout.Indicator(i);C(a.X>=12&&a.Y>=12&&a.X+a.Width<=187&&a.Y+a.Height<=70,"passive indicators fit existing status card");
+    var a=MobilePassiveStatusLayout.Indicator(i);C(a.X>=l.PlayerStatus.X&&a.Y>=l.PlayerStatus.Y&&a.X+a.Width<=l.PlayerStatus.X+l.PlayerStatus.Width&&a.Y+a.Height<=l.PlayerStatus.Y+l.PlayerStatus.Height&&!a.Overlaps(l.Map),"passive indicators fit existing status card");
     C(!a.Overlaps(MobilePassiveStatusLayout.HealthBar)&&!a.Overlaps(MobilePassiveStatusLayout.EnergyBar)&&!a.Overlaps(l.CombatView),"passives preserve resources and clear central combat view");
     foreach(var skill in l.Skills)C(!a.Overlaps(skill),"passive state never overlaps active hitbox");
     foreach(var action in new[]{l.Attack,l.Jump,l.Dodge,l.Potion,l.FocusCommand,l.RecallCommand,l.AdventureStatus,l.EncounterText,l.BossHealth})C(!a.Overlaps(action),"passive state does not cover actions or objectives");

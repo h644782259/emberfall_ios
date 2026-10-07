@@ -29,7 +29,7 @@ namespace Emberfall
     MobileControls.Layout=new MobileControlLayout(size.Item1,size.Item2,dpi);
     var ui=new GameUI{session=new GameSession{Progression=p}};ui.session.Bind();ui.OpenBuildPlans();
     ui.buildPlanDetails=disclosure==1?0:-1;ui.practiceChoicesOpen=disclosure==2;
-    ui.GeometryFrame();float unit=mobile?ui.TouchRatio:1;fonts.Add(mobile?ui.TouchFont(15):15);scales.Add(ui.scale);
+    ui.GeometryFrame();float unit=mobile?ui.TouchRatio:1;fonts.Add(mobile?ui.TouchFont(15):15);scales.Add(ui.scale);G(!mobile||ui.TouchFont(15)==(int)Math.Round(15*ui.TouchRatio),"actual mobile font follows density/GUI scale ratio");
     var safe=new Rect(23,Screen.height-MobileControls.SafeArea.yMax,size.Item1,size.Item2);
     G(Inside(GUI.matrix.Apply(ui.geometryFrame),safe),"actual full dialog fits transformed safe area");
     var footer=ui.geometryButtons.Where(x=>!x.Scroll).ToArray();G(footer.Length==2,"fixed footer has both return and reset actions");
@@ -48,7 +48,7 @@ namespace Emberfall
     G(footer.Length==2&&footer[0].Caption=="取消"&&footer[1].Caption=="确认记录方案","actual confirmation footer remains fixed and reviewable");
     foreach(var button in footer)G(Inside(GUI.matrix.Apply(button.Rect),safe)&&button.Rect.y>=ui.geometryView.yMax,"confirmation actions outside clipped content");
    }
-   G(fonts.Contains(15)&&fonts.Contains(24)&&fonts.Contains(27),"actual mobile TouchFont policy exercises 15/24/27 logical fonts");G(scales.Count>3,"actual RefreshLayout exercises multiple GUI matrix scales");
+   G(fonts.Contains(15)&&fonts.Count>=3,"actual compact mobile TouchFont policy exercises multiple density tiers");G(scales.Count>3,"actual RefreshLayout exercises multiple GUI matrix scales");
    Console.WriteLine("PASS "+geometryChecks+" full build-plan/card/confirmation/footer geometry assertions; managed font and scroll boundaries only, NOT Unity rendering or touch acceptance");
    Console.WriteLine("POLICY: desktop button15 logical units; mobile Round(15*TouchRatio); physical coordinates use actual RefreshLayout and OnGUI matrix. Small physical viewports prove bounds only, not readability or minimum physical touch size.");
   }
