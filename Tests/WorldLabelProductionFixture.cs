@@ -18,12 +18,13 @@ namespace UnityEngine {
  public static class Mathf {public static float Abs(float f)=>Math.Abs(f);}
  public struct Color {public Color(float a,float b,float c){}}
  public enum TextAnchor {MiddleCenter}public enum TextAlignment {Center}
- public class TextMesh:Component {public string text="标签";public int fontSize;public float characterSize;public TextAnchor anchor;public TextAlignment alignment;public Color color;}
+ public class Font:Object {}
+ public class TextMesh:Component {public Font font;public string text="标签";public int fontSize;public float characterSize;public TextAnchor anchor;public TextAlignment alignment;public Color color;}
  public enum RuntimeInitializeLoadType {SubsystemRegistration}
  public class RuntimeInitializeOnLoadMethodAttribute:Attribute {public RuntimeInitializeOnLoadMethodAttribute(RuntimeInitializeLoadType t){}}
 }
 namespace Emberfall {
- public static class GameFont {public static int calls;public static void Apply(UnityEngine.TextMesh text){calls++;}}
+ public static class GameFont {public static int calls;public static void Apply(UnityEngine.TextMesh text){calls++;text.font=new UnityEngine.Font();}}
  public class EnemyController:UnityEngine.MonoBehaviour{}
  public class GameSession:UnityEngine.MonoBehaviour {public HashSet<EnemyController> enemies=new HashSet<EnemyController>();public bool IsSideEventEnemy(EnemyController e)=>enemies.Contains(e);public int SideEventEnemiesRemaining=>enemies.Count;}
 }

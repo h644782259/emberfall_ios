@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess,sys,os,tempfile,re
 root=Path(__file__).resolve().parents[1];dotnet=sys.argv[1] if len(sys.argv)>1 else 'dotnet'
 with tempfile.TemporaryDirectory(prefix='weapon-contact-') as d:
- out=Path(d);subprocess.run([sys.executable,str(root/'Tests/WeaponModulesProductionTests.py'),dotnet,str(out)],check=True);p=out/'export'
+ out=Path(d).resolve();subprocess.run([sys.executable,str(root/'Tests/WeaponModulesProductionTests.py'),dotnet,str(out)],check=True);p=out/'export'
  ns={'__file__':str(root/'Tests/EquipmentCompositionProductionTests.py')};argv=sys.argv;sys.argv=['x',dotnet];exec((root/'Tests/EquipmentCompositionProductionTests.py').read_text().split('with tempfile.TemporaryDirectory')[0],ns);sys.argv=argv;extract=ns['extract'];source=(root/'Assets/Scripts/Combat/CombatModel.cs').read_text()
  for name in ['Combat/CombatModel.VanguardArt','Combat/VanguardActionLibrary','Combat/CombatModel.CastPoses','Core/HeroMotionStyle','Core/LocomotionPoseState','Core/VisualMotionEnvelope','Core/BasicActionTimeline','Core/CasterPoseRecipe']:(p/(name.split('/')[-1]+'.cs')).write_text((root/'Assets/Scripts'/(name+'.cs')).read_text())
  b=p/'OptionalPilotBoundary.cs';b.write_text(b.read_text().replace('private void ConfigureVanguardArt() {}',''))

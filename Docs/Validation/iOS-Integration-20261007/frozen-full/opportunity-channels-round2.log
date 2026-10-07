@@ -1,0 +1,17 @@
+current BUILD /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Player.cs(30,18): error CS0103: 当前上下文中不存在名称“CanUseMovementSkillAt” [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Test.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Player.cs(32,18): error CS0103: 当前上下文中不存在名称“SkillBudgetReady” [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Test.csproj]
+
+Build FAILED.
+
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Player.cs(30,18): error CS0103: 当前上下文中不存在名称“CanUseMovementSkillAt” [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Test.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Player.cs(32,18): error CS0103: 当前上下文中不存在名称“SkillBudgetReady” [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/opportunity-channels-oh4s7ix5/Test.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.51
+ CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/OpportunityChannelsRound2Tests.py", line 37, in <module>
+    q=subprocess.run([dotnet,'build',str(proj),'--configfile',str(p/'NuGet.Config'),'-v:q'],env=env,capture_output=True,text=True);print(mode,'BUILD',q.stdout,q.stderr);assert q.returncode==0
+AssertionError

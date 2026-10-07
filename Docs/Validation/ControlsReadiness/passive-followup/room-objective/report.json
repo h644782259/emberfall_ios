@@ -1,0 +1,12 @@
+{
+  "startedUtc": "20261007T110107121904Z",
+  "project": "/workspace/emberfall_ios_passives",
+  "checks": [
+    {
+      "name": "mobile-room-objective",
+      "passed": true,
+      "log": "mobile-room-objective.log"
+    }
+  ],
+  "scope": "Standalone production-logic tests; optional Unity API/source compilation. No Unity Editor execution, real JsonUtility, rendering, shaders, or platform build executed."
+}

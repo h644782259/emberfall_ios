@@ -1,12 +1,12 @@
 # Emberfall iPhone / iPad
 
-> **最新源码交付状态：** [2026-10-03 说明与验证边界](Docs/Release-2026-10-03.md)，覆盖已合并的 PR21–PR28。
+> **最新本机整合状态：** [2026-10-07 远征、战斗 UI 与验证边界](Docs/Validation/iOS-Integration-20261007/README.md)。历史源码说明见 [2026-10-03](Docs/Release-2026-10-03.md)。
 
 > **0.4.0 源码：立体技能动画、十格触控、存读档、三城镇/三试炼与五房远征。** Windows/iOS已同步本轮功能；尚未发布新安装包或完成引擎画面/真机验收。见 [本轮说明与验证边界](Docs/Visual-Mobile-Release.md)。 后续数值与可靠性检查见 [第三轮检查](Docs/Combat-Review-3.md)。
 
 Unity 3D 即时战斗 RPG 的 iPhone / iPad 源码工程，与 [Windows 主项目](https://github.com/h644782259/emberfall_win) 共享四职业战斗、分支技能、召唤、蓄力、副本、装备成长、多存档和地形交互。
 
-已加入横屏触屏布局、左摇杆、攻击/闪现/跳跃/药剂按钮、十格固定技能栏、点击自动瞄准施法、内容拖动滚动与多指输入。既有 0.3.1 的运行验证在 Windows 完成；本开发分支仅更新源码，验证范围见上方升级说明。**尚未导出 Xcode 工程、签名 IPA 或完成 iPhone 真机测试**。
+已加入横屏触屏布局、浮动摇杆、攻击/闪现/跳跃/药剂按钮、八主动技能按钮与两被动状态展示、点击自动瞄准施法、内容拖动滚动与多指输入。既有 0.3.1 的运行验证在 Windows 完成；本开发分支仅更新源码，验证范围见上方升级说明。**本机已完成 Unity 运行时验证、Xcode 导出和未签名原生构建；尚未完成本轮 iPhone/iPad 真机安装验收**。
 
 ## 用 Mac 安装到自己的 iPhone
 
@@ -19,7 +19,7 @@ bash Tools/Export-iOS.sh --check-only
 bash Tools/Export-iOS.sh --bundle-id com.yourname.emberfall
 ```
 
-4. 打开输出目录中的 `Unity-iPhone.xcworkspace`（若存在），否则打开 `Unity-iPhone.xcodeproj`。
+4. 打开固定路径 `Builds/iOS/Xcode/Emberfall.xcodeproj`，选择 `Emberfall` scheme。以后导出更新同一路径，成功后删除旧导出。
 5. 在 Xcode 的 **Signing & Capabilities** 开启自动签名，选择自己的 **Personal Team**，连接并选择 iPhone，点击 **Run**。
 
 免费 Personal Team 可用于自己的设备调试，但签名有有效期，过期需重新部署。完整步骤、设备信任、开发者模式和错误排查见 [Mac/Xcode 安装说明](Docs/iOS.md)。工程使用 iOS 15 起、ARM64、IL2CPP、Metal，实际设备兼容性和性能仍需真机验收。

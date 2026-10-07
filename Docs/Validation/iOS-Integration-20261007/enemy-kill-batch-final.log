@@ -1,0 +1,112 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+PASS scenario normal/none/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+PASS scenario normal/none/writeFailure=True
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario normal/changed/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario normal/changed/writeFailure=True
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario normal/level/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario normal/level/writeFailure=True
+PASS scenario chapter/none/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+PASS scenario chapter/none/writeFailure=True
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario chapter/changed/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario chapter/changed/writeFailure=True
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario chapter/level/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario chapter/level/writeFailure=True
+PASS scenario arena/none/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+PASS scenario arena/none/writeFailure=True
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario arena/changed/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario arena/changed/writeFailure=True
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario arena/level/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario arena/level/writeFailure=True
+PASS scenario room/none/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+PASS scenario room/none/writeFailure=True
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario room/changed/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: change observer failed: System.InvalidOperationException: kill changed observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__0() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 13
+   at Emberfall.ProgressionService.RaiseChanged() in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2739
+PASS scenario room/changed/writeFailure=True
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario room/level/writeFailure=False
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+Emberfall: level observer failed: System.InvalidOperationException: kill level observer fault
+   at EnemyKillCallbackFaultTests.<>c__DisplayClass3_1.<Scenario>b__2(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/EnemyKillCallbackFaultTests.cs:line 15
+   at Emberfall.ProgressionService.RaiseLeveledUp(Int32 level) in /private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/enemy-kill-callback-fault-_h2uhlli/ProgressionService.cs:line 2745
+PASS scenario room/level/writeFailure=True
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+Emberfall: 保存失败：临时存档路径被目录占用，未覆盖原文件或备份。
+PASS: 288 real OnEnemyKilled/progression assertions across 24 scenarios; managed delivery boundaries

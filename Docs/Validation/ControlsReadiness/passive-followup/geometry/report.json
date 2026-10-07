@@ -1,0 +1,37 @@
+{
+  "startedUtc": "20261007T105759717681Z",
+  "project": "/workspace/emberfall_ios_passives",
+  "checks": [
+    {
+      "name": "mobile-layout",
+      "passed": true,
+      "log": "mobile-layout.log"
+    },
+    {
+      "name": "mobile-skills",
+      "passed": true,
+      "log": "mobile-skills.log"
+    },
+    {
+      "name": "touch-scroll",
+      "passed": true,
+      "log": "touch-scroll.log"
+    },
+    {
+      "name": "mobile-skills-workshop-layout",
+      "passed": true,
+      "log": "mobile-skills-workshop-layout.log"
+    },
+    {
+      "name": "mobile-collection-layout",
+      "passed": true,
+      "log": "mobile-collection-layout.log"
+    },
+    {
+      "name": "mobile-save-location",
+      "passed": true,
+      "log": "mobile-save-location.log"
+    }
+  ],
+  "scope": "Standalone production-logic tests; optional Unity API/source compilation. No Unity Editor execution, real JsonUtility, rendering, shaders, or platform build executed."
+}

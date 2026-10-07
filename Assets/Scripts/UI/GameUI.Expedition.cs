@@ -207,10 +207,11 @@ namespace Emberfall
 
         private void DrawAccessibilityStrip(Rect r)
         {
-            if(Button(new Rect(r.x,r.y,145,35),"字号 "+EffectPreferences.CombatTextScale.ToString("0.00")+"×",jade))
+            if(Button(new Rect(r.x,r.y,127,35),"飘字 "+EffectPreferences.CombatTextScale.ToString("0.00")+"×",jade))
                 EffectPreferences.CombatTextScale=EffectPreferences.CombatTextScale>=1.79f?1f:Mathf.Min(1.8f,EffectPreferences.CombatTextScale+.25f);
-            if(Button(new Rect(r.x+154,r.y,145,35),EffectPreferences.CameraShake?"镜头震动：开":"镜头震动：关",jade))EffectPreferences.CameraShake=!EffectPreferences.CameraShake;
-            if(Button(new Rect(r.x+308,r.y,145,35),EffectPreferences.ReducedEffects?"低动态效果":"完整效果",jade))EffectPreferences.EffectsScale=EffectPreferences.ReducedEffects?1f:.3f;
+            if(Button(new Rect(r.x+408,r.y,127,35),"字号 "+Mathf.RoundToInt(EffectPreferences.InterfaceTextScale*100)+"%",jade))EffectPreferences.CycleInterfaceTextScale();
+            if(Button(new Rect(r.x+136,r.y,127,35),EffectPreferences.CameraShake?"震动：开":"震动：关",jade))EffectPreferences.CameraShake=!EffectPreferences.CameraShake;
+            if(Button(new Rect(r.x+272,r.y,127,35),EffectPreferences.ReducedEffects?"低动态效果":"完整效果",jade))EffectPreferences.EffectsScale=EffectPreferences.ReducedEffects?1f:.3f;
         }
     }
 }

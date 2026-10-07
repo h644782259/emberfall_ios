@@ -1,0 +1,15 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/Export.csproj]
+ CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+A fatal error was encountered. The library 'libhostpolicy.dylib' required to execute the application was not found in '/private/tmp/emberfall-dotnet'.
+Failed to run as a self-contained app.
+  - The application was run as a self-contained app because '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/bin/Debug/net8.0/Export.runtimeconfig.json' was not found.
+  - If this should be a framework-dependent app, add the '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-7pe0edy6/export/bin/Debug/net8.0/Export.runtimeconfig.json' file and specify the appropriate framework.
+
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/HeroMotionFactoryProductionTests.py", line 58, in <module>
+    print(result.stdout,result.stderr);assert result.returncode==0
+AssertionError

@@ -51,17 +51,55 @@ fi
 
 if [[ -z "$output" ]]; then output="$project_root/Builds/iOS/Xcode"; fi
 if [[ "$output" != /* ]]; then output="$project_root/$output"; fi
-mkdir -p "$project_root/Logs"
+[[ ! -L "$output" ]] || { echo 'The fixed export must be a real directory, not a link.' >&2; exit 2; }
+output="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$output")"
+case "$output" in "$project_root/Builds/iOS/"*) ;; *) echo 'Export must stay under this project Builds/iOS directory.' >&2; exit 2 ;; esac
+# Reuse a saved Xcode signing team unless the caller explicitly selects another.
+if [[ -z "$team_id" && -f "$output/Emberfall.xcodeproj/project.pbxproj" ]]; then
+  team_id="$(python3 - "$output/Emberfall.xcodeproj/project.pbxproj" <<'PYTEAM'
+import re, sys
+from pathlib import Path
+teams=set(re.findall(r'DEVELOPMENT_TEAM = "?([A-Z0-9]{10})"?;',Path(sys.argv[1]).read_text()))
+if len(teams)>1: raise SystemExit('Multiple signing teams configured; pass --team-id explicitly.')
+print(next(iter(teams),''))
+PYTEAM
+)"
+fi
+mkdir -p "$project_root/Logs" "$project_root/Builds/iOS"
+staging="$(mktemp -d "$project_root/Builds/iOS/.Xcode-stage-XXXXXX")"
+trap 'rm -rf -- "$staging"' EXIT
 log_file="$project_root/Logs/ios-export-latest.log"
-args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$output" -emberfallIosBundleId "$bundle_id")
+args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$staging" -emberfallIosBundleId "$bundle_id")
 if [[ -n "$team_id" ]]; then args+=(-emberfallIosTeamId "$team_id"); fi
-echo 'Close this project in Unity before starting the export.'
+echo 'Close this project in Unity and Xcode before exporting.'
 if ! "$unity_path" "${args[@]}"; then
   tail -n 60 "$log_file" >&2 || true
-  echo "Unity export failed. Log: $log_file" >&2
+  echo "Unity export failed. The fixed project was not replaced. Log: $log_file" >&2
   exit 1
 fi
-[[ -f "$output/Unity-iPhone.xcodeproj/project.pbxproj" ]] || { echo "Unity returned without a complete Xcode project. Inspect $log_file" >&2; exit 1; }
-echo "Xcode source exported: $output"
-echo 'Open Unity-iPhone.xcworkspace if present; otherwise Unity-iPhone.xcodeproj. Choose your Personal Team or developer team, your connected iPhone, then Run.'
-echo 'No signed IPA was created and no device installation was performed.'
+[[ -f "$staging/Unity-iPhone.xcodeproj/project.pbxproj" ]] || { echo "Unity returned without a complete Xcode project. Inspect $log_file" >&2; exit 1; }
+python3 - "$staging" "$output" <<'PYPUBLISH'
+import os, shutil, sys, uuid
+from pathlib import Path
+staging, output=map(Path,sys.argv[1:])
+project=staging/'Unity-iPhone.xcodeproj'
+project.rename(staging/'Emberfall.xcodeproj')
+project=staging/'Emberfall.xcodeproj'
+for path in project.rglob('*.xcscheme'):
+    path.write_text(path.read_text().replace('Unity-iPhone.xcodeproj','Emberfall.xcodeproj'))
+    if path.name=='Unity-iPhone.xcscheme': path.rename(path.with_name('Emberfall.xcscheme'))
+for workspace in staging.rglob('contents.xcworkspacedata'):
+    workspace.write_text(workspace.read_text().replace('Unity-iPhone.xcodeproj','Emberfall.xcodeproj'))
+output.parent.mkdir(parents=True,exist_ok=True)
+backup=output.with_name('.Xcode-previous-'+uuid.uuid4().hex)
+if output.exists(): os.replace(output,backup)
+try:
+    os.replace(staging,output)
+except BaseException:
+    if backup.exists(): os.replace(backup,output)
+    raise
+if backup.exists(): shutil.rmtree(backup)
+PYPUBLISH
+echo "Fixed Xcode project exported: $output/Emberfall.xcodeproj"
+echo 'Open Emberfall.xcodeproj, select the Emberfall scheme, your developer team and connected device, then Run.'
+echo 'No historical export, signed IPA, or device installation was retained or performed.'

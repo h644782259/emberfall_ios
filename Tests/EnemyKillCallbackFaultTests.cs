@@ -38,9 +38,28 @@ public static class EnemyKillCallbackFaultTests
   }
   catch(Exception error){failures.Add(label+": "+error.Message);Console.WriteLine("FAIL scenario "+label+": "+error);}
  }
+ static void Burst(string root,bool callbackFault,bool writeFailure)
+ {
+  var p=new ProgressionService(Path.Combine(root,Guid.NewGuid().ToString("N")));C(p.CreateNewSlot(HeroClass.Ranger),"burst save created");
+  string disk=File.ReadAllText(p.SaveFilePath);int kills=p.Profile.kills;
+  var h=new GameSession{Progression=p};var enemies=new List<EnemyController>();
+  for(int i=0;i<4;i++){var e=new EnemyController{IsBoss=true};enemies.Add(e);h.Enemies.Add(e);}
+  if(writeFailure)Directory.CreateDirectory(p.SaveFilePath+".tmp");
+  CombatImpactBatch.BeginAction();
+  if(callbackFault)CombatImpactBatch.AfterCurrentAction(()=>{throw new InvalidOperationException("settlement fixture fault");});
+  foreach(var e in enemies)h.OnEnemyKilled(e);
+  C(File.ReadAllText(p.SaveFilePath)==disk,"multi-kill action postpones writes until action boundary");
+  bool escaped=false;try{CombatImpactBatch.EndAction();}catch(InvalidOperationException e){escaped=e.Message=="settlement fixture fault";}
+  C(escaped==callbackFault,"settlement callback preserves original exception");
+  C(p.Profile.kills==kills+4,"all admitted burst kills rewarded once");
+  if(writeFailure){C(File.ReadAllText(p.SaveFilePath)==disk&&!string.IsNullOrEmpty(p.LastError),"burst failed write retains old save");Directory.Delete(p.SaveFilePath+".tmp");p.Save();}
+  else C(File.ReadAllText(p.SaveFilePath+".bak")==disk,"one burst rotates only the pre-action backup");
+  var loaded=new ProgressionService(p.SaveDirectory);C(loaded.LoadSlot(p.CurrentSlotId)&&loaded.Profile.kills==kills+4,"burst persists all kills even when another settlement callback throws");
+ }
  public static string Run(string root)
  {
   foreach(string mode in new[]{"normal","chapter","arena","room"})foreach(string fault in new[]{"none","changed","level"})foreach(bool writeFailure in new[]{false,true})Scenario(root,mode,fault,writeFailure);
+  foreach(bool callbackFault in new[]{false,true})foreach(bool writeFailure in new[]{false,true})Burst(root,callbackFault,writeFailure);
   if(failures.Count>0)throw new Exception("Enemy kill callback completion regressions: "+string.Join(" | ",failures));
   return "PASS: "+checks+" real OnEnemyKilled/progression assertions across 24 scenarios; managed delivery boundaries";
  }

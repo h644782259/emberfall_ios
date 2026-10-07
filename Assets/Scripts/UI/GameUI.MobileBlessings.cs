@@ -6,6 +6,7 @@ namespace Emberfall
         private Vector2 mobileBlessingScroll;
         private RunBlessing[] mobileBlessingOffer;
         private PlayerController mobileBlessingOwner;
+        private float mobileBlessingTapAt=-10;
         private int mobileBlessingEpoch=-1,mobileBlessingWave=-1;
         private void DrawMobileBlessingChoice()
         {
@@ -17,7 +18,7 @@ namespace Emberfall
             // erase the selected card on every IMGUI event and prevent confirmation.
             if(changed)
             {mobileBlessingOffer=offer;mobileBlessingOwner=session.Player;mobileBlessingEpoch=session.Player.CombatEpoch;
-             mobileBlessingWave=session.RunChoices.CompletedWave;mobileBlessingScroll=Vector2.zero;selectedBlessing=-1;}
+             mobileBlessingWave=session.RunChoices.CompletedWave;mobileBlessingScroll=Vector2.zero;selectedBlessing=-1;mobileBlessingTapAt=-10;}
             var layout=MobilePanelGeometry();
             if(DrawMobilePanelChrome(layout,"星烬祝福","选择一项 · 仅本局生效",false,true))return;
             string preview=BlessingSubtitle(true);
@@ -46,8 +47,14 @@ namespace Emberfall
                 bool compatible=RunChoices.IsCompatible(offer[i],session.Progression.Profile.heroClass,RunChoices.UsableRanks(session.Progression.Profile,true));
                 y+=DrawMobileParagraph(x+10,y,column-20,RunChoices.Association(offer[i],session.Progression.Profile,true),12,compatible?jade:muted)+12;
                 DrawMobileParagraph(x+10,y,column-20,RunChoices.Description(offer[i]),14,pale);
-                Text(TouchRect(x+10,noticeHeight+cardHeight-22,column-20,20),chosen?"已选择 ✓":"轻触选择",TouchFont(13),chosen?gold:muted,true,false,TextAnchor.MiddleCenter);
-                if(GUI.Button(cardRect,GUIContent.none,invisibleButton))selectedBlessing=i;
+                Text(TouchRect(x+10,noticeHeight+cardHeight-22,column-20,20),chosen?"再次轻触确认":"轻触选择",TouchFont(13),chosen?gold:muted,true,false,TextAnchor.MiddleCenter);
+                if(GUI.Button(cardRect,GUIContent.none,invisibleButton))
+                {
+                    bool twice=selectedBlessing==i&&Time.unscaledTime-mobileBlessingTapAt<=.4f;
+                    selectedBlessing=i;mobileBlessingTapAt=Time.unscaledTime;
+                    if(twice&&session.ConfirmBlessing(i))
+                    {selectedBlessing=-1;CancelMobileScroll();BlockUITransition();EndTouchScroll();return;}
+                }
             }
             EndTouchScroll();
             if(Button(MobilePanelRect(layout.FooterButton(0,2)),"暂停 / 存档",jade))

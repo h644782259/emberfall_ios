@@ -13,6 +13,10 @@ public static class MobileControlLayoutTests
         {
             var l=new MobileControlLayout(d[0],d[1],d[2],preset);
             Check(l.Skills.Length==8,"only eight active skill targets");
+            float inset=l.Tablet?56:44;
+            foreach(var skill in l.Skills)Check(skill.X+skill.Width<=l.Width-inset+.01f,"skill targets leave a comfortable inner thumb margin");
+            Check(l.Attack.X+l.Attack.Width<=l.Width-inset+.01f&&l.Attack.Y+l.Attack.Height<=l.Height-24+.01f,"attack keeps side and bottom thumb clearance");
+            Check(l.Potion.X>=44&&l.Joystick.X>=40,"left actions avoid the screen edge");
             foreach(var skill in l.Skills)Check(skill.Width==(l.Tablet?72:60)&&skill.Height==skill.Width,"phone and tablet enlarged touch targets");
             foreach(var hint in l.SkillOpportunities)
             {
@@ -44,6 +48,7 @@ public static class MobileControlLayoutTests
             Check(!l.EncounterText.Overlaps(l.BossHealth),"wave label and boss health remain separate");
             Check(!l.Notice.Overlaps(l.MoveZone)&&l.Notice.Width>=100&&l.Notice.Height>=48,"full-message touch target stays outside the entire movement zone");
         }
+        var pad=new MobileControlLayout(2048,1536,264);Check(Math.Abs(pad.Scale/(264f/163f)-1.18f)<.001f,"iPad HUD and panels scale uniformly eighteen percent above phone density");
         Check(MobileControlLayout.DeadZone(.1f)==0,"deadzone rejects drift");
         Check(MobileControlLayout.DeadZone(1)==1&&MobileControlLayout.DeadZone(-2)==-1,"movement saturates safely");
         return checks+" mobile control geometry assertions passed";

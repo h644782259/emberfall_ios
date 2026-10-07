@@ -24,10 +24,10 @@ def method(source, signature):
 
 check('MobilePanelGeometry()' in skills and 'MobilePanelGeometry()' in camp, 'both views use safe-area touch geometry')
 check('layout.BodyLeft' in skills and 'layout.BodyRight' in skills, 'skills use full-height body panes without an unused tab row')
-check('for (int skill = 0; skill < GameBalance.SkillCount; skill++)' in skills, 'all ten identities are iterated without a hotbar page')
+check('for(int skill=0;skill<GameBalance.SkillCount;skill++)' in skills, 'all ten identities are iterated without a hotbar page')
 check(all(word not in skills for word in ['hotbarPage', 'AssignSkill(', 'detailSlots', 'Modal(1160']), 'touch skills never inherit desktop paging or tiny detail layout')
 check('MeasureMobileParagraph' in skills and 'MeasureMobileParagraph' in camp and 'CalcHeight' in shared, 'content measures real wrapped font height')
-check('Mathf.Max(48, nameHeight + stateHeight + 24)' in skills, 'skill selection row measures text and retains a touch-size minimum')
+check('step-12,82' in skills, 'skill tree nodes retain a large touch-size minimum')
 check('SkillTooltip(p, skill, rank)' in skills and 'GameBalance.CategoryName' in skills, 'actual costs, cooldowns, charge and category descriptions stay available')
 check('for (int stage = 1; stage <= 3; stage++)' in skills and 'GameBalance.SkillRankRequiredLevel' in skills and 'GameBalance.SkillEvolution' in skills,
       'all real rank requirements and evolutions remain readable')
@@ -51,7 +51,7 @@ check('string id = item.id;' in camp and '编号：' in camp, 'equipment actions
 check('ClaimRecoveryLoot(id)' in camp and 'ClaimPendingLoot(id)' in camp and 'InventoryCapacity' in camp, 'both mailboxes preserve stable-ID claims and capacity checks')
 claims = method(camp, 'private void ClaimMobileWorkshopLoot()')
 check(claims.index('claimed == 0 && !string.IsNullOrEmpty(p.LastError)') < claims.index('p.ClaimAllRecoveryLoot()'), 'first failed claim cannot have its error overwritten by a second service call')
-check('sold > 0 || string.IsNullOrEmpty(p.LastError)' in camp, 'bulk sale failure cannot be announced as success')
+check('MobileWorkshopResult' in camp, 'workshop mutation results use shared failure handling')
 check('tutorialMask & (1 << i)' in camp and 'actions.Length' in camp, 'tutorial completion comes from real progress bits')
 result = method(camp, 'private void MobileWorkshopResult(')
 check('!accepted || !string.IsNullOrEmpty(session.Progression.LastError)' in result and 'CancelMobileScroll();' in result and 'Vector2.zero' not in result,

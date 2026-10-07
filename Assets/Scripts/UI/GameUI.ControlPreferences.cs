@@ -12,7 +12,8 @@ namespace Emberfall
             if(Button(TouchRect(x+268,y+57,240,48),"按钮透明度："+Mathf.RoundToInt(EffectPreferences.TouchOpacity*100)+"%",jade))EffectPreferences.TouchOpacity=EffectPreferences.TouchOpacity>.9f?.7f:EffectPreferences.TouchOpacity>.6f?.5f:1f;
             if(Button(TouchRect(x+12,y+115,240,48),"图标："+(EffectPreferences.TouchVisualScale<.9f?"紧凑":"标准"),jade))EffectPreferences.TouchVisualScale=EffectPreferences.TouchVisualScale<.9f?1f:.86f;
             if(Button(TouchRect(x+268,y+115,240,48),"恢复默认布局",gold)){EffectPreferences.TouchPosition=0;EffectPreferences.TouchOpacity=1;EffectPreferences.TouchVisualScale=1;}
-            Text(TouchRect(x+12,y+183,496,30),"图标变小，触控范围仍保持手机60、iPad72。",TouchFont(14),pale,true);
+            if(Button(TouchRect(x+12,y+173,240,48),"界面字号："+Mathf.RoundToInt(EffectPreferences.InterfaceTextScale*100)+"%",jade))EffectPreferences.CycleInterfaceTextScale();
+            Text(TouchRect(x+268,y+179,240,36),"字号预览 Aa 星烬",TouchFont(15),pale,true);
             Text(TouchRect(x+12,y+222,496,50),"布局为角色与近身动作保留中央空隙。\n设置保存在本设备，不改变角色存档。",TouchFont(12),muted,false,true);
         }
     }

@@ -43,6 +43,7 @@ namespace Emberfall {
  GUIStyle Style(int n,bool bold,bool wrap,TextAnchor anchor=TextAnchor.UpperLeft)=>new GUIStyle{size=n};
  void Fill(Rect r,Color c){}void Border(Rect r,Color c){}void Rule(float x,float y,float w,Color c){}void ClosePanel(){}void BlockUITransition(){}void CancelMobileScroll(){}
  void Text(Rect r,string s,int size,Color c,bool bold=false,bool wrap=false,TextAnchor anchor=TextAnchor.UpperLeft){drawn.Add((s,r,scrolling,wrap));}
+ bool NavigationButton(Rect r,string s,Color c,bool enabled=true)=>Button(r,s,c,enabled);
  bool Button(Rect r,string s,Color c,bool enabled=true){if(s=="确认祝福并继续"||s=="暂停 / 存档")footer.Add(r);if(enabled&&click==s){click=null;return true;}return false;}
  Vector2 BeginTouchScroll(string key,Rect viewport,Vector2 p,Rect content){scrolling=true;scrollViewport=viewport;scrollContent=content;return p;}void EndTouchScroll(){scrolling=false;}
  METHODS
@@ -60,6 +61,13 @@ namespace Emberfall {
   check(ui.selectedBlessing==1,"card tap selects intended offer while preview and notification coexist");
   GUI.Click=-1;GUI.Index=0;ui.click="确认祝福并继续";ui.DrawMobileBlessingChoice();
   check(ui.session.Confirmed==1&&ui.selectedBlessing==-1,"subsequent confirmation survives defensive offer copies");
+ }
+ foreach(bool same in new[]{true,false})foreach(float delay in new[]{.2f,.6f})
+ {
+  var ui=new GameUI{width=800,height=320,TouchRatio=1};Time.unscaledTime=0;
+  GUI.Click=1;GUI.Index=0;ui.DrawMobileBlessingChoice();
+  Time.unscaledTime=delay;GUI.Index=0;GUI.Click=same?1:0;ui.DrawMobileBlessingChoice();
+  check(ui.session.Confirmed==(same&&delay<=.4f?1:-1),"only quick repeated tap on the same blessing confirms");
  }
  return n;
  }

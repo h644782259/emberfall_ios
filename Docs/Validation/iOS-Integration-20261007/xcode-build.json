@@ -1,0 +1,16 @@
+{
+  "app": "/Users/admin/Desktop/自开发/emberfall_ios/Builds/iOS/DerivedData/Build/Products/Debug-iphoneos/Emberfall.app",
+  "project": "/Users/admin/Desktop/自开发/emberfall_ios/Builds/iOS/Xcode/Emberfall.xcodeproj",
+  "scheme": "Emberfall",
+  "bundleId": "com.h644782259.emberfall.ios",
+  "executable": "Emberfall",
+  "sha256": "579f6415e3c53b707ab3ef5e31dcb5b11010fa646f76243bf9de1b3be9dc1d2a",
+  "architecture": "/Users/admin/Desktop/自开发/emberfall_ios/Builds/iOS/DerivedData/Build/Products/Debug-iphoneos/Emberfall.app/Emberfall: Mach-O 64-bit executable arm64",
+  "deviceFamily": [
+    1,
+    2
+  ],
+  "signed": false,
+  "installed": false,
+  "unityFrameworkSha256": "65ca21650a5c681ccd97d3e725a3844600ccfb78fe6288f9bd1540e2f0c846bc"
+}

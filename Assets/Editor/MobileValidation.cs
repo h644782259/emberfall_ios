@@ -49,6 +49,13 @@ namespace Emberfall.Editor
                 game.SetPaused(false);
                 game.SetUIBlocking(false);
                 foreach (object tick in Wait(.12f)) yield return tick;
+                typeof(GameUI).GetMethod("OpenMobileNoticeFromPause",Hidden).Invoke(ui,null);
+                check(!game.InputBlocked&&Field(typeof(GameUI),"panel").GetValue(ui).ToString()=="None","Battle feedback cannot open the notice modal or block gameplay");
+                game.SetPaused(true);
+                typeof(GameUI).GetMethod("OpenMobileNoticeFromPause",Hidden).Invoke(ui,null);
+                check(game.InputBlocked&&Field(typeof(GameUI),"panel").GetValue(ui).ToString()=="Notice","Explicit paused notice action opens the full detail safely");
+                typeof(GameUI).GetMethod("ClosePanel",Hidden).Invoke(ui,null);game.SetPaused(false);
+                fixtureRuntime.Advance(200);fixtureRuntime.FillEnergy();
                 Vector2 move = controls.ControlScreenPoint("move");
                 Vector2 attack = controls.ControlScreenPoint("attack");
                 Vector2 dodge = controls.ControlScreenPoint("dodge");
@@ -56,7 +63,12 @@ namespace Emberfall.Editor
                 Rect safe = MobileControls.SafeArea;
                 check(safe.Contains(move) && safe.Contains(attack) && safe.Contains(dodge) && safe.Contains(potion), "Touch control centers stay inside the screen safe area");
                 check(controls.ProcessPointer(11, TouchPhase.Began, move), "Left joystick captures its own finger");
-                controls.ProcessPointer(11, TouchPhase.Moved, move + Vector2.right * 200);
+                Vector2 touched=move+new Vector2(12,8);
+                controls.ProcessPointer(11,TouchPhase.Canceled,move);
+                controls.ProcessPointer(11,TouchPhase.Began,touched);
+                Vector2 origin=(Vector2)Field(typeof(MobileControls),"joystickOrigin").GetValue(controls);
+                check(Vector2.Distance((Vector2)typeof(MobileControls).GetMethod("ToUI",Hidden).Invoke(controls,new object[]{touched}),origin)<.01f,"Floating joystick origin follows the touched point");
+                controls.ProcessPointer(11, TouchPhase.Moved, touched + Vector2.right * 200);
                 controls.ProcessPointer(12, TouchPhase.Began, attack);
                 check(MobileControls.Move.x > .9f && MobileControls.AttackHeld, "Two fingers can move and hold attack simultaneously");
                 controls.ProcessPointer(12, TouchPhase.Ended, attack);

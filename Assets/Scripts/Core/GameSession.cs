@@ -480,7 +480,10 @@ namespace Emberfall
             int gold = boss ? 85 + DungeonTier * 20 : Random.Range(7, 15) + level;
             if(InDungeon&&!boss) { float share=Mathf.Clamp(6f/Mathf.Max(6,wavePopulation),.5f,1f);experience=Mathf.RoundToInt(experience*share);gold=Mathf.Max(1,Mathf.RoundToInt(gold*share)); }
             if(chapterKill)experience=chapterExperience;
-            Progression.GrantEnemyKillReward(gold, experience);
+            // Queue before callbacks or loot delivery can fail. An outer combat
+            // finally ends the action and persists every admitted reward.
+            if (CombatImpactBatch.InAction) CombatImpactBatch.AfterCurrentAction(Progression.Save);
+            Progression.GrantEnemyKillReward(gold, experience, deferSave: CombatImpactBatch.InAction);
             LogSystem("+" + gold + " 金币 · +" + experience + " 经验");
             SpawnFloatingText(position + Vector3.up * 2, "+" + experience + " XP  +" + gold + " G", new Color(.95f, .83f, .4f));
             if (boss || Random.value < (InDungeon ? .7f : .5f))
@@ -491,8 +494,8 @@ namespace Emberfall
             enemy.BeginDeath();
             transientObjects.RemoveAll(go => go == null);
             transientObjects.Add(enemy.gameObject);
-            // Capture real callback mutations; unchanged rewards do not rotate backups.
-            Progression.Save();
+            // Coalesce kills from one combat action into one durable snapshot.
+            CombatImpactBatch.AfterCurrentAction(Progression.Save);
             if(ChapterActive)FinalizeChapterBoss();
             if(RoomChainRun!=null)FinalizeRoomChain();
             if(ModeRun!=null)FinalizeArenaResult();

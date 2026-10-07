@@ -1,0 +1,19 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Export.csproj]
+PASS 85 actual factory/loader/16-combination before-after/anchors/fallback assertions; managed TRS, not Unity
+PASS compiled weapon negative control: wrong-tip
+PASS compiled weapon negative control: skip-base
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Export.csproj]
+A fatal error was encountered. The library 'libhostpolicy.dylib' required to execute the application was not found in '/private/tmp/emberfall-dotnet'.
+Failed to run as a self-contained app.
+  - The application was run as a self-contained app because '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/bin/Debug/net8.0/Export.runtimeconfig.json' was not found.
+  - If this should be a framework-dependent app, add the '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/bin/Debug/net8.0/Export.runtimeconfig.json' file and specify the appropriate framework.
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/WeaponContactProductionTests.py", line 25, in <module>
+    subprocess.run([dotnet,'run','--project',str(p/'Export.csproj')],check=True,env=dict(os.environ,DOTNET_CLI_HOME=str(out/'cli')))
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/emberfall-dotnet/dotnet', 'run', '--project', '/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/weapon-contact-5raw24ui/export/Export.csproj']' returned non-zero exit status 131.

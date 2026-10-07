@@ -1,0 +1,17 @@
+  Determining projects to restore...
+  Restored /tmp/emberfall-blender-vfx-n293ub21/Validation.csproj (in 420 ms).
+RESOURCE Crescent vertices=100 triangles=196 bytes=5564
+RESOURCE CrescentCore vertices=100 triangles=196 bytes=5564
+RESOURCE Shard vertices=5 triangles=6 bytes=244
+RESOURCE Fault vertices=6 triangles=4 bytes=252
+Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.
+   at Emberfall.BlenderSkillVfx.Sample() in /tmp/emberfall-blender-vfx-n293ub21/BlenderSkillVfx.cs:line 72
+   at Emberfall.BlenderSkillVfx.TryPlay(PlayerController hero, Single range, Boolean groundShock) in /tmp/emberfall-blender-vfx-n293ub21/BlenderSkillVfx.cs:line 46
+   at BlenderSkillVfxProductionTests.Run(String repository) in /tmp/emberfall-blender-vfx-n293ub21/BlenderSkillVfxProductionTests.cs:line 61
+   at Program.<Main>$(String[] args) in /tmp/emberfall-blender-vfx-n293ub21/Program.cs:line 1
+Traceback (most recent call last):
+  File "/workspace/emberfall_ios_progression/Tests/BlenderSkillVfxProductionTests.py", line 39, in <module>
+    subprocess.run(command,check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/emberfall-dotnet/dotnet', 'run', '--project', '/tmp/emberfall-blender-vfx-n293ub21/Validation.csproj', '--no-restore', '-c', 'Release', '--', '/workspace/emberfall_ios_progression']' returned non-zero exit status 134.

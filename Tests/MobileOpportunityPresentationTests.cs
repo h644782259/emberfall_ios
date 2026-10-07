@@ -14,7 +14,7 @@ namespace UnityEngine {
  public class Transform{public Vector3 position;}
 }
 namespace Emberfall {
- public static class EffectPreferences{public static float TouchVisualScale=1,TouchOpacity=1;}public static class GameFont{public static Font Shared=new Font();}
+ public static class EffectPreferences{public static float TouchVisualScale=1,TouchOpacity=1,InterfaceTextScale=1;}public static class GameFont{public static Font Shared=new Font();}
  public class SkillChargeController{public bool IsCharging;public int SkillIndex;public float Progress=.5f;}public class EnemyController{public Transform transform=new Transform();public string DisplayName;}
  public class PlayerController{
  public int CombatEpoch=1;public float Energy=100;public float Cooldown;public float SkillCooldownRemaining(int skill)=>Cooldown;public SkillChargeController Charge=new SkillChargeController();public CombatOpportunityState SkillWindow;public int LastSkill;public CombatOpportunityState SkillOpportunityWindow(int skill){LastSkill=skill;return skill==3||skill==8?default:SkillWindow;}

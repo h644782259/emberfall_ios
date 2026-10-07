@@ -29,7 +29,7 @@ namespace Emberfall {
   enum Panel{None,Inventory,Skills,Camp,TravelMap,SaveSelection,Chests,Fashion,PotionAssignment,Bindings,SaveLocation,Controls}
   Panel panel=Panel.Inventory,bindingReturnPanel;SessionStub session=new SessionStub();
   bool presetSaleOpen;bool mobileInventoryDetail=true,saveSelectionFromPause,chestDetails,bindingReturnPause,saveReturnPause,controlsReturnPause;
-  int mobileInventoryTab,rebindingSlot,blocks,cancels;float mobileInventoryListScroll=173,mobileInventoryDetailScroll=81,chestRevealedAt;
+  int mobileInventoryTab,mobileInventoryPicker,rebindingSlot,blocks,cancels;float mobileInventoryListScroll=173,mobileInventoryDetailScroll=81,chestRevealedAt;
   const float ChestDuration=1;bool ChestAnimationDone=>true;
   bool CloseMobileSkillDetail()=>false;bool CloseChapterSelection()=>false;bool CloseRouteSkill()=>false;bool CloseProgressionGoalSurface()=>false;bool CloseClassSwitchSurface()=>false;bool CloseBuildPlanSurface()=>false;bool CloseTravelMap()=>false;bool CancelSaveDeletion()=>false;bool CancelActiveSaveFlow()=>false;
   void BlockUITransition(){blocks++;}void CancelMobileScroll(){cancels++;}void FinishChestReveal(){}void ReturnToInventory(){panel=Panel.Inventory;}
@@ -49,6 +49,8 @@ namespace Emberfall {
     check((ui.panel==Panel.Inventory)==intercepted,"only visible compact detail owns Back");check(ui.session.Blocked==intercepted,"wide/supply/list/desktop retain outer close behavior");
    }
    MobileControls.Active=true;MobileControls.Layout.Width=568;
+   foreach(float width in new[]{568,1024}) { MobileControls.Layout.Width=width; var picker=new GameUI{mobileInventoryDetail=false,mobileInventoryPicker=1}; picker.ClosePanel(); check(picker.panel==Panel.Inventory&&picker.mobileInventoryPicker==0&&picker.session.Blocked,"picker Back preserves inventory on phone and tablet"); }
+   MobileControls.Layout.Width=568;
    var sale=new GameUI{presetSaleOpen=true};sale.ClosePanel();
    check(!sale.presetSaleOpen&&sale.panel==Panel.Inventory&&sale.mobileInventoryDetail&&sale.session.Blocked&&sale.blocks==1,"preset cancellation owns Back before inventory detail and retains blocking");
    sale.ClosePanel();check(sale.panel==Panel.Inventory&&!sale.mobileInventoryDetail&&sale.session.Blocked,"next Back returns equipment detail to list");

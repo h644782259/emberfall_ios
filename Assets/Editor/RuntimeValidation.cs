@@ -151,6 +151,42 @@ namespace Emberfall.Editor
             }
         }
 
+        private static IEnumerator ValidateRoomGeneration(GameSession game)
+        {
+            game.StartNew(HeroClass.Vanguard);
+            game.SelectedArenaMode=3;
+            foreach(int seed in new[]{0,1,2,17,42,12345})
+            foreach(RoomBranch branch in new[]{RoomBranch.Seal,RoomBranch.Supply})
+            {
+                // Real scene geometry, props, navigation and enemy models; isolated saves only.
+                Check((bool)typeof(GameSession).GetMethod("ChangeZone",PrivateInstance).Invoke(game,new object[]{true}),"Room fixture enters dungeon");
+                var run=new RoomChainState(seed,branch);
+                typeof(RoomChainState).GetMethod("SetRoom",PrivateInstance).Invoke(run,new object[]{new RoomChainPlan(2,seed,branch)});
+                typeof(GameSession).GetProperty("RoomChainRun").SetValue(game,run);
+                Field(typeof(GameSession),"runSeed").SetValue(game,seed);
+                Field(typeof(GameSession),"roomResultRecorded").SetValue(game,false);
+                typeof(GameSession).GetMethod("ResetRoomGenerationDiagnostics",PrivateInstance).Invoke(game,null);
+                foreach(var enemy in game.Enemies)if(enemy!=null){enemy.gameObject.SetActive(false);UnityEngine.Object.Destroy(enemy.gameObject);}
+                game.Enemies.Clear();
+                ((System.Collections.IDictionary)Field(typeof(GameSession),"roomEnemies").GetValue(game)).Clear();
+                var oldWorld=(GameObject)Field(typeof(GameSession),"world").GetValue(game);
+                oldWorld.SetActive(false);UnityEngine.Object.Destroy(oldWorld);
+                Field(typeof(GameSession),"world").SetValue(game,WorldBuilder.Build(ZoneKind.Dungeon,run.Room.Layout,game.Progression.HighestAdventureTier));
+                game.Player.Teleport(TacticalRoomGeometry.Entrance);
+                typeof(GameSession).GetMethod("BeginRoomChainScene",PrivateInstance).Invoke(game,null);
+                Check(!run.Failed&&string.IsNullOrEmpty(game.RoomGenerationFailureDetail),"Actual "+branch+" generation succeeds, seed "+seed);
+                Check(game.Enemies.Count==run.Room.EnemyCount,"All branch enemies instantiated and registered");
+                foreach(var enemy in game.Enemies)
+                {
+                    enemy.enabled=false;
+                    Check(WorldTraversal.IsWalkable(enemy.transform.position,.65f)&&WorldTraversal.CanReach(TacticalRoomGeometry.Entrance,enemy.transform.position,.65f),"Branch spawn is walkable and reachable through real scenery");
+                }
+                yield return null;
+            }
+            game.SelectedArenaMode=-1;
+            Check((bool)typeof(GameSession).GetMethod("ChangeZone",PrivateInstance).Invoke(game,new object[]{false}),"Branch validation returns to wilderness");
+        }
+
         private static IEnumerator Smoke()
         {
             GameSession game = GameSession.Instance;
@@ -166,6 +202,28 @@ namespace Emberfall.Editor
 
             IEnumerator saveSlotValidation = SaveSlotRuntimeValidation.Validate(game, Check, Append);
             while (saveSlotValidation.MoveNext()) yield return saveSlotValidation.Current;
+
+            GameUI textUI=game.GetComponent<GameUI>();
+            MethodInfo styleMethod=typeof(GameUI).GetMethod("Style",PrivateInstance);
+            bool hadTextScale=PlayerPrefs.HasKey("Emberfall.InterfaceTextScale");
+            float previousTextScale=EffectPreferences.InterfaceTextScale;
+            try
+            {
+                EffectPreferences.InterfaceTextScale=1;
+                var regular=(GUIStyle)styleMethod.Invoke(textUI,new object[]{15,false,true,TextAnchor.UpperLeft});
+                EffectPreferences.InterfaceTextScale=1.2f;
+                var enlarged=(GUIStyle)styleMethod.Invoke(textUI,new object[]{15,false,true,TextAnchor.UpperLeft});
+                Check(regular.fontSize==15&&enlarged.fontSize==18&&!ReferenceEquals(regular,enlarged),"Changing interface font size immediately replaces cached styles");
+                Check(PlayerPrefs.GetFloat("Emberfall.InterfaceTextScale")==1.2f,"Interface font size persists independently of character saves");
+            }
+            finally
+            {
+                if(hadTextScale)EffectPreferences.InterfaceTextScale=previousTextScale;
+                else{PlayerPrefs.DeleteKey("Emberfall.InterfaceTextScale");PlayerPrefs.Save();}
+            }
+
+            IEnumerator roomValidation=ValidateRoomGeneration(game);
+            while(roomValidation.MoveNext())yield return roomValidation.Current;
 
             for (int heroIndex = 0; heroIndex < 4; heroIndex++)
             {

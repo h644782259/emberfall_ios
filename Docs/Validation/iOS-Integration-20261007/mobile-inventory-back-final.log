@@ -1,0 +1,26 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Program.cs(11,31): warning CS0649: 从未对字段“GameUI.bindingReturnPanel”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Program.cs(13,48): warning CS0414: 字段“GameUI.rebindingSlot”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Validation.csproj]
+
+Build succeeded.
+
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Program.cs(11,31): warning CS0649: 从未对字段“GameUI.bindingReturnPanel”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Program.cs(13,48): warning CS0414: 字段“GameUI.rebindingSlot”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-4i8o5dme/project/Validation.csproj]
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.77
+PASS: 108 production inventory ClosePanel assertions
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Program.cs(11,31): warning CS0649: 从未对字段“GameUI.bindingReturnPanel”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Program.cs(13,48): warning CS0414: 字段“GameUI.rebindingSlot”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Validation.csproj]
+
+Build succeeded.
+
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Program.cs(11,31): warning CS0649: 从未对字段“GameUI.bindingReturnPanel”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Program.cs(13,48): warning CS0414: 字段“GameUI.rebindingSlot”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/inventory-back-hvpbvn1s/project/Validation.csproj]
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.53
+PASS: mandatory legacy negative control compiled, then failed precisely at first-Back combat-blocking assertion

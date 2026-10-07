@@ -5,7 +5,7 @@ import os,sys,tempfile,subprocess,json
 root=Path(__file__).resolve().parents[1];dotnet=sys.argv[1] if len(sys.argv)>1 else 'dotnet'
 fixture=(root/'Tests/ActorModulesProductionTests.py').read_text().split("(p/'Test.cs').write_text(r'''",1)[1].split('class Program',1)[0]
 with tempfile.TemporaryDirectory(prefix='f1-art-') as temp:
- p=Path(temp)
+ p=Path(temp).resolve()
  for name in ['AuthoredActorMeshes','ActorSilhouetteF1']:(p/(name+'.cs')).write_text((root/'Assets/Scripts/Combat'/(name+'.cs')).read_text())
  (p/'Test.cs').write_text(fixture+r'''
 class Program {static void Check(bool ok,string why){if(!ok)throw new Exception(why);}static void Reset()=>typeof(ActorSilhouetteF1).GetMethod("Reset",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic).Invoke(null,null);

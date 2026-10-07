@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile,subprocess,sys,os
 root=Path(__file__).resolve().parents[1];dotnet=sys.argv[1] if len(sys.argv)>1 else 'dotnet'
 with tempfile.TemporaryDirectory(prefix='vanguard-recovery-') as temp:
- out=Path(temp)
+ out=Path(temp).resolve()
  subprocess.run([sys.executable,str(root/'ArtSource/VanguardActions/export_actions.py'),str(out),dotnet],check=True)
  p=out/'export'
  (p/'CombatImpactBatch.cs').write_text((root/'Assets/Scripts/Core/CombatImpactBatch.cs').read_text())

@@ -1,0 +1,17 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(23,115): warning CS0649: 从未对字段“GameUI.muted”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(13,51): warning CS0649: 从未对字段“PlayerController.model”赋值，字段将一直保持其默认值 null [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(23,100): warning CS0649: 从未对字段“GameUI.gold”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(23,110): warning CS0649: 从未对字段“GameUI.pale”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(23,105): warning CS0649: 从未对字段“GameUI.jade”赋值，字段将一直保持其默认值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/Boundary.cs(13,119): warning CS0414: 字段“PlayerController.coreWardTime”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj]
+Unhandled exception. System.Exception: actual mobile TouchFont policy exercises 15/24/32 logical fonts
+   at Emberfall.GameUI.G(Boolean value, String why) in /Users/admin/Desktop/自开发/emberfall_ios/Tests/BuildPlanPageGeometryBoundary.cs:line 17
+   at Emberfall.GameUI.Geometry(ProgressionService p) in /Users/admin/Desktop/自开发/emberfall_ios/Tests/BuildPlanPageGeometryBoundary.cs:line 51
+   at Program.Main(String[] args) in /var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Program.cs:line 1
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/BuildPlanPageGeometryTests.py", line 39, in <module>
+    subprocess.run([sys.argv[1] if len(sys.argv)>1 else 'dotnet','run','--project',str(project),'--',str(p/'saves')],check=True,env=dict(os.environ,DOTNET_CLI_HOME=str(p/'cli'),DOTNET_NOLOGO='1'))
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/emberfall-dotnet/dotnet', 'run', '--project', '/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/project/Validation.csproj', '--', '/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/whole-plan-geometry-n8vkllv3/saves']' returned non-zero exit status 134.

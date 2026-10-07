@@ -1,0 +1,22 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/final-envelope-f3nap49e/export/Motion.cs(1,202): warning CS0414: 字段“CombatModel.pilotCharging”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/final-envelope-f3nap49e/export/Export.csproj]
+PASS 59 actual combined factory/F1/F3/Vanguard/equipment/fashion samples: 4 classes x base/T4 x seven real basic timeline samples + 3 actual caster/arrow-draw skill poses; real blade/grip/string contacts, stable mesh identities; NOT Unity
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+PASS actual 3 guard blocks x 3 ranks and 4 passive true triggers -> actual ProtectionCage mesh; paused/state end/death/epoch; immediate lease release; same-frame child rerent isolated; missing asset fallback. Managed not Unity.
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+PASS actual 3 guard blocks x 3 ranks and 4 passive true triggers -> actual ProtectionCage mesh; paused/state end/death/epoch; immediate lease release; same-frame child rerent isolated; missing asset fallback. Managed not Unity.
+PASS compiled layer control: actual F1 body loaded
+PASS compiled layer control: actual F3 weapon loaded
+PASS compiled layer control: actual Vanguard layer changes contact
+PASS compiled negative control missing-identity
+PASS compiled negative control lost-body-envelope
+PASS compiled negative control stale-state
+PASS compiled negative control old-persistent-motion
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/FinalBodyEnvelopeProductionTests.py", line 39, in <module>
+    ns={'__file__':str(root/'Tests/DefenseIdentityProductionTests.py'),'sample':sample,'out':out};sys.argv=['defense',sdk,str(out/'protection.json')];exec(compile(code,str(root/'Tests/DefenseIdentityProductionTests.py'),'exec'),ns)
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/DefenseIdentityProductionTests.py", line 62, in <module>
+AssertionError: Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/ArtSource/FinalBodyEnvelope/measure.py", line 4, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'

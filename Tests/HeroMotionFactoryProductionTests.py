@@ -7,7 +7,7 @@ import os,sys,tempfile,subprocess
 root=Path(__file__).resolve().parents[1]
 sdk=sys.argv[1] if len(sys.argv)>1 else os.environ.get('DOTNET','dotnet')
 with tempfile.TemporaryDirectory(prefix='hero-motion-factory-') as tmp:
- out=Path(tmp)
+ out=Path(tmp).resolve()
  source=(root/'ArtSource/VanguardActions/export_actions.py').read_text()
  prefix=source[:source.index("subprocess.run([dotnet,'run'")]
  original_argv=sys.argv;sys.argv=['export',str(out),sdk]

@@ -1,0 +1,17 @@
+{
+    "passed": true,
+    "runtimePassed": true,
+    "unityVersion": "6000.6.4f1",
+    "resultsDirectory": "/Users/admin/Desktop/自开发/emberfall_ios/Tests/TestResults/PlayMode-1567be66277f499c943f05ad1f278dcf",
+    "isolatedSaveDirectory": "/Users/admin/Desktop/自开发/emberfall_ios/Tests/TestResults/PlayMode-1567be66277f499c943f05ad1f278dcf/IsolatedSave",
+    "assertions": 2302,
+    "consoleErrors": 0,
+    "runtimeErrors": 0,
+    "totalObservedConsoleErrors": 0,
+    "editorInfrastructureErrorCount": 0,
+    "editorInfrastructureErrors": [],
+    "screenshots": 10,
+    "elapsedSeconds": 100.49669647216797,
+    "failure": "",
+    "captureScope": "Authentic Camera.Render images of the runtime 3D world; OnGUI is exercised but is not included in camera captures."
+}

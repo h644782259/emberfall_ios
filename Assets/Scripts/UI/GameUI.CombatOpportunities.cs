@@ -31,8 +31,7 @@ namespace Emberfall
                 string caption=recall?(SummonedCompanion.IsFreeRecalled(session.Player)?"出击":"召回"):"集火";
                 if(!session.InputBlocked&&commandEpoch==session.Player.CombatEpoch&&Time.unscaledTime<commandStatusUntil&&commandRecall==recall)caption=commandStatus;
                 Box(r,jade,false);
-                Text(new Rect(r.x,r.y+4*(MobileControls.Active?TouchRatio:1),r.width,r.height*.5f),caption,MobileControls.Active?TouchFont(11):12,pale,true,false,TextAnchor.MiddleCenter);
-                Text(new Rect(r.x,r.y+r.height*.55f,r.width,r.height*.35f),"免费",MobileControls.Active?TouchFont(9):10,jade,false,false,TextAnchor.MiddleCenter);
+                Text(r,caption,MobileControls.Active?TouchFont(11):12,pale,true,false,TextAnchor.MiddleCenter);
                 // MobileControls owns all physical pointers; the IMGUI surface is
                 // presentation-only on touch devices, preventing duplicate orders.
                 if(!MobileControls.Active&&GUI.Button(r,GUIContent.none,invisibleButton))ActivateFreeCommand(recall);
@@ -59,13 +58,13 @@ namespace Emberfall
         private string DesktopBasicOpportunityCaption()
         {
             var hero=session.Player;
-            if(hero==null||hero.IsDead||session.InputBlocked||!session.HasStarted)return "技能快捷栏";
+            if(hero==null||hero.IsDead||session.InputBlocked||!session.HasStarted)return "";
             string failure=session.ControlFailure("attack");
             var combo=hero.BasicOpportunityWindow(true);var counter=hero.BasicOpportunityWindow();
             if(!string.IsNullOrEmpty(failure)&&!combo.Window&&!counter.Window)return "左键普攻 · "+failure;
             if(combo.Window||counter.Window)return "左键普攻 · "+(counter.Window?counter.Caption+(counter.Actionable?"":"·待"):"")+(combo.Window?(counter.Window?" · ":"")+combo.Caption+(combo.Actionable?"":"·待"):"");
             var opportunity=hero.BasicOpportunity();
-            return opportunity.Actionable?"左键普攻 · "+opportunity.Caption:"技能快捷栏";
+            return opportunity.Actionable?"左键普攻 · "+opportunity.Caption:"";
         }
         private readonly CombatResultChannel resultChannel=new CombatResultChannel();
         private string CurrentCombatResult()

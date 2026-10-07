@@ -22,13 +22,18 @@ namespace Emberfall
         private void DrawAvailability()
         {
             if(controlLabel==null)controlLabel=new GUIStyle(GUI.skin.label){alignment=TextAnchor.MiddleCenter,fontSize=12,fontStyle=FontStyle.Bold,font=GameFont.Shared};
+            controlLabel.fontSize=Mathf.RoundToInt(12*EffectPreferences.InterfaceTextScale);
             controlLabel.normal.textColor=Color.white;
             var hero=session.Player;
             string potionState=MobileCombatPresentation.Potion(PotionCount,LimitedHealing,hero.Health>=hero.MaxHealth-.5f);
             string dodgeState=MobileCombatPresentation.Dodge(hero.DodgeCooldown,hero.IsJumping);
             if(potionState.Length>0)Circle(Potion,new Color(.015f,.035f,.04f,.67f),"");
             if(dodgeState.Length>0)Circle(Dodge,new Color(.015f,.035f,.04f,.67f),"");
-            LabelControl(Potion,LimitedHealing?"疗 "+PotionCount:"×"+PotionCount,false);
+            Rect potionVisual=VisualRect(Potion);
+            Rect countBadge=new Rect(potionVisual.xMax-24,potionVisual.yMax-18,24,18);
+            GUI.color=new Color(.015f,.025f,.04f,EffectPreferences.TouchOpacity);
+            GUI.DrawTexture(countBadge,Texture2D.whiteTexture);GUI.color=Color.white;
+            GUI.Label(countBadge,PotionCount.ToString(),controlLabel);
             if(dodgeState.Length>0)LabelControl(Dodge,hero.DodgeCooldown>.01f?hero.DodgeCooldown.ToString("0.0"):dodgeState,true);
             string failure=session.ControlFailure("potion");if(!string.IsNullOrEmpty(failure))LabelControl(Potion,failure,true);
             else if(potionState=="满血")LabelControl(Potion,potionState,true);

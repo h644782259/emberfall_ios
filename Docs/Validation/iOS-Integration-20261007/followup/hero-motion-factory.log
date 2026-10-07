@@ -1,0 +1,11 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/hero-motion-factory-jpcdtneu/export/Export.csproj]
+PASS 1915 actual four-class Hero/AnimateHero/locomotion/first-skill/numeric quaternion/anchor assertions. Player physics, imported five-clip preview, Unity cloth/render are unexecuted boundaries.
+ CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+
+PASS compiled production mutation rejected: real AnimateHero uses class bob
+PASS compiled production mutation rejected: real spine crouch/breathing
+PASS compiled production mutation rejected: real summoner head observation

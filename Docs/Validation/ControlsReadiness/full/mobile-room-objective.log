@@ -1,0 +1,5 @@
+
+/workspace/emberfall_ios_controls/Assets/Scripts/UI/MobileControlLayout.cs(19,50): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/EmberfallCloudValidation-c22g172_/mobile-room-objective/Validation.csproj]
+/workspace/emberfall_ios_controls/Assets/Scripts/UI/MobileControlLayout.cs(47,36): error CS0103: The name 'MobileSkillPolicy' does not exist in the current context [/tmp/EmberfallCloudValidation-c22g172_/mobile-room-objective/Validation.csproj]
+
+The build failed. Fix the build errors and run again.

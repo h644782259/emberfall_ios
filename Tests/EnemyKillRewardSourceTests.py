@@ -32,13 +32,13 @@ check("for (int level = oldLevel + 1; level <= earnedLevel; level++)" in award,
 check(kill.index("AdventureResultPolicy.AcceptsKill(") < kill.index("Progression.GrantEnemyKillReward(") and
       kill.index("!Enemies.Remove(enemy)") < kill.index("Progression.GrantEnemyKillReward("),
       "the existing current-enemy admission guard prevents duplicate or stale kill awards")
-check(kill.count("Progression.GrantEnemyKillReward(gold, experience);") == 1 and
+check(kill.count("Progression.GrantEnemyKillReward(gold, experience, deferSave: CombatImpactBatch.InAction);") == 1 and
       all(old not in kill for old in ("Profile.kills++", "Progression.AddGold(", "Progression.GrantExperience(")),
       "session awards kills, gold and XP once through the coupled service operation")
 check(kill.index("int level = Progression.Profile.level;") < kill.index("Progression.GrantEnemyKillReward(") <
       kill.index("Progression.RollLoot(Progression.Profile.level + (boss ? 1 : 0)"),
       "reward values use pre-kill level while item rolling sees the gained level")
-check(kill.index("DeliverEnemyLoot(loot, position);") < kill.index("Progression.Save();") and kill.count("Progression.Save();") == 1,
+check(kill.index("DeliverEnemyLoot(loot, position);") < kill.rindex("CombatImpactBatch.AfterCurrentAction(Progression.Save);") and kill.count("CombatImpactBatch.AfterCurrentAction(Progression.Save);") == 2,
       "final save remains after callbacks and loot delivery to persist real direct mutations")
 delivery = session[session.index("private void DeliverEnemyLoot("):session.index("public GroundLootPickup SpawnGroundLoot(")]
 check("Progression.CollectLoot(loot)" in delivery and "SpawnGroundLoot(loot, position)" in delivery,

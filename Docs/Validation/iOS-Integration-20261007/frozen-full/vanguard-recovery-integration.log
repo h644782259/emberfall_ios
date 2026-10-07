@@ -1,0 +1,22 @@
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+PASS executed production Hero, AnimateHero, ApplyHeroLocomotion, ApplyAuthoredVanguardPose and SampleVanguardDeath; managed numerical transforms
+PASS 13 distinct actual final poses; fixed body hierarchy, finite TRS and unit rotations
+CSSM_ModuleLoad(): One or more parameters passed to a function were not valid.
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/MotionExport.cs(135,171): warning CS0414: 字段“CombatModel.pilotCharging”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(720,76): warning CS0414: 字段“CombatModel.floating”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Model.cs(10,40): warning CS0414: 字段“CombatModel.quadruped”已被赋值，但从未使用过它的值 [/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj]
+A fatal error was encountered. The library 'libhostpolicy.dylib' required to execute the application was not found in '/private/tmp/emberfall-dotnet'.
+Failed to run as a self-contained app.
+  - The application was run as a self-contained app because '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/bin/Debug/net8.0/Export.runtimeconfig.json' was not found.
+  - If this should be a framework-dependent app, add the '/private/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/bin/Debug/net8.0/Export.runtimeconfig.json' file and specify the appropriate framework.
+Traceback (most recent call last):
+  File "/Users/admin/Desktop/自开发/emberfall_ios/Tests/VanguardRecoveryIntegrationTests.py", line 82, in <module>
+    subprocess.run(cmd,env=env,check=True)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/emberfall-dotnet/dotnet', 'run', '--project', '/var/folders/cr/68gpf_l55gn7vm4dvyx5jf7m0000gn/T/vanguard-recovery-7dldrbbr/export/Export.csproj']' returned non-zero exit status 131.

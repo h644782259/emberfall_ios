@@ -2173,7 +2173,7 @@ namespace Emberfall
         /// complete earned reward once. A failed save keeps the reward live: retry
         /// Save(), never this grant. Enemy identity admission belongs to the session.
         /// </summary>
-        public void GrantEnemyKillReward(int gold, int experience)
+        public void GrantEnemyKillReward(int gold, int experience, bool deferSave = false)
         {
             if (gold < 0 || experience < 0) { Fail("击败敌人奖励无效。"); return; }
             Profile.kills = (int)Math.Min(int.MaxValue, (long)Profile.kills + 1);
@@ -2192,9 +2192,9 @@ namespace Emberfall
             }
             // Capture the earned range before callbacks can mutate the profile.
             int earnedLevel = Profile.level;
-            Commit();
-            // As with GrantExperience, failure keeps live progress and LastError;
-            // Changed runs once before level notifications, all seeing final stats.
+            if (deferSave) RaiseChanged(); else Commit();
+            // Combat actions queue their save before this call. Outside an action,
+            // Changed still sees the immediate save result before level callbacks.
             for (int level = oldLevel + 1; level <= earnedLevel; level++)
                 RaiseLeveledUp(level);
         }

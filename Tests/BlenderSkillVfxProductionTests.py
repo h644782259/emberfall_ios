@@ -11,6 +11,7 @@ dotnet = os.environ.get('DOTNET', 'dotnet')
 # Reuse the established managed scene implementation, without its unrelated test cases.
 fixture = (root/'Tests/FilledVfxAllocationTests.cs').read_text()
 fixture = 'using System;\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Reflection;\nusing UnityEngine;\n' + fixture[fixture.index('namespace Emberfall\n{'):]
+fixture = fixture.replace('components.Add(c);return c;', 'components.Add(c);c.GetType().GetMethod("Awake",BindingFlags.Instance|BindingFlags.NonPublic)?.Invoke(c,null);return c;')
 fixture = fixture.replace('public static int FootprintCalls;', 'public static int FootprintCalls;public static float LastFootprint;')
 fixture = fixture.replace('float radius){FootprintCalls++;return', 'float radius){LastFootprint=radius;FootprintCalls++;return')
 fixture = fixture.replace('public Vector3 right=>', 'public Vector3 forward=>localRotation.Rotate(Vector3.forward);\n        public Vector3 right=>')

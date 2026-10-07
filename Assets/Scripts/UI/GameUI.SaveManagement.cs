@@ -14,7 +14,7 @@ namespace Emberfall
         {
             if (session.HasStarted) return;
             SaveSlotInfo selected = saveSlots.Find(slot => slot.Id == selectedSaveId);
-            if (Button(rect, "删除角色…", new Color(1f, .48f, .42f), selected != null,
+            if (DangerButton(rect, "删除角色…", new Color(1f, .48f, .42f), selected != null,
                 "先核对角色、保存时间与存档编号，再确认永久删除。"))
             {
                 SaveDeletionRequest request;

@@ -90,8 +90,8 @@ namespace Emberfall
             Text(TouchRect(22,17,68,18),GameBalance.ClassName(p.heroClass)+" "+p.level,TouchFont(12),pale,true);
             float hp=session.Player==null?0:session.Player.Health,max=session.Player==null?1:session.Player.MaxHealth;
             Text(TouchRect(90,17,87,18),Mathf.CeilToInt(hp)+"/"+Mathf.CeilToInt(max),TouchFont(11),pale,true,false,TextAnchor.MiddleRight);
-            Bar(TouchRect(22,39,155,8),hp/Mathf.Max(1,max),jade);
-            Bar(TouchRect(22,52,155,5),session.Player==null?0:session.Player.Energy/Mathf.Max(1,session.Player.MaxEnergy),new Color(.35f,.63f,1));
+            Bar(TouchRect(MobilePassiveStatusLayout.HealthBar),hp/Mathf.Max(1,max),jade);
+            Bar(TouchRect(MobilePassiveStatusLayout.EnergyBar),session.Player==null?0:session.Player.Energy/Mathf.Max(1,session.Player.MaxEnergy),new Color(.35f,.63f,1));
             if(MobileIcon(l.Inventory,"inventory",jade))TogglePanel(Panel.Inventory);
             if(MobileIcon(l.SkillsMenu,"skills",p.skillPoints>0?gold:jade))TogglePanel(Panel.Skills);
             if(MobileIcon(l.Menu,"pause",muted))session.SetPaused(true);
@@ -142,29 +142,49 @@ namespace Emberfall
             var l=MobileControls.Layout;GameProfile p=session.Progression.Profile;
             for(int i=0;i<MobileSkillPolicy.ButtonCount;i++)
             {
-                Rect hit=hotbarSlots[i];blockedRects.Add(hit);Rect r=MobileVisualRect(hit);int skill=MobileSkillPolicy.SkillAtButton(i);bool learned=p.skillRanks[skill]>0;bool passive=GameBalance.IsPassive(skill);
-                Fill(r,new Color(.035f,.075f,.105f,.92f));Border(r,!learned?muted*.25f:GameBalance.ClassColor(p.heroClass));
-                float iconSize=Mathf.Min(r.width-4*TouchRatio,Mathf.Min(r.height-17*TouchRatio,42*TouchRatio));DrawSkillIdentity(new Rect(r.center.x-iconSize*.5f,r.y+TouchRatio,iconSize,iconSize),p.heroClass,skill,p.skillRanks[skill],learned,iconSize/TouchRatio<=24?24:32);
-                if(passive||!learned)Text(new Rect(r.x,r.yMax-15*TouchRatio,r.width,15*TouchRatio),passive?"被动":"Lv."+GameBalance.SkillRequiredLevels[skill],TouchFont(9),passive?new Color(.8f,.7f,1):muted,true,false,TextAnchor.MiddleCenter);
+                Rect hit=hotbarSlots[i];blockedRects.Add(hit);Rect r=MobileVisualRect(hit);int skill=MobileSkillPolicy.SkillAtButton(i);
+                bool ready=session.Player!=null&&session.Player.IsSkillAvailable(skill);
+                bool pressed=mobileTap.Skill==skill&&mobileTap.Active;
+                DrawIcon(r,UIIconAtlas.ControlDisc(),ready?new Color(.12f,.42f,.39f,.45f):new Color(.025f,.045f,.06f,.34f));
+                float iconSize=Mathf.Min(r.width,r.height)*.76f;
+                Rect icon=new Rect(r.center.x-iconSize*.5f,r.center.y-iconSize*.5f,iconSize,iconSize);
+                // Floating transparent glyph: the entire identity carries availability.
+                Color tint=pressed&&ready?gold:ready?Color.white:new Color(.38f,.42f,.46f,.58f);
+                DrawIcon(icon,UIIconAtlas.SkillGlyph(p.heroClass,skill,48),tint);
                 DrawMobileSkillAvailability(r,skill);
-                if(mobileTap.Skill==skill&&mobileTap.Active)Border(r,gold,2*TouchRatio);
             }
+            DrawMobilePassiveIdentities();
             controlOpacity=priorOpacity;
+        }
+        private void DrawMobilePassiveIdentities()
+        {
+            var profile=session.Progression.Profile;
+            for(int i=0;i<MobilePassiveStatusLayout.Count;i++)
+            {
+                int skill=MobilePassiveStatusLayout.SkillAtIndicator(i),rank=profile.skillRanks[skill];
+                Rect area=TouchRect(MobilePassiveStatusLayout.Indicator(i));blockedRects.Add(area);
+                DrawSkillIdentity(new Rect(area.x,area.y,area.width,24*TouchRatio),profile.heroClass,skill,rank,rank>0,24);
+                Text(new Rect(area.x,area.y+24*TouchRatio,area.width,10*TouchRatio),rank>0?"被动":"未学",TouchFont(9),rank>0?pale:muted,false,false,TextAnchor.MiddleCenter);
+            }
         }
         private string mobileNoticeDetail;
         private Vector2 mobileNoticeScroll;
         private void DrawMobileBattleNotice()
         {
             var area=MobileControls.Layout.Notice;
-            Rect r=TouchRect(area);blockedRects.Add(r);
+            Rect r=TouchRect(area);
             Box(r,gold,false);
-            Text(TouchRect(area.X+7,area.Y+6,area.Width-14,area.Height-30),PlatformText(session.Notification),TouchFont(12),pale,false,true);
-            Text(TouchRect(area.X+7,area.Y+area.Height-21,area.Width-14,16),"轻触查看完整提示",TouchFont(10),gold,false,false,TextAnchor.MiddleCenter);
-            if(GUI.Button(r,GUIContent.none,invisibleButton))
-            {
-                mobileNoticeDetail=PlatformText(session.Notification);mobileNoticeScroll=Vector2.zero;
-                panel=Panel.Notice;session.SetUIBlocking(true);CancelMobileScroll();BlockUITransition();
-            }
+            Text(TouchRect(area.X+7,area.Y+6,area.Width-14,area.Height-12),PlatformText(session.Notification),TouchFont(12),pale,false,true);
+        }
+        private void OpenMobileNoticeFromPause()
+        {
+            if(!session.Paused)return;
+            var detail=new System.Text.StringBuilder();
+            if(!string.IsNullOrEmpty(session.Notification))detail.AppendLine(PlatformText(session.Notification));
+            if(!string.IsNullOrEmpty(session.Progression.LastError))detail.AppendLine(session.Progression.LastError);
+            foreach(var message in session.SystemMessages)detail.AppendLine(PlatformText(message.Text));
+            mobileNoticeDetail=detail.Length==0?"暂无系统提示":detail.ToString();mobileNoticeScroll=Vector2.zero;
+            panel=Panel.Notice;session.SetUIBlocking(true);session.SetPaused(false);CancelMobileScroll();BlockUITransition();
         }
         private void DrawMobileNotice()
         {
@@ -175,8 +195,8 @@ namespace Emberfall
                 new Rect(0,0,contentWidth*TouchRatio,Mathf.Max(layout.Body.Height,contentHeight)*TouchRatio));
             DrawMobileParagraph(8,8,contentWidth-16,mobileNoticeDetail,16,pale);
             EndTouchScroll();
-            if(Button(MobilePanelRect(layout.FooterButton(0,1)),"返回冒险",jade))
-            {ClosePanel();BlockUITransition();}
+            if(NavigationButton(MobilePanelRect(layout.FooterButton(0,1)),"返回暂停菜单",jade))
+            {ClosePanel();session.SetPaused(true);BlockUITransition();}
         }
         private void DrawMobileTitle()
         {
@@ -193,8 +213,8 @@ namespace Emberfall
                 Text(TouchRect(x+i*134+5,y+166,116,31),GameBalance.ClassName(hero),TouchFont(18),pale,true,false,TextAnchor.MiddleCenter);
                 if(GUI.Button(r,GUIContent.none,invisibleButton))selectedClass=hero;
             }
-            if(Button(TouchRect(x,y+237,254,52),"选择角色存档",jade,saveSlots.Count>0))OpenSaveSelection();
-            if(Button(TouchRect(x+274,y+237,254,52),"新建冒险",gold))StartSelectedHero();
+            if(NavigationButton(TouchRect(x,y+237,254,52),"选择角色存档",jade,saveSlots.Count>0))OpenSaveSelection();
+            if(PrimaryButton(TouchRect(x+274,y+237,254,52),"新建冒险",gold))StartSelectedHero();
             if(!string.IsNullOrEmpty(session.Progression.LastError))Text(TouchRect(x,y+291,528,22),session.Progression.LastError,TouchFont(11),gold);
         }
         private void DrawMobileSaveSelection()
@@ -219,10 +239,9 @@ namespace Emberfall
             }
             EndTouchScroll();
             float bottom=l.Height-62;
-            if(Button(TouchRect(x,bottom,110,48),"返回",jade))ClosePanel();
-            if(Button(TouchRect(x+122,bottom,100,48),"刷新",muted))RefreshSaveSlots();
-            DrawDeleteSaveButton(TouchRect(x+234,bottom,130,48));
-            if(Button(TouchRect(x+376,bottom,144,48),"读取角色",gold,saveSlots.Exists(a=>a.Id==selectedSaveId&&a.CanLoad)))ContinueSelectedSave();
+            if(NavigationButton(TouchRect(x,bottom,128,48),"返回",jade))ClosePanel();
+            DrawDeleteSaveButton(TouchRect(x+144,bottom,156,48));
+            if(PrimaryButton(TouchRect(x+316,bottom,204,48),"读取角色",gold,saveSlots.Exists(a=>a.Id==selectedSaveId&&a.CanLoad)))ContinueSelectedSave();
         }
         private string mobileSaveSelectionIssue;
         private void DrawMobileGuide()
@@ -232,7 +251,7 @@ namespace Emberfall
             Text(TouchRect(x,y,510,30),"触屏操作",TouchFont(22),pale,true);
             string[] tips={"左侧拖动移动 · 右下按住普攻，可同时操作", "右侧固定10个位置；被动自动生效，无须翻页", "轻点技能自动瞄准并施放，无须圈选或二次确认", "点敌人固定目标；点战场空白取消，恢复自动瞄准", "蓄力自动完成；点取消或闪避可中断", "灰色技能尚未学会；到技能树学习后直接可用"};
             for(int i=0;i<tips.Length;i++)Text(TouchRect(x,y+43+i*32,510,28),tips[i],TouchFont(14),i==2?jade:pale);
-            if(Button(TouchRect(x,y+250,510,48),controlsReturnPause?"返回暂停菜单":"返回冒险",jade))ClosePanel();
+            if(NavigationButton(TouchRect(x,y+250,510,48),controlsReturnPause?"返回暂停菜单":"返回冒险",jade))ClosePanel();
         }
         private int mobilePausePage;
         private void DrawMobilePause()
@@ -241,7 +260,7 @@ namespace Emberfall
             float x = (layout.Width - 520) * .5f, y = (layout.Height - 306) * .5f;
             Fill(new Rect(0, 0, width, height), new Color(.012f, .025f, .04f, .94f));
             Text(TouchRect(x + 12, y + 3, 342, 31), "冒险暂停", TouchFont(23), pale, true);
-            if (Button(TouchRect(x + 374, y, 134, 44), mobilePausePage == 0 ? "更多设置 ›" : mobilePausePage==1?"触控布局 ›":"‹ 返回", jade))
+            if (NavigationButton(TouchRect(x + 374, y, 134, 44), mobilePausePage == 0 ? "更多设置 ›" : mobilePausePage==1?"触控布局 ›":"‹ 返回", jade))
             { mobilePausePage = (mobilePausePage+1)%3; BlockUITransition(); }
             if(mobilePausePage==2){DrawMobileControlPreferences(x,y);return;}
             if (mobilePausePage == 1)
@@ -258,13 +277,13 @@ namespace Emberfall
                         else if (i == 4) EffectPreferences.EffectsScale = EffectPreferences.ReducedEffects ? 1f : .35f;
                         else OpenControls();
                     }
-                Text(TouchRect(x + 12, y + 245, 496, 39), string.IsNullOrEmpty(session.Notification)?"自动保存持续写入当前角色。\n如需手动保存，请返回上一页点击「保存」。":PlatformText(session.Notification), TouchFont(12), string.IsNullOrEmpty(session.Notification)?muted:gold, false, true);
+                if(NavigationButton(TouchRect(x+12,y+245,496,48),"提示 / 错误记录",string.IsNullOrEmpty(session.Progression.LastError)?jade:gold))OpenMobileNoticeFromPause();
                 return;
             }
             string[] labels = { "继续冒险", "保存", "读取存档", "返回主菜单", "营地 / 撤离", "前往遗迹", "城镇旅行地图", "操作指南" };
             for (int i = 0; i < labels.Length; i++)
             {
-                if (!Button(TouchRect(x + 12 + (i % 2) * 256, y + 51 + (i / 2) * 58, 240, 48), labels[i], i == 0 ? gold : jade)) continue;
+                if (!DrawButton(TouchRect(x + 12 + (i % 2) * 256, y + 51 + (i / 2) * 58, 240, 48), labels[i], i==0||i==1?ButtonRole.Primary:i==3?ButtonRole.Danger:ButtonRole.Navigation)) continue;
                 switch (i)
                 {
                     case 0: session.SetPaused(false); break;

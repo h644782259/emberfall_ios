@@ -25,41 +25,47 @@ namespace Emberfall
             Tablet=pixelWidth/pixelHeight<1.65f;
             float fallback=pixelHeight/(Tablet?768f:390f);
             // Screen.dpi is advisory; reject missing/implausible values and constrain
-            // density so 320-point compact phones still fit the full combat cluster.
-            float density=dpi>=120&&dpi<=700?dpi/163f:fallback;
-            Scale=Math.Max(.25f,Math.Min(density,Math.Min(pixelHeight/320f,pixelWidth/568f)));
+            // density so compact phones still fit the inset thumb arcs.
+            float density=(dpi>=120&&dpi<=700?dpi/163f:fallback)*(Tablet?1.18f:1f);
+            Scale=Math.Max(.25f,Math.Min(density,Math.Min(pixelHeight/400f,pixelWidth/720f)));
             Width=pixelWidth/Scale;Height=pixelHeight/Scale;
-            Joystick=Centered(90,Height-86,128);
+            float thumbInset=Tablet?56:44;
+            Joystick=Centered(104,Height-96,128);
             MoveZone=new Area(12,Height-172,175,160);
-            Attack=Centered(Width-61,Height-55,80);
-            Dodge=Centered(Width-152,Height-56,62);
-            Jump=Centered(Width-224,Height-56,56);
-            Cancel=Jump; // Same thumb position, mutually exclusive with jump.
-            Potion=Centered(50,Height-211,54);
-            Interact=new Area(78,Height-244,108,48);
-            float groupShift=positionPreset<0?-Math.Min(16,Math.Max(0,Height-320)):positionPreset>0?2:0;
-            float skillSize=Tablet?72:60, step=skillSize+8;
-            float rowStep=skillSize+16;
-            float lowerRow=Height-(Tablet?142:128)+groupShift;
+            float clusterScale=Tablet?1.2f:1f;
+            float attackX=Width-thumbInset-(Tablet?68:56),attackY=Height-64;
+            Attack=Centered(attackX,attackY,80);
+            Dodge=Centered(attackX-96*clusterScale,attackY-1,62);
+            Jump=Centered(attackX-188*clusterScale,attackY-1,56);
+            Cancel=Jump;
+            Potion=Centered(72,Height-211,54);
+            Interact=new Area(100,Height-244,108,48);
+            float groupShift=positionPreset<0?-Math.Min(16,Math.Max(0,Height-416)):positionPreset>0?2:0;
+            float skillSize=Tablet?72:60;
+            // Two staggered thumb arcs around the large attack button, outer four
+            // then inner four. Gameplay mapping is unchanged; no edge column.
+            float[] dx={-260,-210,-145,-70,-150,-85,-10,26};
+            float[] dy={-61,-136,-196,-218,-71,-141,-156,-76};
             for(int i=0;i<Skills.Length;i++)
             {
-                Skills[i]=Centered(Width-12-skillSize/2-(3-i%4)*step,lowerRow-(i<4?rowStep:0),skillSize);
-                SkillOpportunities[MobileSkillPolicy.SkillAtButton(i)]=new Area(Skills[i].X+(i<4?0:skillSize/2),lowerRow-rowStep+skillSize/2+1,skillSize/2,14);
+                Skills[i]=Centered(attackX+dx[i]*clusterScale,attackY+dy[i]*clusterScale+groupShift,skillSize);
+                bool above=i==0||i==4||i==7;
+                SkillOpportunities[MobileSkillPolicy.SkillAtButton(i)]=new Area(Skills[i].X,above?Skills[i].Y-15:Skills[i].Y+skillSize+1,skillSize/2,14);
             }
             CounterOpportunity=new Area(Attack.X,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             ComboOpportunity=new Area(Attack.X+Attack.Width/2,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             FocusCommand=new Area(Skills[0].X-102,Skills[0].Y+1,48,48);
             RecallCommand=new Area(Skills[0].X-50,Skills[0].Y+1,48,48);
-            Menu=Centered(Width-32,32,48);
-            Inventory=Centered(Width-91,32,48);
-            SkillsMenu=Centered(Width-150,32,48);
+            Menu=Centered(Width-thumbInset-24,32,48);
+            Inventory=Centered(Width-thumbInset-83,32,48);
+            SkillsMenu=Centered(Width-thumbInset-142,32,48);
             // Keep encounter feedback below the menu row, above the skill strip.
             // A centered bar at y=98 crosses the first skill row on 320-unit phones.
-            EncounterText=new Area(Width-184,60,172,18);
-            BossHealth=new Area(Width-184,81,172,5);
+            EncounterText=new Area(Width-thumbInset-172,60,172,18);
+            BossHealth=new Area(Width-thumbInset-172,81,172,5);
             // Four short objective lines + a real capture bar. At 568x320 the
             // card ends at y=84, above interaction and the first skill row.
-            float objectiveWidth=Math.Min(236,Width-380);
+            float objectiveWidth=Math.Min(236,Width-428);
             AdventureStatus=new Area((Width-objectiveWidth)/2,8,objectiveWidth,76);
             // The short feedback card uses the gap between the movement zone and
             // jump button, below the skill strip, never covering an action target.

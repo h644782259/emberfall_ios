@@ -29,7 +29,6 @@ namespace Emberfall
                 state.Length==0&&window.Window&&!window.Actionable?window.BlockReason:"";
             if(reason.Length>0)
             {
-                Fill(caption,new Color(.035f,.06f,.12f,.9f));
                 if(reason=="冷却"){float seconds=session.Player.SkillCooldownRemaining(skill);reason=seconds.ToString(seconds>=10?"0":"0.0");}
                 Text(caption,MobileCombatPresentation.SkillRejectionCaption(reason),TouchFont(11),gold,true,false,TextAnchor.MiddleCenter);
             }

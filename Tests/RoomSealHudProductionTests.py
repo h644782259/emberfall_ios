@@ -14,7 +14,7 @@ modes=member((root/'Assets/Scripts/UI/GameUI.Modes.cs').read_text(),'private voi
 desktop=(root/'Assets/Scripts/UI/GameUI.cs').read_text();a=desktop.index('            string objectiveText =');b=desktop.index('            DrawMinimap();',a);desktop=desktop[a:b]
 with tempfile.TemporaryDirectory(prefix='room-seal-hud-') as temporary:
  t=Path(temporary)
- for name in ['Core/RoomTactics','Core/RoomTacticalRegion','UI/RoomObjectivePresentation','UI/ChapterSealPresentation','UI/ObjectiveCardLayout','UI/MobileControlLayout']:(t/(Path(name).name+'.cs')).write_text((root/('Assets/Scripts/'+name+'.cs')).read_text())
+ for name in ['Combat/MobileSkillPolicy','Core/RoomTactics','Core/RoomTacticalRegion','UI/RoomObjectivePresentation','UI/ChapterSealPresentation','UI/ObjectiveCardLayout','UI/MobileControlLayout']:(t/(Path(name).name+'.cs')).write_text((root/('Assets/Scripts/'+name+'.cs')).read_text())
  (t/'RoomChainState.cs').write_text((args.runtime_root/'Assets/Scripts/Core/RoomChainState.cs').read_text())
  (t/'Rows.cs').write_text((root/'Assets/Scripts/UI/GameUI.ChapterSeals.cs').read_text())
  (t/'Draw.cs').write_text('using UnityEngine;namespace Emberfall{public partial class GameUI{'+modes+'public void Desktop(){var p=session.Profile;'+desktop+'}}}')

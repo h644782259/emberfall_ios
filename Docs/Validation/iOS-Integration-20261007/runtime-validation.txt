@@ -1,0 +1,1937 @@
+2026-10-07T12:34:43.7171660Z START Unity 6000.6.4f1 | isolated saves: /Users/admin/Desktop/自开发/emberfall_ios/Tests/TestResults/PlayMode-1567be66277f499c943f05ad1f278dcf/IsolatedSave
+2026-10-07T12:34:43.7451180Z EDITOR Search initialized before Play: 1 database(s).
+2026-10-07T12:34:44.9959530Z Play mode entered; InitializeOnLoad restored the validation runner after domain reload.
+2026-10-07T12:34:45.0043480Z PASS Save isolation verified before the first write
+2026-10-07T12:34:45.0045000Z PASS Runtime bootstrap creates a title session
+2026-10-07T12:34:45.0046020Z PASS Runtime UI and camera bootstrap
+2026-10-07T12:34:45.0063350Z PASS Audio: initialized bounded pool has eight effect sources
+2026-10-07T12:34:45.0064500Z PASS Audio: enabled listener is present, unpaused and audible
+2026-10-07T12:34:45.0065230Z PASS Audio: Unity reports an active output sample rate
+2026-10-07T12:34:45.0067520Z PASS Audio: background clip is explicitly assigned and looping in Unity
+2026-10-07T12:34:45.0073120Z PASS Audio: background uses an audible 2D source
+2026-10-07T12:34:45.0075680Z PASS Audio: background owns a nonempty mono clip
+2026-10-07T12:34:45.0080060Z PASS Audio: background real PCM can be read back from Unity
+2026-10-07T12:34:45.0190730Z PASS Audio: background PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.1774860Z AUDIO diagnostics: DSP=8.02133333333333 -> 8.17066666666667; samples=0 -> 470; peak=0.001347814; editorPaused=False; editorMute=False
+2026-10-07T12:34:45.1776570Z PASS Audio: Unity DSP clock advances during playback
+2026-10-07T12:34:45.1777380Z PASS Audio: native background playback advances through its PCM samples
+2026-10-07T12:34:45.1778010Z PASS Audio: playing background source produces nonzero native output samples
+2026-10-07T12:34:45.1778980Z AUDIO Unity output: 48000 Hz; background output peak=0.0013478. This does not certify physical speakers.
+2026-10-07T12:34:45.1789870Z PASS Audio: UI binds its clip and starts an effect source
+2026-10-07T12:34:45.1790750Z PASS Audio: UI uses positive-gain 2D one-shot playback
+2026-10-07T12:34:45.1791380Z PASS Audio: UI owns a nonempty mono clip
+2026-10-07T12:34:45.1791950Z PASS Audio: UI real PCM can be read back from Unity
+2026-10-07T12:34:45.1792830Z PASS Audio: UI PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.2147710Z PASS Audio: Attack binds its clip and starts an effect source
+2026-10-07T12:34:45.2151210Z PASS Audio: Attack uses positive-gain 2D one-shot playback
+2026-10-07T12:34:45.2153020Z PASS Audio: Attack owns a nonempty mono clip
+2026-10-07T12:34:45.2154540Z PASS Audio: Attack real PCM can be read back from Unity
+2026-10-07T12:34:45.2156920Z PASS Audio: Attack PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.2517780Z PASS Audio: Hit binds its clip and starts an effect source
+2026-10-07T12:34:45.2521230Z PASS Audio: Hit uses positive-gain 2D one-shot playback
+2026-10-07T12:34:45.2523450Z PASS Audio: Hit owns a nonempty mono clip
+2026-10-07T12:34:45.2525150Z PASS Audio: Hit real PCM can be read back from Unity
+2026-10-07T12:34:45.2527520Z PASS Audio: Hit PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.2885660Z PASS Audio: Cast binds its clip and starts an effect source
+2026-10-07T12:34:45.2887520Z PASS Audio: Cast uses positive-gain 2D one-shot playback
+2026-10-07T12:34:45.2888350Z PASS Audio: Cast owns a nonempty mono clip
+2026-10-07T12:34:45.2889090Z PASS Audio: Cast real PCM can be read back from Unity
+2026-10-07T12:34:45.2891070Z PASS Audio: Cast PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.3247950Z PASS Audio: CriticalHit binds its clip and starts an effect source
+2026-10-07T12:34:45.3250170Z PASS Audio: CriticalHit uses positive-gain 2D one-shot playback
+2026-10-07T12:34:45.3251110Z PASS Audio: CriticalHit owns a nonempty mono clip
+2026-10-07T12:34:45.3251830Z PASS Audio: CriticalHit real PCM can be read back from Unity
+2026-10-07T12:34:45.3253450Z PASS Audio: CriticalHit PCM is finite, nonzero and unclipped
+2026-10-07T12:34:45.3608600Z PASS Audio: landed hit has a short contact transient and decaying body
+2026-10-07T12:34:45.3612730Z PASS Audio: landed hit PCM differs from the weapon swing
+2026-10-07T12:34:45.3615880Z PASS Audio: mute stops both background and all effects
+2026-10-07T12:34:45.3618300Z PASS Audio: calls while muted cannot start an effect
+2026-10-07T12:34:45.3621270Z PASS Audio: unmute restores background and immediately accepts UI feedback
+2026-10-07T12:34:45.3623820Z PASS Audio: master gain reaches the live background source
+2026-10-07T12:34:45.3624760Z PASS Audio: master gain reaches the live UI source
+2026-10-07T12:34:45.3625670Z AUDIO passed initialization, listener, PCM, native output, explicit cue playback, hit distinction, mute recovery and live volume checks.
+2026-10-07T12:34:45.6141900Z SAVE SLOTS — independent characters, snapshots and explicit session loads
+2026-10-07T12:34:45.9910720Z PASS A new adventure creates its own save slot
+2026-10-07T12:34:45.9971820Z PASS New character appears as the current loadable slot
+2026-10-07T12:34:45.9997450Z PASS Explicit snapshot service API creates another independent save
+2026-10-07T12:34:45.9998350Z PASS Snapshot becomes the active autosave destination
+2026-10-07T12:34:46.0035200Z PASS Saving the snapshot preserves the original character file
+2026-10-07T12:34:46.1698750Z PASS Explicit slot selection loads the original progress rather than the latest snapshot
+2026-10-07T12:34:46.3444780Z PASS A different new character keeps previous characters available
+2026-10-07T12:34:46.4540300Z PASS Selected snapshot replaces the runtime hero and restores its own progress
+2026-10-07T12:34:46.4543100Z PASS Rejected slot identifiers preserve the current runtime session
+2026-10-07T12:34:46.4826960Z PASS Changing interface font size immediately replaces cached styles
+2026-10-07T12:34:46.4829020Z PASS Interface font size persists independently of character saves
+2026-10-07T12:34:46.7085040Z PASS Room fixture enters dungeon
+2026-10-07T12:34:46.7315910Z PASS Actual Seal generation succeeds, seed 0
+2026-10-07T12:34:46.7317860Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:46.7320270Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.7321560Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.7322990Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.7324430Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.7859910Z PASS Room fixture enters dungeon
+2026-10-07T12:34:46.8405570Z PASS Actual Supply generation succeeds, seed 0
+2026-10-07T12:34:46.8407250Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:46.8481070Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.8482750Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.8484020Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.8485290Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.8568150Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.8616520Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.9059680Z PASS Room fixture enters dungeon
+2026-10-07T12:34:46.9275040Z PASS Actual Seal generation succeeds, seed 1
+2026-10-07T12:34:46.9277180Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:46.9278520Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.9279770Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.9281270Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:46.9282660Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.0281160Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.0837510Z PASS Actual Supply generation succeeds, seed 1
+2026-10-07T12:34:47.0839690Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.0917080Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.0920530Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.0922220Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.0923910Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1005640Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1053340Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1596370Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.1822960Z PASS Actual Seal generation succeeds, seed 2
+2026-10-07T12:34:47.1824990Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.1826320Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1827440Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1828720Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.1830140Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2163000Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.2714580Z PASS Actual Supply generation succeeds, seed 2
+2026-10-07T12:34:47.2716620Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.2790090Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2792070Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2808720Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2810180Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2893080Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.2941610Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.3821910Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.4050770Z PASS Actual Seal generation succeeds, seed 17
+2026-10-07T12:34:47.4052850Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.4054390Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.4055690Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.4057180Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.4058670Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.4585700Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.5150250Z PASS Actual Supply generation succeeds, seed 17
+2026-10-07T12:34:47.5152020Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.5225880Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5227660Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5229000Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5230320Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5314160Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5361550Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5708050Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.5947640Z PASS Actual Seal generation succeeds, seed 42
+2026-10-07T12:34:47.5949600Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.5950860Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5952000Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5953360Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.5954840Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.6831040Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.7404650Z PASS Actual Supply generation succeeds, seed 42
+2026-10-07T12:34:47.7406770Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.7479340Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.7481950Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.7483500Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.7484990Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.7570780Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.7619910Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.8116870Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.8327660Z PASS Actual Seal generation succeeds, seed 12345
+2026-10-07T12:34:47.8329590Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.8330870Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.8332000Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.8333340Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.8334730Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.8688150Z PASS Room fixture enters dungeon
+2026-10-07T12:34:47.9240520Z PASS Actual Supply generation succeeds, seed 12345
+2026-10-07T12:34:47.9242710Z PASS All branch enemies instantiated and registered
+2026-10-07T12:34:47.9315930Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.9317850Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.9319230Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.9320550Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.9402450Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:47.9451070Z PASS Branch spawn is walkable and reachable through real scenery
+2026-10-07T12:34:48.0575590Z PASS Branch validation returns to wilderness
+2026-10-07T12:34:48.0578170Z HERO Vanguard — learning, passives, all eight active skills, camera capture
+2026-10-07T12:34:48.1674620Z PASS Vanguard initializes correctly
+2026-10-07T12:34:48.2669360Z INVENTORY Vanguard passed 104 classification, sorting and sale checks.
+2026-10-07T12:34:48.2695780Z PERSISTENCE TRANSITIONS — failed preflight preserves the old world, run and skill cooldowns
+2026-10-07T12:34:48.2701450Z PASS Persistence fixture seeds a real active skill cooldown once
+2026-10-07T12:34:48.2714520Z PASS Persistence fixture seeds a distinct run-only state
+2026-10-07T12:34:48.2729860Z PASS Fixture opens the real portal selector without entering
+2026-10-07T12:34:48.2743490Z PASS Failed/repeated dungeon confirmation restores the old challenge flag and retains the selector
+2026-10-07T12:34:48.2744510Z PASS Failed entry remains paused with a visible persistence error
+2026-10-07T12:34:48.2751690Z PASS Failed entry retains the original scene and enemy membership/activation
+2026-10-07T12:34:48.2757940Z PASS Failed entry does not reset the previous run state
+2026-10-07T12:34:48.2758680Z PASS Failed entry neither resets cooldowns nor refills energy nor teleports the player
+2026-10-07T12:34:48.2762390Z PASS Failed/repeated dungeon confirmation restores the old challenge flag and retains the selector
+2026-10-07T12:34:48.2763000Z PASS Failed entry remains paused with a visible persistence error
+2026-10-07T12:34:48.2763820Z PASS Failed entry retains the original scene and enemy membership/activation
+2026-10-07T12:34:48.2764480Z PASS Failed entry does not reset the previous run state
+2026-10-07T12:34:48.2765130Z PASS Failed entry neither resets cooldowns nor refills energy nor teleports the player
+2026-10-07T12:34:48.2782900Z PASS Failed camp transition also stops before teardown and retains the prior pause state
+2026-10-07T12:34:48.2786150Z PASS The leave adapter rejects the same failed write without abandoning the adventure
+2026-10-07T12:34:48.2811330Z PASS Failed new-character preflight preserves the old character and creates no new save target
+2026-10-07T12:34:48.2825320Z PASS Failed snapshot preflight cannot move pending progress to another autosave target
+2026-10-07T12:34:48.2832030Z PASS Room transition fixture has a genuinely unlocked first door
+2026-10-07T12:34:48.2840290Z PASS Failed room preflight preserves room identity, the old scene, cooldowns and energy
+2026-10-07T12:34:48.2841250Z PASS All failed zone/room/new-character/save attempts preserve both old-world duplicate receipt sets
+2026-10-07T12:34:48.2852420Z PASS Blocked adapters preserve both durable snapshots and the recoverable temporary document exactly
+2026-10-07T12:34:48.2911860Z PASS System log reuses one read-only wrapper
+2026-10-07T12:34:48.2914440Z PASS Cached system log view reflects append and bounded eviction immediately
+2026-10-07T12:34:48.2917000Z PASS System log readers cannot mutate the collection
+2026-10-07T12:34:48.3010990Z PASS Separated text fills available global slot 0
+2026-10-07T12:34:48.3020690Z PASS Separated text fills available global slot 1
+2026-10-07T12:34:48.3032790Z PASS Separated text fills available global slot 2
+2026-10-07T12:34:48.3050650Z PASS Separated text fills available global slot 3
+2026-10-07T12:34:48.3071060Z PASS Separated text fills available global slot 4
+2026-10-07T12:34:48.3092310Z PASS Separated text fills available global slot 5
+2026-10-07T12:34:48.3109510Z PASS Separated text fills available global slot 6
+2026-10-07T12:34:48.3126670Z PASS Separated text fills available global slot 7
+2026-10-07T12:34:48.3169910Z PASS Separated text fills available global slot 8
+2026-10-07T12:34:48.3188240Z PASS Separated text fills available global slot 9
+2026-10-07T12:34:48.3206410Z PASS Separated text fills available global slot 10
+2026-10-07T12:34:48.3226680Z PASS Separated text fills available global slot 11
+2026-10-07T12:34:48.3250070Z PASS Separated text fills available global slot 12
+2026-10-07T12:34:48.3274490Z PASS Separated text fills available global slot 13
+2026-10-07T12:34:48.3345150Z PASS Separated text fills available global slot 14
+2026-10-07T12:34:48.3372730Z PASS Separated text fills available global slot 15
+2026-10-07T12:34:48.3401200Z PASS Separated text fills available global slot 16
+2026-10-07T12:34:48.3431340Z PASS Separated text fills available global slot 17
+2026-10-07T12:34:48.3461420Z PASS Separated text fills available global slot 18
+2026-10-07T12:34:48.3522410Z PASS Separated text fills available global slot 19
+2026-10-07T12:34:48.3553920Z PASS Separated text fills available global slot 20
+2026-10-07T12:34:48.3590870Z PASS Separated text fills available global slot 21
+2026-10-07T12:34:48.3699920Z PASS Separated text fills available global slot 22
+2026-10-07T12:34:48.3741200Z PASS Separated text fills available global slot 23
+2026-10-07T12:34:48.3782210Z PASS Separated text fills available global slot 24
+2026-10-07T12:34:48.3852550Z PASS Separated text fills available global slot 25
+2026-10-07T12:34:48.3898170Z PASS Separated text fills available global slot 26
+2026-10-07T12:34:48.3946000Z PASS Separated text fills available global slot 27
+2026-10-07T12:34:48.4042610Z PASS Separated text fills available global slot 28
+2026-10-07T12:34:48.4096110Z PASS Separated text fills available global slot 29
+2026-10-07T12:34:48.4137840Z PASS Separated text fills available global slot 30
+2026-10-07T12:34:48.4208420Z PASS Separated text fills available global slot 31
+2026-10-07T12:34:48.4259130Z PASS Separated text fills available global slot 32
+2026-10-07T12:34:48.4362200Z PASS Separated text fills available global slot 33
+2026-10-07T12:34:48.4410400Z PASS Separated text fills available global slot 34
+2026-10-07T12:34:48.4463110Z PASS Separated text fills available global slot 35
+2026-10-07T12:34:48.4468690Z PASS Ordinary text respects actual display cap 36
+2026-10-07T12:34:48.4471460Z PASS Both ordinary session callers reject before creating a text component
+2026-10-07T12:34:48.4539470Z PASS Critical precheck preserves its prospective oldest ordinary replacement
+2026-10-07T12:34:48.4598810Z PASS Accepted critical replaces exactly the oldest ordinary text without raising count
+2026-10-07T12:34:48.4703610Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.4756850Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.4841930Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.4892390Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.4951270Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5047860Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5106880Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5186440Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5237660Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5339220Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5394390Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5453370Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5540660Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5595650Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5712230Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5768610Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5856130Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.5908030Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6031640Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6087810Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6178800Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6232710Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6354280Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6412940Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6468840Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6559370Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6698230Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6771870Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.6871480Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7024510Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7085800Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7180170Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7234940Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7363440Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7421340Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:48.7425290Z PASS A full critical-only display rejects additional critical text before allocation
+2026-10-07T12:34:48.7436870Z PASS Refill damage budget
+2026-10-07T12:34:48.7444540Z PASS Refill damage budget
+2026-10-07T12:34:48.7452110Z PASS Refill damage budget
+2026-10-07T12:34:48.7462180Z PASS Refill damage budget
+2026-10-07T12:34:48.7471510Z PASS Refill damage budget
+2026-10-07T12:34:48.7517380Z PASS Refill damage budget
+2026-10-07T12:34:48.7530020Z PASS Refill damage budget
+2026-10-07T12:34:48.7544430Z PASS Refill damage budget
+2026-10-07T12:34:48.7562380Z PASS Refill damage budget
+2026-10-07T12:34:48.7580100Z PASS Refill damage budget
+2026-10-07T12:34:48.7601010Z PASS Refill damage budget
+2026-10-07T12:34:48.7674860Z PASS Refill damage budget
+2026-10-07T12:34:48.7697890Z PASS Refill damage budget
+2026-10-07T12:34:48.7720670Z PASS Refill damage budget
+2026-10-07T12:34:48.7747010Z PASS Refill damage budget
+2026-10-07T12:34:48.7777920Z PASS Refill damage budget
+2026-10-07T12:34:48.7862730Z PASS Refill damage budget
+2026-10-07T12:34:48.7889220Z PASS Refill damage budget
+2026-10-07T12:34:48.7921490Z PASS Refill damage budget
+2026-10-07T12:34:48.7952680Z PASS Refill damage budget
+2026-10-07T12:34:48.7994620Z PASS Refill damage budget
+2026-10-07T12:34:48.8025800Z PASS Refill damage budget
+2026-10-07T12:34:48.8058630Z PASS Refill damage budget
+2026-10-07T12:34:48.8095480Z PASS Refill damage budget
+2026-10-07T12:34:48.8190590Z PASS Refill damage budget
+2026-10-07T12:34:48.8227370Z PASS Refill damage budget
+2026-10-07T12:34:48.8267090Z PASS Refill damage budget
+2026-10-07T12:34:48.8323500Z PASS Refill damage budget
+2026-10-07T12:34:48.8364950Z PASS Refill damage budget
+2026-10-07T12:34:48.8410730Z PASS Refill damage budget
+2026-10-07T12:34:48.8521920Z PASS Refill damage budget
+2026-10-07T12:34:48.8569260Z PASS Refill damage budget
+2026-10-07T12:34:48.8616850Z PASS Refill damage budget
+2026-10-07T12:34:48.8708740Z PASS Refill damage budget
+2026-10-07T12:34:48.8759000Z PASS Refill damage budget
+2026-10-07T12:34:48.8864960Z PASS Refill damage budget
+2026-10-07T12:34:48.8884740Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:48.8890750Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:48.8897850Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:48.8907030Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:48.8910390Z PASS Full mechanism pool rejects before allocation
+2026-10-07T12:34:48.8911590Z PASS Separate total bound
+2026-10-07T12:34:48.8916310Z PASS Both pools return immediately on retirement
+2026-10-07T12:34:48.8921330Z PASS Local ordinary/critical limit admits lane 0
+2026-10-07T12:34:48.8928330Z PASS Local ordinary/critical limit admits lane 1
+2026-10-07T12:34:48.8936340Z PASS Local ordinary/critical limit admits lane 2
+2026-10-07T12:34:48.8944380Z PASS Local ordinary/critical limit admits lane 3
+2026-10-07T12:34:48.8950630Z PASS Four nearby ordinary numbers block a fifth ordinary number
+2026-10-07T12:34:48.8959790Z PASS Local ordinary/critical limit admits lane 4
+2026-10-07T12:34:48.8969600Z PASS Local ordinary/critical limit admits lane 5
+2026-10-07T12:34:48.8990140Z PASS Six nearby numbers occupy distinct measured slots and block a seventh critical
+2026-10-07T12:34:48.8998480Z PASS Rejection fixture fills local lane with critical text 0
+2026-10-07T12:34:48.9003950Z PASS Rejection fixture fills local lane with critical text 1
+2026-10-07T12:34:48.9010510Z PASS Rejection fixture fills local lane with critical text 2
+2026-10-07T12:34:48.9018860Z PASS Rejection fixture fills local lane with critical text 3
+2026-10-07T12:34:48.9028440Z PASS Rejection fixture fills local lane with critical text 4
+2026-10-07T12:34:48.9039040Z PASS Rejection fixture fills local lane with critical text 5
+2026-10-07T12:34:49.0272020Z PASS Dense rejected critical preserves an unrelated ordinary number at the global cap
+2026-10-07T12:34:49.0282740Z PASS Separated text fills available global slot 0
+2026-10-07T12:34:49.0291320Z PASS Separated text fills available global slot 1
+2026-10-07T12:34:49.0296550Z PASS Separated text fills available global slot 2
+2026-10-07T12:34:49.0301830Z PASS Separated text fills available global slot 3
+2026-10-07T12:34:49.0308490Z PASS Separated text fills available global slot 4
+2026-10-07T12:34:49.0328090Z PASS Separated text fills available global slot 5
+2026-10-07T12:34:49.0335710Z PASS Separated text fills available global slot 6
+2026-10-07T12:34:49.0343230Z PASS Separated text fills available global slot 7
+2026-10-07T12:34:49.0352430Z PASS Separated text fills available global slot 8
+2026-10-07T12:34:49.0362140Z PASS Separated text fills available global slot 9
+2026-10-07T12:34:49.0372580Z PASS Separated text fills available global slot 10
+2026-10-07T12:34:49.0384000Z PASS Separated text fills available global slot 11
+2026-10-07T12:34:49.0395650Z PASS Separated text fills available global slot 12
+2026-10-07T12:34:49.0407600Z PASS Separated text fills available global slot 13
+2026-10-07T12:34:49.0425170Z PASS Separated text fills available global slot 14
+2026-10-07T12:34:49.0440580Z PASS Separated text fills available global slot 15
+2026-10-07T12:34:49.0519000Z PASS Separated text fills available global slot 16
+2026-10-07T12:34:49.0537820Z PASS Separated text fills available global slot 17
+2026-10-07T12:34:49.0554430Z PASS Separated text fills available global slot 18
+2026-10-07T12:34:49.0572540Z PASS Separated text fills available global slot 19
+2026-10-07T12:34:49.0575670Z PASS Ordinary text respects actual display cap 20
+2026-10-07T12:34:49.0577450Z PASS Both ordinary session callers reject before creating a text component
+2026-10-07T12:34:49.0594840Z PASS Critical precheck preserves its prospective oldest ordinary replacement
+2026-10-07T12:34:49.0612730Z PASS Accepted critical replaces exactly the oldest ordinary text without raising count
+2026-10-07T12:34:49.0630630Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0681530Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0699220Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0715510Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0731080Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0749780Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0767430Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0783500Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0866330Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0882640Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0899180Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0916890Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0933940Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0951130Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.0966520Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.1016510Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.1032940Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.1049060Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.1064330Z PASS Remaining ordinary text can be replaced by critical text
+2026-10-07T12:34:49.1068730Z PASS A full critical-only display rejects additional critical text before allocation
+2026-10-07T12:34:49.1078000Z PASS Refill damage budget
+2026-10-07T12:34:49.1082570Z PASS Refill damage budget
+2026-10-07T12:34:49.1088070Z PASS Refill damage budget
+2026-10-07T12:34:49.1093860Z PASS Refill damage budget
+2026-10-07T12:34:49.1099810Z PASS Refill damage budget
+2026-10-07T12:34:49.1106460Z PASS Refill damage budget
+2026-10-07T12:34:49.1113320Z PASS Refill damage budget
+2026-10-07T12:34:49.1122050Z PASS Refill damage budget
+2026-10-07T12:34:49.1130880Z PASS Refill damage budget
+2026-10-07T12:34:49.1140810Z PASS Refill damage budget
+2026-10-07T12:34:49.1185240Z PASS Refill damage budget
+2026-10-07T12:34:49.1196370Z PASS Refill damage budget
+2026-10-07T12:34:49.1207780Z PASS Refill damage budget
+2026-10-07T12:34:49.1219880Z PASS Refill damage budget
+2026-10-07T12:34:49.1233150Z PASS Refill damage budget
+2026-10-07T12:34:49.1251010Z PASS Refill damage budget
+2026-10-07T12:34:49.1267010Z PASS Refill damage budget
+2026-10-07T12:34:49.1281030Z PASS Refill damage budget
+2026-10-07T12:34:49.1363650Z PASS Refill damage budget
+2026-10-07T12:34:49.1382250Z PASS Refill damage budget
+2026-10-07T12:34:49.1386780Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:49.1391170Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:49.1396550Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:49.1402850Z PASS Mechanism reserve survives full damage budget
+2026-10-07T12:34:49.1406760Z PASS Full mechanism pool rejects before allocation
+2026-10-07T12:34:49.1407640Z PASS Separate total bound
+2026-10-07T12:34:49.1416020Z PASS Both pools return immediately on retirement
+2026-10-07T12:34:49.1420540Z PASS Local ordinary/critical limit admits lane 0
+2026-10-07T12:34:49.1425200Z PASS Local ordinary/critical limit admits lane 1
+2026-10-07T12:34:49.1430370Z PASS Local ordinary/critical limit admits lane 2
+2026-10-07T12:34:49.1436240Z PASS Local ordinary/critical limit admits lane 3
+2026-10-07T12:34:49.1440200Z PASS Four nearby ordinary numbers block a fifth ordinary number
+2026-10-07T12:34:49.1446350Z PASS Local ordinary/critical limit admits lane 4
+2026-10-07T12:34:49.1453270Z PASS Local ordinary/critical limit admits lane 5
+2026-10-07T12:34:49.1465130Z PASS Six nearby numbers occupy distinct measured slots and block a seventh critical
+2026-10-07T12:34:49.1474390Z PASS Rejection fixture fills local lane with critical text 0
+2026-10-07T12:34:49.1512150Z PASS Rejection fixture fills local lane with critical text 1
+2026-10-07T12:34:49.1518090Z PASS Rejection fixture fills local lane with critical text 2
+2026-10-07T12:34:49.1523730Z PASS Rejection fixture fills local lane with critical text 3
+2026-10-07T12:34:49.1529810Z PASS Rejection fixture fills local lane with critical text 4
+2026-10-07T12:34:49.1536210Z PASS Rejection fixture fills local lane with critical text 5
+2026-10-07T12:34:49.1785680Z PASS Dense rejected critical preserves an unrelated ordinary number at the global cap
+2026-10-07T12:34:49.1964590Z FEEDBACK passed real-cap admission, critical replacement and rejection, six local lanes, and cached live read-only system log checks.
+2026-10-07T12:34:49.2028030Z PASS Mobile controls are installed by runtime bootstrap
+2026-10-07T12:34:49.2034030Z MOBILE INPUT — multi-touch, ten direct slots, one-tap autoaim, safe cancellation and safe-area bounds
+2026-10-07T12:34:49.3187520Z PASS Battle feedback cannot open the notice modal or block gameplay
+2026-10-07T12:34:49.3194560Z PASS Explicit paused notice action opens the full detail safely
+2026-10-07T12:34:49.3206500Z PASS Touch control centers stay inside the screen safe area
+2026-10-07T12:34:49.3259520Z PASS Left joystick captures its own finger
+2026-10-07T12:34:49.3282500Z PASS Floating joystick origin follows the touched point
+2026-10-07T12:34:49.3349390Z PASS Two fingers can move and hold attack simultaneously
+2026-10-07T12:34:49.3353440Z PASS Releasing attack preserves the independent movement finger
+2026-10-07T12:34:49.3356550Z PASS Cancelled movement clears the joystick without a stuck direction
+2026-10-07T12:34:49.3371810Z PASS One dodge touch is consumed exactly once
+2026-10-07T12:34:49.3390850Z PASS One potion touch is consumed exactly once
+2026-10-07T12:34:49.3421220Z PASS Blocking gameplay clears held and queued touch commands
+2026-10-07T12:34:49.3424560Z PASS A stale pre-pause finger cannot restart attack after resume
+2026-10-07T12:34:49.4940980Z PASS PlayerController actually moves from the virtual joystick
+2026-10-07T12:34:49.4961140Z PASS Mobile HUD exposes eight active skills with enlarged targets and no passive slots
+2026-10-07T12:34:49.4963650Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4964590Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4965470Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4966280Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4967070Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4967820Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4968590Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4969320Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4970050Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4970790Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4971530Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4972270Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4973300Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4974040Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4974780Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4975450Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4976060Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4976770Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4977530Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4978290Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4979040Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4979700Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4980380Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4981140Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4981670Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4982170Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4982680Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4983230Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4983730Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4984210Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4984710Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4985220Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4985710Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4986210Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4986700Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4987230Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4987720Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4988210Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4988720Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4989200Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4989700Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4990330Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4990930Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4991570Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4992220Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4992870Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4993580Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4994220Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4994840Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4995610Z PASS Skill target stays in safe area
+2026-10-07T12:34:49.4996210Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.4996860Z PASS Active skill targets never overlap
+2026-10-07T12:34:49.5011750Z PASS Skill finger captured independently
+2026-10-07T12:34:49.5016840Z PASS Combat drag/cancel never accidentally rearranges skills or starts attack
+2026-10-07T12:34:49.5029020Z PASS Repeated Began cannot change a captured finger role
+2026-10-07T12:34:49.5032410Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5033200Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5033740Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5034260Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5034760Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5035280Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5035780Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5036270Z PASS Each direct button retains its stable skill identity
+2026-10-07T12:34:49.5056100Z PASS Autoaim fixture target is genuinely visible in the authored world
+2026-10-07T12:34:49.5101620Z PASS Hidden passive entries and unlearned active button never cast or spend resources
+2026-10-07T12:34:49.5114850Z PASS Releasing a skill finger over a different slot cancels instead of changing the selected skill
+2026-10-07T12:34:49.5204410Z PASS Skill press does not spend before the tap is released
+2026-10-07T12:34:49.6169540Z PASS One mobile tap autoaims and casts directional skill one independently of desktop page/slot assignments
+2026-10-07T12:34:49.6188960Z PASS Duplicate touch release cannot commit a second cast
+2026-10-07T12:34:49.6443310Z PASS A single ultimate tap autoaims and starts charging with no ground confirmation step or early spend
+2026-10-07T12:34:49.6452310Z PASS Cancelling the mobile charge preserves its uncommitted budget
+2026-10-07T12:34:49.7020170Z PASS The mobile charge completes through the real controller and spends exactly once
+2026-10-07T12:34:49.7279950Z PASS Forward-fallback fixture has an unobstructed eight-meter line
+2026-10-07T12:34:49.7282170Z PASS With no living visible target, one-tap ultimate uses its legal forward fallback
+2026-10-07T12:34:49.7311910Z PASS Right-button jitter at the six-pixel threshold does not move the camera or cancel a skill
+2026-10-07T12:34:49.7312840Z PASS Only release commits a below-threshold right click
+2026-10-07T12:34:49.7313480Z PASS A click is delivered for exactly one input sample
+2026-10-07T12:34:49.7314040Z PASS Crossing the shared threshold starts an orbit with the accumulated motion
+2026-10-07T12:34:49.7314590Z PASS Dragging back to the press point is still a drag, never a cancel click
+2026-10-07T12:34:49.7315170Z PASS A press that began over UI cannot become a world drag by leaving the UI
+2026-10-07T12:34:49.7315720Z PASS An owned world drag remains stable when its pointer crosses UI
+2026-10-07T12:34:49.7316240Z PASS Pause or focus loss releases gesture ownership without a phantom click
+2026-10-07T12:34:49.7316810Z PASS A lost mouse-up event cannot leave orbit dragging stuck
+2026-10-07T12:34:49.7321150Z PASS Camera drag clamps steep pitch and wraps multiple horizontal turns
+2026-10-07T12:34:49.7322800Z PASS Camera drag clamps low pitch and preserves direction across negative yaw wrap
+2026-10-07T12:34:49.7323840Z PASS Completing an orbit drag does not request skill cancellation
+2026-10-07T12:34:49.7324480Z PASS Scroll zoom respects the nearest distance limit
+2026-10-07T12:34:49.7333720Z PASS Lowest pitch remains above the ground and looks upward past the horizon
+2026-10-07T12:34:49.7334480Z PASS Scroll zoom respects the farthest distance limit
+2026-10-07T12:34:49.7335170Z PASS Paused or otherwise blocked input cannot rotate or zoom the camera
+2026-10-07T12:34:49.7335860Z PASS After a quarter-turn, W and D follow the camera's horizontal forward/right directions
+2026-10-07T12:34:49.7336450Z PASS Camera-relative diagonal movement remains on the ground and cannot move faster
+2026-10-07T12:34:49.7337070Z PASS Camera pitch does not reduce movement speed and fractional input retains its magnitude
+2026-10-07T12:34:49.7339440Z PASS Orbit camera still maps mouse screen positions to the intended ground-ray aim point
+2026-10-07T12:34:49.7439050Z PASS Camera cancellation fixture enters a real skill preview
+2026-10-07T12:34:49.7470220Z PASS Right-button press alone does not cancel a pending skill preview
+2026-10-07T12:34:49.7477390Z PASS Preview survives camera dragging and the drag release
+2026-10-07T12:34:49.7478570Z PASS A short release click cancels the real preview through the shared camera gesture contract
+2026-10-07T12:34:49.7548510Z PASS A release click cannot leak into the next input frame
+2026-10-07T12:34:49.7694300Z PASS Camera cancellation fixture starts a real charged ultimate
+2026-10-07T12:34:49.7703060Z PASS Right-button dragging cannot cancel the real player's pending charge
+2026-10-07T12:34:49.7704490Z PASS Releasing a drag cannot cancel the real player's pending charge
+2026-10-07T12:34:49.7706610Z PASS Right-click release cancels the real charge without spending energy or cooldown
+2026-10-07T12:34:49.7707240Z CAMERA passed gesture ownership/release, drag threshold, UI/pause rejection, pitch/yaw/zoom limits, ground clearance, camera-relative movement, ground ray aiming and real preview/charge cancellation.
+2026-10-07T12:34:49.7725550Z TRAVERSAL — river crossing, solid cover, routes and stationary jumps
+2026-10-07T12:34:49.7726850Z PASS Traversal fixture begins in the actual wilderness
+2026-10-07T12:34:49.7727540Z PASS River water blocks ground movement
+2026-10-07T12:34:49.7731130Z PASS Swept fast ground movement stops at the river bank
+2026-10-07T12:34:49.7735210Z PASS The authored bridge is a continuous walkable crossing
+2026-10-07T12:34:49.7738760Z PASS A clear opposite-bank landing allows a leap across the river
+2026-10-07T12:34:49.7740360Z PASS A leap cannot land in deep water
+2026-10-07T12:34:49.7741800Z PASS A leap cannot pass through a solid boulder
+2026-10-07T12:34:49.7743740Z PASS Ranged combat can cross open water
+2026-10-07T12:34:49.7745490Z PASS Boulders block projectile lines
+2026-10-07T12:34:49.7866180Z PASS Creatures find a non-direct route through the bridge
+2026-10-07T12:34:49.7870360Z PASS Every route segment stays walkable and crosses the visible bridge
+2026-10-07T12:34:49.8012300Z PASS Actual cached steering plus collision reaches the opposite bank without cutting corners or stalling
+2026-10-07T12:34:49.8014140Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8014950Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8015560Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8016170Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8016770Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8017410Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8017990Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8018620Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8019310Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8019980Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8020720Z PASS Spawned enemies are placed on valid ground
+2026-10-07T12:34:49.8022320Z PASS Player jump integration is available
+2026-10-07T12:34:49.8026390Z PASS Player can jump in place beside the river
+2026-10-07T12:34:49.8028760Z PASS Jump rises vertically without moving toward the river
+2026-10-07T12:34:49.8029780Z PASS Jump has no cooldown and cannot restart while airborne
+2026-10-07T12:34:49.8030580Z PASS Jump lands at its original position
+2026-10-07T12:34:49.8051300Z PASS Player can jump again immediately after landing without waiting for a cooldown
+2026-10-07T12:34:49.8068650Z PASS A boulder ahead does not block a stationary jump
+2026-10-07T12:34:49.8069870Z PASS Facing an obstacle still lands in place without a cooldown
+2026-10-07T12:34:49.8096840Z PASS A full-distance blocked blink shortens to a safe landing before the boulder and starts cooldown
+2026-10-07T12:34:49.8098650Z PASS Blink flush against a boulder has no useful landing and consumes no cooldown
+2026-10-07T12:34:49.8117390Z PASS A valid blink crosses the river immediately and starts its cooldown
+2026-10-07T12:34:50.3134280Z PASS World exists for Chinese label validation
+2026-10-07T12:34:50.3137710Z PASS Chinese label font is bundled and dynamic
+2026-10-07T12:34:50.3138730Z PASS World-label resolver selects the packaged subset when present
+2026-10-07T12:34:50.3140180Z PASS All authored world labels are covered by localization checks
+2026-10-07T12:34:50.3141290Z PASS World label keeps its stable object name and displays Chinese: CAMP
+2026-10-07T12:34:50.3142090Z PASS World label uses the bundled Chinese font: CAMP
+2026-10-07T12:34:50.3145000Z PASS World label uses its font's glyph atlas: CAMP
+2026-10-07T12:34:50.3147350Z PASS Chinese glyph has visible geometry: 营
+2026-10-07T12:34:50.3147980Z PASS Chinese glyph has visible geometry: 地
+2026-10-07T12:34:50.3148630Z PASS Chinese world label has a compact, nonempty width: CAMP
+2026-10-07T12:34:50.3149360Z PASS World label keeps its stable object name and displays Chinese: FALLEN STAR
+2026-10-07T12:34:50.3150040Z PASS World label uses the bundled Chinese font: FALLEN STAR
+2026-10-07T12:34:50.3150640Z PASS World label uses its font's glyph atlas: FALLEN STAR
+2026-10-07T12:34:50.3151280Z PASS Chinese glyph has visible geometry: 沉
+2026-10-07T12:34:50.3152290Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:34:50.3152820Z PASS Chinese glyph has visible geometry: 遗
+2026-10-07T12:34:50.3153330Z PASS Chinese glyph has visible geometry: 迹
+2026-10-07T12:34:50.3153830Z PASS Chinese world label has a compact, nonempty width: FALLEN STAR
+2026-10-07T12:34:50.3154350Z PASS World label keeps its stable object name and displays Chinese: STAR CORE
+2026-10-07T12:34:50.3154920Z PASS World label uses the bundled Chinese font: STAR CORE
+2026-10-07T12:34:50.3155420Z PASS World label uses its font's glyph atlas: STAR CORE
+2026-10-07T12:34:50.3156000Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:34:50.3156590Z PASS Chinese glyph has visible geometry: 核
+2026-10-07T12:34:50.3157090Z PASS Chinese world label has a compact, nonempty width: STAR CORE
+2026-10-07T12:34:50.3157630Z PASS World label keeps its stable object name and displays Chinese: APPRENTICE
+2026-10-07T12:34:50.3158140Z PASS World label uses the bundled Chinese font: APPRENTICE
+2026-10-07T12:34:50.3158620Z PASS World label uses its font's glyph atlas: APPRENTICE
+2026-10-07T12:34:50.3159120Z PASS Chinese glyph has visible geometry: 观
+2026-10-07T12:34:50.3159640Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:34:50.3160130Z PASS Chinese glyph has visible geometry: 学
+2026-10-07T12:34:50.3160620Z PASS Chinese glyph has visible geometry: 徒
+2026-10-07T12:34:50.3161100Z PASS Chinese world label has a compact, nonempty width: APPRENTICE
+2026-10-07T12:34:50.3161570Z PASS World label keeps its stable object name and displays Chinese: CODEX
+2026-10-07T12:34:50.3162040Z PASS World label uses the bundled Chinese font: CODEX
+2026-10-07T12:34:50.3162550Z PASS World label uses its font's glyph atlas: CODEX
+2026-10-07T12:34:50.3163030Z PASS Chinese glyph has visible geometry: 装
+2026-10-07T12:34:50.3163520Z PASS Chinese glyph has visible geometry: 备
+2026-10-07T12:34:50.3163980Z PASS Chinese glyph has visible geometry: 图
+2026-10-07T12:34:50.3164470Z PASS Chinese glyph has visible geometry: 鉴
+2026-10-07T12:34:50.3164970Z PASS Chinese world label has a compact, nonempty width: CODEX
+2026-10-07T12:34:50.3165440Z PASS World label keeps its stable object name and displays Chinese: CLASS TRIAL
+2026-10-07T12:34:50.3165930Z PASS World label uses the bundled Chinese font: CLASS TRIAL
+2026-10-07T12:34:50.3166410Z PASS World label uses its font's glyph atlas: CLASS TRIAL
+2026-10-07T12:34:50.3166900Z PASS Chinese glyph has visible geometry: 职
+2026-10-07T12:34:50.3167390Z PASS Chinese glyph has visible geometry: 业
+2026-10-07T12:34:50.3167860Z PASS Chinese glyph has visible geometry: 试
+2026-10-07T12:34:50.3168330Z PASS Chinese glyph has visible geometry: 炼
+2026-10-07T12:34:50.3168830Z PASS Chinese world label has a compact, nonempty width: CLASS TRIAL
+2026-10-07T12:34:50.3169320Z PASS Every expected Chinese world label was found once
+2026-10-07T12:34:50.3174340Z PASS Camera exists for Vanguard-world.png
+2026-10-07T12:34:50.4005430Z PASS 3D render produced image data: Vanguard-world.png
+2026-10-07T12:34:50.4009730Z CAPTURE Vanguard-world.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:34:50.4275100Z PASS Vanguard reaches level 100 through XP progression
+2026-10-07T12:34:50.4303510Z PASS Vanguard learns 0 stage 2
+2026-10-07T12:34:50.4344540Z PASS Vanguard learns 0 stage 3
+2026-10-07T12:34:50.4367860Z PASS Vanguard learns 1 stage 1
+2026-10-07T12:34:50.4389190Z PASS Vanguard learns 1 stage 2
+2026-10-07T12:34:50.4410030Z PASS Vanguard learns 1 stage 3
+2026-10-07T12:34:50.4430580Z PASS Vanguard learns 2 stage 1
+2026-10-07T12:34:50.4451230Z PASS Vanguard learns 2 stage 2
+2026-10-07T12:34:50.4488040Z PASS Vanguard learns 2 stage 3
+2026-10-07T12:34:50.4516180Z PASS Vanguard learns 3 stage 1
+2026-10-07T12:34:50.4537490Z PASS Vanguard learns 3 stage 2
+2026-10-07T12:34:50.4555980Z PASS Vanguard learns 3 stage 3
+2026-10-07T12:34:50.4575330Z PASS Vanguard learns 4 stage 1
+2026-10-07T12:34:50.4594640Z PASS Vanguard learns 4 stage 2
+2026-10-07T12:34:50.4628900Z PASS Vanguard learns 4 stage 3
+2026-10-07T12:34:50.4648190Z PASS Vanguard learns 5 stage 1
+2026-10-07T12:34:50.4673070Z PASS Vanguard learns 5 stage 2
+2026-10-07T12:34:50.4692430Z PASS Vanguard learns 5 stage 3
+2026-10-07T12:34:50.4713290Z PASS Vanguard learns 6 stage 1
+2026-10-07T12:34:50.4734920Z PASS Vanguard learns 6 stage 2
+2026-10-07T12:34:50.4770880Z PASS Vanguard learns 6 stage 3
+2026-10-07T12:34:50.4797210Z PASS Vanguard learns 7 stage 1
+2026-10-07T12:34:50.4817350Z PASS Vanguard learns 7 stage 2
+2026-10-07T12:34:50.4838640Z PASS Vanguard learns 7 stage 3
+2026-10-07T12:34:50.4857350Z PASS Vanguard learns 8 stage 1
+2026-10-07T12:34:50.4893170Z PASS Vanguard learns 8 stage 2
+2026-10-07T12:34:50.4915410Z PASS Vanguard learns 8 stage 3
+2026-10-07T12:34:50.4934450Z PASS Vanguard learns 9 stage 1
+2026-10-07T12:34:50.4954800Z PASS Vanguard learns 9 stage 2
+2026-10-07T12:34:50.4972310Z PASS Vanguard learns 9 stage 3
+2026-10-07T12:34:50.4973110Z PASS Vanguard learned offensive passive changes actual stats
+2026-10-07T12:34:50.4976190Z PASS Vanguard passives cannot enter the hotbar
+2026-10-07T12:34:50.4977040Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4977840Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4978660Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4979250Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4980040Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4980840Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4981580Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4982190Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4982850Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4983480Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4984030Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4984580Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4985140Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4985650Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4986340Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4987040Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4987720Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4988410Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4988990Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4989510Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4990040Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4990570Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4991080Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4991630Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4992160Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4992650Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4993140Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4993660Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4994170Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4994660Z PASS Vanguard loadout contains active skills only
+2026-10-07T12:34:50.4996650Z PASS Vanguard passive cast attempts consume no energy and create no cooldown
+2026-10-07T12:34:50.5007870Z PASS Vanguard inventory pauses combat
+2026-10-07T12:34:50.7011050Z PASS Vanguard skill panel pauses combat
+2026-10-07T12:34:51.3017210Z PASS Vanguard modal close restores gameplay
+2026-10-07T12:34:51.3079780Z PASS Custom key assignment accepted
+2026-10-07T12:34:51.3080690Z PASS Conflicting custom keys swap slots
+2026-10-07T12:34:51.3081380Z PASS Movement key binding rejected
+2026-10-07T12:34:51.3193680Z COMBAT Vanguard — projected body selection, attack direction, direct casts and uncommitted ground placement
+2026-10-07T12:34:51.3221250Z PASS Vanguard Slime body projects inside the actual camera
+2026-10-07T12:34:51.3223200Z PASS Vanguard selects Slime body instead of ground behind it
+2026-10-07T12:34:51.3338470Z PASS Vanguard recalculates facing after movement before attacking Slime
+2026-10-07T12:34:51.3343960Z PASS Vanguard cursor away from all bodies retains free aiming
+2026-10-07T12:34:51.3354680Z PASS Vanguard Wisp body projects inside the actual camera
+2026-10-07T12:34:51.3374480Z PASS Vanguard selects Wisp body instead of ground behind it
+2026-10-07T12:34:51.3482220Z PASS Vanguard recalculates facing after movement before attacking Wisp
+2026-10-07T12:34:51.3484530Z PASS Vanguard cursor away from all bodies retains free aiming
+2026-10-07T12:34:51.3503480Z PASS Vanguard Guardian body projects inside the actual camera
+2026-10-07T12:34:51.3513830Z PASS Vanguard selects Guardian body instead of ground behind it
+2026-10-07T12:34:51.3629530Z PASS Vanguard recalculates facing after movement before attacking Guardian
+2026-10-07T12:34:51.3631640Z PASS Vanguard cursor away from all bodies retains free aiming
+2026-10-07T12:34:51.3660040Z PASS Vanguard skill 0 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3661070Z PASS Vanguard skill 1 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3661710Z PASS Vanguard skill 2 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3662320Z PASS Vanguard skill 3 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3662870Z PASS Vanguard skill 4 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3663420Z PASS Vanguard skill 5 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3663990Z PASS Vanguard skill 6 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3664560Z PASS Vanguard skill 7 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3665100Z PASS Vanguard skill 8 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3665660Z PASS Vanguard skill 9 has its intended direct / ground-confirmation policy
+2026-10-07T12:34:51.3666680Z PASS Vanguard invalid skill identifiers cannot request ground confirmation
+2026-10-07T12:34:51.3735400Z PASS Vanguard entering skill preview spends no resources and starts no cooldown
+2026-10-07T12:34:51.3737660Z PASS Vanguard an actual ground-confirmation skill displays its preview geometry
+2026-10-07T12:34:51.3785460Z PASS Vanguard out-of-range placement respects cast distance, arena and intervening cover
+2026-10-07T12:34:51.3787240Z PASS Vanguard cancelling preserves energy/cooldown and consumes the same-frame ordinary attack input
+2026-10-07T12:34:51.3788190Z PASS Vanguard cancelling hides all placement geometry
+2026-10-07T12:34:51.3839850Z PASS Vanguard cancelled preview can be entered again
+2026-10-07T12:34:51.3973260Z PASS Vanguard confirmation keeps the precise chosen ground point and clears a prior monster lock
+2026-10-07T12:34:51.3975330Z PASS Vanguard confirmed heavy skill begins charging without an early resource charge
+2026-10-07T12:34:52.2972200Z PASS Vanguard confirmation consumes the configured cost and cooldown exactly once
+2026-10-07T12:34:52.2974380Z PASS Vanguard duplicate confirmation or cooldown preview cannot double-spend resources
+2026-10-07T12:34:52.3170510Z PASS Vanguard a ready self/directional skill releases immediately without visible placement
+2026-10-07T12:34:52.3172190Z PASS Vanguard direct release consumes its resource and cooldown exactly once
+2026-10-07T12:34:52.3173110Z PASS Vanguard direct release rejects duplicate/different same-frame casts and suppresses ordinary attack without spending again
+2026-10-07T12:34:52.3345080Z PASS Vanguard a ready ground skill may enter preview while the direct skill cools down
+2026-10-07T12:34:52.3347360Z PASS Vanguard an unlearned direct-cast request cannot spend resources or replace an existing valid ground preview
+2026-10-07T12:34:52.3348370Z PASS Vanguard teleport invalidates pending placement while preserving existing independent cooldowns
+2026-10-07T12:34:52.3371460Z PASS Vanguard teleport leaves ready ground skills available
+2026-10-07T12:34:52.4573350Z PASS Vanguard paused player loop cancels uncommitted placement without spending
+2026-10-07T12:34:52.4585060Z PASS Vanguard unlearned direct skill 0 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.4603160Z PASS Vanguard direct skill 0 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.4604250Z PASS Vanguard direct skill 0 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.4605040Z PASS Vanguard direct skill 0 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.4643630Z PASS Vanguard unlearned direct skill 1 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.4659030Z PASS Vanguard direct skill 1 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.4659950Z PASS Vanguard direct skill 1 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.4660820Z PASS Vanguard direct skill 1 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.4808810Z PASS Vanguard unlearned direct skill 2 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.4829870Z PASS Vanguard direct skill 2 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.4831100Z PASS Vanguard direct skill 2 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.4831820Z PASS Vanguard direct skill 2 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.5066260Z PASS Vanguard unlearned direct skill 4 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.5142990Z PASS Vanguard direct skill 4 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.5144240Z PASS Vanguard direct skill 4 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.5145060Z PASS Vanguard direct skill 4 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.5154560Z PASS Vanguard unlearned direct skill 5 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.5248000Z PASS Vanguard direct skill 5 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.5249440Z PASS Vanguard direct skill 5 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.5250300Z PASS Vanguard direct skill 5 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.5292880Z PASS Vanguard unlearned direct skill 6 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.5394910Z PASS Vanguard direct skill 6 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:52.5396350Z PASS Vanguard direct skill 6 uses its configured energy and learned cooldown
+2026-10-07T12:34:52.5397480Z PASS Vanguard direct skill 6 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:52.5479930Z PASS Vanguard unlearned direct skill 7 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:34:52.5572210Z PASS Vanguard direct skill 7 releases without needing a second click or showing preview geometry
+2026-10-07T12:34:53.1303820Z PASS Vanguard direct skill 7 uses its configured energy and learned cooldown
+2026-10-07T12:34:53.1305860Z PASS Vanguard direct skill 7 cannot double-spend through another Begin or Confirm
+2026-10-07T12:34:54.1971710Z PASS An ordinary monster remains neutral after a nearby player spends one full second within melee range
+2026-10-07T12:34:54.2044340Z PASS Damage provokes the formerly neutral monster immediately
+2026-10-07T12:34:55.0576760Z PASS Provoked ordinary monster actually retaliates and deals damage in live player-loop frames
+2026-10-07T12:34:55.0613270Z PASS Slow reduces the real movement multiplier and provokes the target
+2026-10-07T12:34:55.0614710Z PASS Boss slow resistance reduces the applied movement penalty
+2026-10-07T12:34:55.0691590Z PASS Mark increases actual incoming damage by the configured vulnerability
+2026-10-07T12:34:55.0693590Z PASS Knockdown controls ordinary enemies while Boss armor rejects raw hard control
+2026-10-07T12:34:55.0695240Z PASS Boss raw knockdown has zero granted duration while ordinary control is bounded
+2026-10-07T12:34:55.9240250Z PASS Boss recovers from resisted control while ordinary enemy remains knocked down in actual frames
+2026-10-07T12:34:55.9246340Z PASS Freeze preserves simultaneous control and slow without erasing an active knockdown
+2026-10-07T12:34:55.9285650Z PASS Poison caps at three stacks and deals no immediate application damage
+2026-10-07T12:34:56.7902040Z PASS Three poison stacks deal their delayed damage in live frames
+2026-10-07T12:34:56.9229030Z PASS Teleport invalidates poison from the previous combat generation without another damage tick
+2026-10-07T12:34:56.9232450Z COMBAT Vanguard completed 82 additional assertions.
+2026-10-07T12:34:56.9252670Z PASS Vanguard charge component is attached to the real player
+2026-10-07T12:34:56.9253830Z PASS Only seven of the thirty-two active class skills require charging
+2026-10-07T12:34:56.9429330Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:56.9608150Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:56.9610430Z PASS Vanguard confirmed ultimate starts its charge at zero progress
+2026-10-07T12:34:56.9611410Z PASS Vanguard starting a charge spends no energy and starts no cooldown
+2026-10-07T12:34:56.9612710Z PASS Vanguard pending charge creates visible owned gathering energy
+2026-10-07T12:34:56.9614730Z PASS Vanguard charge visibly raises the weapon or draws the bow
+2026-10-07T12:34:56.9615590Z PASS Vanguard a pending charge rejects other skills and duplicate starts
+2026-10-07T12:34:56.9616380Z PASS Vanguard charge applies the actual player movement multiplier
+2026-10-07T12:34:56.9618160Z PASS Vanguard ordinary attacks cannot commit during a charge
+2026-10-07T12:34:56.9618930Z PASS Vanguard half-complete charge is still uncommitted
+2026-10-07T12:34:57.1121310Z PASS Vanguard real paused frames and positive manual deltas cannot advance a paused charge
+2026-10-07T12:34:57.1124090Z PASS Vanguard cancelling immediately hides owned charge geometry
+2026-10-07T12:34:57.1124940Z PASS Vanguard cancellation consumes the input frame without charging its budget
+2026-10-07T12:34:57.1125640Z PASS Vanguard cancel input cannot accidentally become a same-frame ordinary skill
+2026-10-07T12:34:57.1340170Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:57.1437280Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:57.1455070Z PASS Vanguard native player-loop frames advance a live charge before its resource commit
+2026-10-07T12:34:57.1735760Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:57.1846670Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:57.1953370Z PASS Vanguard exact completion commits the real cast budget once
+2026-10-07T12:34:57.1955210Z PASS Vanguard release retains its original point and direction after movement and aim changes
+2026-10-07T12:34:57.1956300Z PASS Vanguard duplicate completion and same-frame input cannot spend twice
+2026-10-07T12:34:57.2026340Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:57.2117210Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:57.2118760Z PASS Vanguard resource revalidation fixture changes the shared budget during pending cast
+2026-10-07T12:34:57.2120000Z PASS Vanguard insufficient energy at completion safely discards the pending cast
+2026-10-07T12:34:57.2181330Z PASS Vanguard teleport preservation fixture has an existing independent cooldown
+2026-10-07T12:34:57.2235230Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:57.2338640Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:57.2340270Z PASS Vanguard teleport cancels only the pending charge and preserves committed resources
+2026-10-07T12:34:57.2411160Z PASS Charge fixture enters real ground preview
+2026-10-07T12:34:57.2555430Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:34:57.2556850Z PASS Vanguard dead-owner validation prevents a pending cast from releasing
+2026-10-07T12:34:57.2557570Z CHARGE Vanguard passed real entry, frame progression, pause, fixed aim, cancellation, exact commit, energy revalidation and invalid-owner checks.
+2026-10-07T12:34:57.2630370Z PASS Vanguard skill 0 spends its configured resource cost
+2026-10-07T12:34:57.2631460Z PASS Vanguard skill 0 uses the awakened cooldown
+2026-10-07T12:34:57.2676410Z PASS Vanguard skill can be configured on page two
+2026-10-07T12:34:57.2678390Z PASS Vanguard page two preserves the existing skill cooldown
+2026-10-07T12:34:57.2732120Z PASS Vanguard skill can be configured on page three
+2026-10-07T12:34:57.2733420Z PASS Vanguard paging cannot bypass cooldown or double-spend resources
+2026-10-07T12:34:57.2735710Z PASS Vanguard a basic attack hit restores eight resource points
+2026-10-07T12:34:57.5257920Z PASS Vanguard pause freezes active cooldowns
+2026-10-07T12:34:58.5302660Z PASS Vanguard remains alive after skill 0
+2026-10-07T12:34:58.5304960Z PASS Vanguard skill 0 cooldown advances in live frames
+2026-10-07T12:34:58.5307150Z PASS Vanguard skill 0 damages runtime enemies
+2026-10-07T12:34:58.5389630Z PASS Vanguard skill 1 spends its configured resource cost
+2026-10-07T12:34:58.5390670Z PASS Vanguard skill 1 uses the awakened cooldown
+2026-10-07T12:34:59.5339320Z PASS Vanguard remains alive after skill 1
+2026-10-07T12:34:59.5340940Z PASS Vanguard skill 1 cooldown advances in live frames
+2026-10-07T12:34:59.5341650Z PASS Vanguard skill 1 damages runtime enemies
+2026-10-07T12:34:59.5394820Z PASS Vanguard skill 2 spends its configured resource cost
+2026-10-07T12:34:59.5395890Z PASS Vanguard skill 2 uses the awakened cooldown
+2026-10-07T12:35:00.6840190Z PASS Vanguard remains alive after skill 2
+2026-10-07T12:35:00.6842930Z PASS Vanguard skill 2 cooldown advances in live frames
+2026-10-07T12:35:00.6845530Z PASS Vanguard skill 2 damages runtime enemies
+2026-10-07T12:35:00.6966280Z PASS Vanguard skill 4 spends its configured resource cost
+2026-10-07T12:35:00.6968200Z PASS Vanguard skill 4 uses the awakened cooldown
+2026-10-07T12:35:00.7056760Z PASS Vanguard defense ability reduces actual incoming damage
+2026-10-07T12:35:01.6856670Z PASS Vanguard remains alive after skill 4
+2026-10-07T12:35:01.6859160Z PASS Vanguard skill 4 cooldown advances in live frames
+2026-10-07T12:35:01.6993520Z PASS Vanguard skill 5 spends its configured resource cost
+2026-10-07T12:35:01.6995260Z PASS Vanguard skill 5 uses the awakened cooldown
+2026-10-07T12:35:02.6947570Z PASS Vanguard remains alive after skill 5
+2026-10-07T12:35:02.6949680Z PASS Vanguard skill 5 cooldown advances in live frames
+2026-10-07T12:35:02.6952370Z PASS Vanguard mobility skill moves the actual character
+2026-10-07T12:35:02.7213550Z PASS Vanguard healing fixture is injured and alive
+2026-10-07T12:35:02.7291570Z PASS Vanguard skill 6 spends its configured resource cost
+2026-10-07T12:35:02.7293100Z PASS Vanguard skill 6 uses the awakened cooldown
+2026-10-07T12:35:03.9508400Z PASS Vanguard remains alive after skill 6
+2026-10-07T12:35:03.9510990Z PASS Vanguard skill 6 cooldown advances in live frames
+2026-10-07T12:35:03.9513110Z PASS Vanguard healing skill restores real health over time
+2026-10-07T12:35:03.9673270Z PASS Vanguard skill 7 spends its configured resource cost
+2026-10-07T12:35:03.9674590Z PASS Vanguard skill 7 uses the awakened cooldown
+2026-10-07T12:35:04.9543090Z PASS Vanguard remains alive after skill 7
+2026-10-07T12:35:04.9552630Z PASS Vanguard skill 7 cooldown advances in live frames
+2026-10-07T12:35:04.9553960Z PASS Vanguard skill 7 damages runtime enemies
+2026-10-07T12:35:04.9741100Z PASS Vanguard skill 9 spends its configured resource cost
+2026-10-07T12:35:04.9742880Z PASS Vanguard skill 9 uses the awakened cooldown
+2026-10-07T12:35:08.8665210Z PASS Vanguard remains alive after skill 9
+2026-10-07T12:35:08.8668230Z PASS Vanguard skill 9 cooldown advances in live frames
+2026-10-07T12:35:08.8670650Z PASS Vanguard skill 9 damages runtime enemies
+2026-10-07T12:35:08.8671920Z PASS Camera exists for Vanguard-awakened-ultimate.png
+2026-10-07T12:35:08.9501540Z PASS 3D render produced image data: Vanguard-awakened-ultimate.png
+2026-10-07T12:35:08.9507020Z CAPTURE Vanguard-awakened-ultimate.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:08.9509030Z HERO Arcanist — learning, passives, all eight active skills, camera capture
+2026-10-07T12:35:09.1898320Z PASS Arcanist initializes correctly
+2026-10-07T12:35:09.3264240Z INVENTORY Arcanist passed 104 classification, sorting and sale checks.
+2026-10-07T12:35:09.5085060Z PASS World exists for Chinese label validation
+2026-10-07T12:35:09.5087780Z PASS Chinese label font is bundled and dynamic
+2026-10-07T12:35:09.5090490Z PASS World-label resolver selects the packaged subset when present
+2026-10-07T12:35:09.5092610Z PASS All authored world labels are covered by localization checks
+2026-10-07T12:35:09.5093740Z PASS World label keeps its stable object name and displays Chinese: CAMP
+2026-10-07T12:35:09.5094750Z PASS World label uses the bundled Chinese font: CAMP
+2026-10-07T12:35:09.5095800Z PASS World label uses its font's glyph atlas: CAMP
+2026-10-07T12:35:09.5096810Z PASS Chinese glyph has visible geometry: 营
+2026-10-07T12:35:09.5097790Z PASS Chinese glyph has visible geometry: 地
+2026-10-07T12:35:09.5098770Z PASS Chinese world label has a compact, nonempty width: CAMP
+2026-10-07T12:35:09.5100370Z PASS World label keeps its stable object name and displays Chinese: FALLEN STAR
+2026-10-07T12:35:09.5101480Z PASS World label uses the bundled Chinese font: FALLEN STAR
+2026-10-07T12:35:09.5102550Z PASS World label uses its font's glyph atlas: FALLEN STAR
+2026-10-07T12:35:09.5103530Z PASS Chinese glyph has visible geometry: 沉
+2026-10-07T12:35:09.5126570Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:09.5127840Z PASS Chinese glyph has visible geometry: 遗
+2026-10-07T12:35:09.5128820Z PASS Chinese glyph has visible geometry: 迹
+2026-10-07T12:35:09.5129830Z PASS Chinese world label has a compact, nonempty width: FALLEN STAR
+2026-10-07T12:35:09.5130720Z PASS World label keeps its stable object name and displays Chinese: STAR CORE
+2026-10-07T12:35:09.5131630Z PASS World label uses the bundled Chinese font: STAR CORE
+2026-10-07T12:35:09.5132530Z PASS World label uses its font's glyph atlas: STAR CORE
+2026-10-07T12:35:09.5133420Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:09.5134250Z PASS Chinese glyph has visible geometry: 核
+2026-10-07T12:35:09.5135140Z PASS Chinese world label has a compact, nonempty width: STAR CORE
+2026-10-07T12:35:09.5135980Z PASS World label keeps its stable object name and displays Chinese: APPRENTICE
+2026-10-07T12:35:09.5136840Z PASS World label uses the bundled Chinese font: APPRENTICE
+2026-10-07T12:35:09.5137720Z PASS World label uses its font's glyph atlas: APPRENTICE
+2026-10-07T12:35:09.5138610Z PASS Chinese glyph has visible geometry: 观
+2026-10-07T12:35:09.5139480Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:09.5140340Z PASS Chinese glyph has visible geometry: 学
+2026-10-07T12:35:09.5141180Z PASS Chinese glyph has visible geometry: 徒
+2026-10-07T12:35:09.5142040Z PASS Chinese world label has a compact, nonempty width: APPRENTICE
+2026-10-07T12:35:09.5142930Z PASS World label keeps its stable object name and displays Chinese: CODEX
+2026-10-07T12:35:09.5143780Z PASS World label uses the bundled Chinese font: CODEX
+2026-10-07T12:35:09.5144650Z PASS World label uses its font's glyph atlas: CODEX
+2026-10-07T12:35:09.5145540Z PASS Chinese glyph has visible geometry: 装
+2026-10-07T12:35:09.5146380Z PASS Chinese glyph has visible geometry: 备
+2026-10-07T12:35:09.5147220Z PASS Chinese glyph has visible geometry: 图
+2026-10-07T12:35:09.5148190Z PASS Chinese glyph has visible geometry: 鉴
+2026-10-07T12:35:09.5149210Z PASS Chinese world label has a compact, nonempty width: CODEX
+2026-10-07T12:35:09.5150330Z PASS World label keeps its stable object name and displays Chinese: CLASS TRIAL
+2026-10-07T12:35:09.5151290Z PASS World label uses the bundled Chinese font: CLASS TRIAL
+2026-10-07T12:35:09.5152360Z PASS World label uses its font's glyph atlas: CLASS TRIAL
+2026-10-07T12:35:09.5153340Z PASS Chinese glyph has visible geometry: 职
+2026-10-07T12:35:09.5154280Z PASS Chinese glyph has visible geometry: 业
+2026-10-07T12:35:09.5155180Z PASS Chinese glyph has visible geometry: 试
+2026-10-07T12:35:09.5156040Z PASS Chinese glyph has visible geometry: 炼
+2026-10-07T12:35:09.5156910Z PASS Chinese world label has a compact, nonempty width: CLASS TRIAL
+2026-10-07T12:35:09.5157760Z PASS Every expected Chinese world label was found once
+2026-10-07T12:35:09.5158740Z PASS Camera exists for Arcanist-world.png
+2026-10-07T12:35:09.6083690Z PASS 3D render produced image data: Arcanist-world.png
+2026-10-07T12:35:09.6092150Z CAPTURE Arcanist-world.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:09.6792960Z PASS Arcanist reaches level 100 through XP progression
+2026-10-07T12:35:09.6851680Z PASS Arcanist learns 0 stage 2
+2026-10-07T12:35:09.6942490Z PASS Arcanist learns 0 stage 3
+2026-10-07T12:35:09.6993040Z PASS Arcanist learns 1 stage 1
+2026-10-07T12:35:09.7055950Z PASS Arcanist learns 1 stage 2
+2026-10-07T12:35:09.7111220Z PASS Arcanist learns 1 stage 3
+2026-10-07T12:35:09.7164300Z PASS Arcanist learns 2 stage 1
+2026-10-07T12:35:09.7225090Z PASS Arcanist learns 2 stage 2
+2026-10-07T12:35:09.7310840Z PASS Arcanist learns 2 stage 3
+2026-10-07T12:35:09.7361040Z PASS Arcanist learns 3 stage 1
+2026-10-07T12:35:09.7411080Z PASS Arcanist learns 3 stage 2
+2026-10-07T12:35:09.7461840Z PASS Arcanist learns 3 stage 3
+2026-10-07T12:35:09.7515760Z PASS Arcanist learns 4 stage 1
+2026-10-07T12:35:09.7570410Z PASS Arcanist learns 4 stage 2
+2026-10-07T12:35:09.7653540Z PASS Arcanist learns 4 stage 3
+2026-10-07T12:35:09.7703860Z PASS Arcanist learns 5 stage 1
+2026-10-07T12:35:09.7754870Z PASS Arcanist learns 5 stage 2
+2026-10-07T12:35:09.7805280Z PASS Arcanist learns 5 stage 3
+2026-10-07T12:35:09.7858080Z PASS Arcanist learns 6 stage 1
+2026-10-07T12:35:09.7905450Z PASS Arcanist learns 6 stage 2
+2026-10-07T12:35:09.7988180Z PASS Arcanist learns 6 stage 3
+2026-10-07T12:35:09.8034210Z PASS Arcanist learns 7 stage 1
+2026-10-07T12:35:09.8089460Z PASS Arcanist learns 7 stage 2
+2026-10-07T12:35:09.8138990Z PASS Arcanist learns 7 stage 3
+2026-10-07T12:35:09.8196550Z PASS Arcanist learns 8 stage 1
+2026-10-07T12:35:09.8246780Z PASS Arcanist learns 8 stage 2
+2026-10-07T12:35:09.8328870Z PASS Arcanist learns 8 stage 3
+2026-10-07T12:35:09.8379670Z PASS Arcanist learns 9 stage 1
+2026-10-07T12:35:09.8434590Z PASS Arcanist learns 9 stage 2
+2026-10-07T12:35:09.8489870Z PASS Arcanist learns 9 stage 3
+2026-10-07T12:35:09.8492690Z PASS Arcanist learned offensive passive changes actual stats
+2026-10-07T12:35:09.8495640Z PASS Arcanist passives cannot enter the hotbar
+2026-10-07T12:35:09.8500290Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8504200Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8506470Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8508480Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8510120Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8511610Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8512930Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8514190Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8515430Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8516710Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8518010Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8519340Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8520670Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8522020Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8523800Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8525970Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8527820Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8529470Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8531210Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8532710Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8534320Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8535940Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8542300Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8544710Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8546200Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8547820Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8551610Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8553400Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8554770Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8556190Z PASS Arcanist loadout contains active skills only
+2026-10-07T12:35:09.8557960Z PASS Arcanist passive cast attempts consume no energy and create no cooldown
+2026-10-07T12:35:09.8561130Z PASS Arcanist inventory pauses combat
+2026-10-07T12:35:10.0573060Z PASS Arcanist skill panel pauses combat
+2026-10-07T12:35:10.6583670Z PASS Arcanist modal close restores gameplay
+2026-10-07T12:35:10.6588600Z COMBAT Arcanist — projected body selection, attack direction, direct casts and uncommitted ground placement
+2026-10-07T12:35:10.6616930Z PASS Arcanist Slime body projects inside the actual camera
+2026-10-07T12:35:10.6620670Z PASS Arcanist selects Slime body instead of ground behind it
+2026-10-07T12:35:10.6690830Z PASS Arcanist recalculates facing after movement before attacking Slime
+2026-10-07T12:35:10.6703170Z PASS Arcanist projectile follows recalculated body direction
+2026-10-07T12:35:10.6707610Z PASS Arcanist projectile travels from muzzle height toward Slime body height
+2026-10-07T12:35:10.6711680Z PASS Arcanist cursor away from all bodies retains free aiming
+2026-10-07T12:35:10.6749740Z PASS Arcanist Wisp body projects inside the actual camera
+2026-10-07T12:35:10.6756350Z PASS Arcanist selects Wisp body instead of ground behind it
+2026-10-07T12:35:10.6768160Z PASS Arcanist recalculates facing after movement before attacking Wisp
+2026-10-07T12:35:10.6772670Z PASS Arcanist projectile follows recalculated body direction
+2026-10-07T12:35:10.6775050Z PASS Arcanist projectile travels from muzzle height toward Wisp body height
+2026-10-07T12:35:10.6776860Z PASS Arcanist cursor away from all bodies retains free aiming
+2026-10-07T12:35:10.6851950Z PASS Arcanist Guardian body projects inside the actual camera
+2026-10-07T12:35:10.6891720Z PASS Arcanist selects Guardian body instead of ground behind it
+2026-10-07T12:35:10.6901660Z PASS Arcanist recalculates facing after movement before attacking Guardian
+2026-10-07T12:35:10.6906850Z PASS Arcanist projectile follows recalculated body direction
+2026-10-07T12:35:10.6909690Z PASS Arcanist projectile travels from muzzle height toward Guardian body height
+2026-10-07T12:35:10.6915830Z PASS Arcanist cursor away from all bodies retains free aiming
+2026-10-07T12:35:10.6951380Z PASS Arcanist basic projectile retains its original 1.15 second lifetime
+2026-10-07T12:35:10.6955350Z PASS Arcanist uses the correct mage homing / straight arrow target policy
+2026-10-07T12:35:10.9122310Z PASS Arcanist basic projectile remains alive before its original expiry
+2026-10-07T12:35:11.0449620Z PASS Arcanist projectile survives the moving-target steering fixture
+2026-10-07T12:35:11.0459010Z PASS Mage bolt still follows its original moving target after the ranger correction window has ended
+2026-10-07T12:35:11.1324830Z PASS Mage bolt keeps its last direction after target death and never retargets another monster
+2026-10-07T12:35:12.3490450Z PASS Arcanist basic projectile expires without a homing range extension
+2026-10-07T12:35:12.3569600Z PASS Mage fallback selects nearest living monster inside the 14 metre / 35 degree cone
+2026-10-07T12:35:12.3583860Z PASS Mage ordinary attack actually acquires the valid cone fallback
+2026-10-07T12:35:12.3589930Z PASS Mage fallback ignores inactive closer monsters
+2026-10-07T12:35:12.3592510Z PASS Mage fallback cannot lock distant, sideward or rear monsters globally
+2026-10-07T12:35:12.3602660Z PASS Arcanist skill 0 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3605880Z PASS Arcanist skill 1 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3607770Z PASS Arcanist skill 2 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3609750Z PASS Arcanist skill 3 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3611040Z PASS Arcanist skill 4 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3612240Z PASS Arcanist skill 5 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3613710Z PASS Arcanist skill 6 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3614920Z PASS Arcanist skill 7 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3616200Z PASS Arcanist skill 8 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3617550Z PASS Arcanist skill 9 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:12.3618690Z PASS Arcanist invalid skill identifiers cannot request ground confirmation
+2026-10-07T12:35:12.3706320Z PASS Arcanist entering skill preview spends no resources and starts no cooldown
+2026-10-07T12:35:12.3711890Z PASS Arcanist an actual ground-confirmation skill displays its preview geometry
+2026-10-07T12:35:12.3751550Z PASS Arcanist out-of-range placement respects cast distance, arena and intervening cover
+2026-10-07T12:35:12.3756940Z PASS Arcanist cancelling preserves energy/cooldown and consumes the same-frame ordinary attack input
+2026-10-07T12:35:12.3759880Z PASS Arcanist cancelling hides all placement geometry
+2026-10-07T12:35:12.3798970Z PASS Arcanist cancelled preview can be entered again
+2026-10-07T12:35:12.3838320Z PASS Arcanist confirmation keeps the precise chosen ground point and clears a prior monster lock
+2026-10-07T12:35:12.3843540Z PASS Arcanist confirmed heavy skill begins charging without an early resource charge
+2026-10-07T12:35:12.9855140Z PASS Arcanist confirmation consumes the configured cost and cooldown exactly once
+2026-10-07T12:35:12.9862610Z PASS Arcanist duplicate confirmation or cooldown preview cannot double-spend resources
+2026-10-07T12:35:13.0141160Z PASS Arcanist a ready self/directional skill releases immediately without visible placement
+2026-10-07T12:35:13.0147450Z PASS Arcanist direct release consumes its resource and cooldown exactly once
+2026-10-07T12:35:13.0150160Z PASS Arcanist direct release rejects duplicate/different same-frame casts and suppresses ordinary attack without spending again
+2026-10-07T12:35:13.1350930Z PASS Arcanist a ready ground skill may enter preview while the direct skill cools down
+2026-10-07T12:35:13.1357720Z PASS Arcanist an unlearned direct-cast request cannot spend resources or replace an existing valid ground preview
+2026-10-07T12:35:13.1361160Z PASS Arcanist teleport invalidates pending placement while preserving existing independent cooldowns
+2026-10-07T12:35:13.1392790Z PASS Arcanist teleport leaves ready ground skills available
+2026-10-07T12:35:13.2598950Z PASS Arcanist paused player loop cancels uncommitted placement without spending
+2026-10-07T12:35:13.2611640Z PASS Arcanist unlearned direct skill 0 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:13.2706090Z PASS Arcanist direct skill 0 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:13.2712890Z PASS Arcanist direct skill 0 uses its configured energy and learned cooldown
+2026-10-07T12:35:13.2715750Z PASS Arcanist direct skill 0 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:13.3731520Z PASS Arcanist unlearned direct skill 4 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:13.3831000Z PASS Arcanist direct skill 4 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:13.3836400Z PASS Arcanist direct skill 4 uses its configured energy and learned cooldown
+2026-10-07T12:35:13.3841340Z PASS Arcanist direct skill 4 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:13.3917230Z PASS Arcanist unlearned direct skill 5 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:13.4126220Z PASS Arcanist direct skill 5 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:13.4132300Z PASS Arcanist direct skill 5 uses its configured energy and learned cooldown
+2026-10-07T12:35:13.4135110Z PASS Arcanist direct skill 5 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:13.4166600Z PASS Arcanist unlearned direct skill 6 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:13.4369770Z PASS Arcanist direct skill 6 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:13.4374510Z PASS Arcanist direct skill 6 uses its configured energy and learned cooldown
+2026-10-07T12:35:13.4376640Z PASS Arcanist direct skill 6 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:13.4401930Z COMBAT Arcanist completed 74 additional assertions.
+2026-10-07T12:35:13.4407830Z PASS Arcanist charge component is attached to the real player
+2026-10-07T12:35:13.4409790Z PASS Only seven of the thirty-two active class skills require charging
+2026-10-07T12:35:13.4502550Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.4642290Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.4647110Z PASS Arcanist confirmed ultimate starts its charge at zero progress
+2026-10-07T12:35:13.4649000Z PASS Arcanist starting a charge spends no energy and starts no cooldown
+2026-10-07T12:35:13.4650700Z PASS Arcanist pending charge creates visible owned gathering energy
+2026-10-07T12:35:13.4653590Z PASS Arcanist charge visibly raises the weapon or draws the bow
+2026-10-07T12:35:13.4655540Z PASS Arcanist a pending charge rejects other skills and duplicate starts
+2026-10-07T12:35:13.4657140Z PASS Arcanist charge applies the actual player movement multiplier
+2026-10-07T12:35:13.4659480Z PASS Arcanist ordinary attacks cannot commit during a charge
+2026-10-07T12:35:13.4660990Z PASS Arcanist half-complete charge is still uncommitted
+2026-10-07T12:35:13.6164540Z PASS Arcanist real paused frames and positive manual deltas cannot advance a paused charge
+2026-10-07T12:35:13.6173530Z PASS Arcanist cancelling immediately hides owned charge geometry
+2026-10-07T12:35:13.6177370Z PASS Arcanist cancellation consumes the input frame without charging its budget
+2026-10-07T12:35:13.6179340Z PASS Arcanist cancel input cannot accidentally become a same-frame ordinary skill
+2026-10-07T12:35:13.6398940Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.6409040Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.6429020Z PASS Arcanist native player-loop frames advance a live charge before its resource commit
+2026-10-07T12:35:13.6729790Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.6741470Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.6751200Z PASS Arcanist exact completion commits the real cast budget once
+2026-10-07T12:35:13.6755160Z PASS Arcanist release retains its original point and direction after movement and aim changes
+2026-10-07T12:35:13.6758630Z PASS Arcanist duplicate completion and same-frame input cannot spend twice
+2026-10-07T12:35:13.6909640Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.6925530Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.6929140Z PASS Arcanist resource revalidation fixture changes the shared budget during pending cast
+2026-10-07T12:35:13.6931940Z PASS Arcanist insufficient energy at completion safely discards the pending cast
+2026-10-07T12:35:13.6950720Z PASS Arcanist teleport preservation fixture has an existing independent cooldown
+2026-10-07T12:35:13.7086500Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.7101920Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.7108490Z PASS Arcanist teleport cancels only the pending charge and preserves committed resources
+2026-10-07T12:35:13.7255750Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:13.7399380Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:13.7406620Z PASS Arcanist dead-owner validation prevents a pending cast from releasing
+2026-10-07T12:35:13.7409290Z CHARGE Arcanist passed real entry, frame progression, pause, fixed aim, cancellation, exact commit, energy revalidation and invalid-owner checks.
+2026-10-07T12:35:13.7629790Z PASS Arcanist skill 0 spends its configured resource cost
+2026-10-07T12:35:13.7635750Z PASS Arcanist skill 0 uses the awakened cooldown
+2026-10-07T12:35:13.7783770Z PASS Arcanist skill can be configured on page two
+2026-10-07T12:35:13.7787440Z PASS Arcanist page two preserves the existing skill cooldown
+2026-10-07T12:35:13.7897030Z PASS Arcanist skill can be configured on page three
+2026-10-07T12:35:13.7902470Z PASS Arcanist paging cannot bypass cooldown or double-spend resources
+2026-10-07T12:35:13.7905190Z PASS Arcanist a basic attack hit restores eight resource points
+2026-10-07T12:35:14.0463220Z PASS Arcanist pause freezes active cooldowns
+2026-10-07T12:35:15.0620490Z PASS Arcanist remains alive after skill 0
+2026-10-07T12:35:15.0625210Z PASS Arcanist skill 0 cooldown advances in live frames
+2026-10-07T12:35:15.0627260Z PASS Arcanist skill 0 damages runtime enemies
+2026-10-07T12:35:15.0912300Z PASS Arcanist skill 1 spends its configured resource cost
+2026-10-07T12:35:15.0917890Z PASS Arcanist skill 1 uses the awakened cooldown
+2026-10-07T12:35:16.0754830Z PASS Arcanist remains alive after skill 1
+2026-10-07T12:35:16.0759560Z PASS Arcanist skill 1 cooldown advances in live frames
+2026-10-07T12:35:16.0762190Z PASS Arcanist skill 1 damages runtime enemies
+2026-10-07T12:35:16.0979190Z PASS Arcanist skill 2 spends its configured resource cost
+2026-10-07T12:35:16.0985350Z PASS Arcanist skill 2 uses the awakened cooldown
+2026-10-07T12:35:17.2294590Z PASS Arcanist remains alive after skill 2
+2026-10-07T12:35:17.2302420Z PASS Arcanist skill 2 cooldown advances in live frames
+2026-10-07T12:35:17.2305090Z PASS Arcanist skill 2 damages runtime enemies
+2026-10-07T12:35:17.2539090Z PASS Arcanist skill 4 spends its configured resource cost
+2026-10-07T12:35:17.2572500Z PASS Arcanist skill 4 uses the awakened cooldown
+2026-10-07T12:35:18.2431940Z PASS Arcanist remains alive after skill 4
+2026-10-07T12:35:18.2435960Z PASS Arcanist skill 4 cooldown advances in live frames
+2026-10-07T12:35:18.2437940Z PASS Arcanist skill 4 damages runtime enemies
+2026-10-07T12:35:18.2819230Z PASS Arcanist skill 5 spends its configured resource cost
+2026-10-07T12:35:18.2842070Z PASS Arcanist skill 5 uses the awakened cooldown
+2026-10-07T12:35:18.3259980Z PASS Arcanist defense ability reduces actual incoming damage
+2026-10-07T12:35:19.2556510Z PASS Arcanist remains alive after skill 5
+2026-10-07T12:35:19.2563610Z PASS Arcanist skill 5 cooldown advances in live frames
+2026-10-07T12:35:19.2778910Z PASS Arcanist healing fixture is injured and alive
+2026-10-07T12:35:19.3024580Z PASS Arcanist skill 6 spends its configured resource cost
+2026-10-07T12:35:19.3030320Z PASS Arcanist skill 6 uses the awakened cooldown
+2026-10-07T12:35:20.5052570Z PASS Arcanist remains alive after skill 6
+2026-10-07T12:35:20.5060530Z PASS Arcanist skill 6 cooldown advances in live frames
+2026-10-07T12:35:20.5063830Z PASS Arcanist healing skill restores real health over time
+2026-10-07T12:35:20.5218600Z PASS Arcanist skill 7 spends its configured resource cost
+2026-10-07T12:35:20.5225950Z PASS Arcanist skill 7 uses the awakened cooldown
+2026-10-07T12:35:21.5145960Z PASS Arcanist remains alive after skill 7
+2026-10-07T12:35:21.5153600Z PASS Arcanist skill 7 cooldown advances in live frames
+2026-10-07T12:35:21.5156890Z PASS Arcanist skill 7 damages runtime enemies
+2026-10-07T12:35:21.5309840Z PASS Arcanist skill 9 spends its configured resource cost
+2026-10-07T12:35:21.5316400Z PASS Arcanist skill 9 uses the awakened cooldown
+2026-10-07T12:35:25.4398120Z PASS Arcanist remains alive after skill 9
+2026-10-07T12:35:25.4406160Z PASS Arcanist skill 9 cooldown advances in live frames
+2026-10-07T12:35:25.4408970Z PASS Arcanist skill 9 damages runtime enemies
+2026-10-07T12:35:25.4410960Z PASS Camera exists for Arcanist-awakened-ultimate.png
+2026-10-07T12:35:25.5696950Z PASS 3D render produced image data: Arcanist-awakened-ultimate.png
+2026-10-07T12:35:25.5711960Z CAPTURE Arcanist-awakened-ultimate.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:25.5716660Z HERO Ranger — learning, passives, all eight active skills, camera capture
+2026-10-07T12:35:26.1158090Z PASS Ranger initializes correctly
+2026-10-07T12:35:26.4044730Z INVENTORY Ranger passed 104 classification, sorting and sale checks.
+2026-10-07T12:35:26.5830960Z PASS World exists for Chinese label validation
+2026-10-07T12:35:26.5839610Z PASS Chinese label font is bundled and dynamic
+2026-10-07T12:35:26.5843610Z PASS World-label resolver selects the packaged subset when present
+2026-10-07T12:35:26.5848720Z PASS All authored world labels are covered by localization checks
+2026-10-07T12:35:26.5850900Z PASS World label keeps its stable object name and displays Chinese: CAMP
+2026-10-07T12:35:26.5852840Z PASS World label uses the bundled Chinese font: CAMP
+2026-10-07T12:35:26.5854640Z PASS World label uses its font's glyph atlas: CAMP
+2026-10-07T12:35:26.5856710Z PASS Chinese glyph has visible geometry: 营
+2026-10-07T12:35:26.5858440Z PASS Chinese glyph has visible geometry: 地
+2026-10-07T12:35:26.5860260Z PASS Chinese world label has a compact, nonempty width: CAMP
+2026-10-07T12:35:26.5862500Z PASS World label keeps its stable object name and displays Chinese: FALLEN STAR
+2026-10-07T12:35:26.5864470Z PASS World label uses the bundled Chinese font: FALLEN STAR
+2026-10-07T12:35:26.5867300Z PASS World label uses its font's glyph atlas: FALLEN STAR
+2026-10-07T12:35:26.5869810Z PASS Chinese glyph has visible geometry: 沉
+2026-10-07T12:35:26.5871750Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:26.5873860Z PASS Chinese glyph has visible geometry: 遗
+2026-10-07T12:35:26.5875470Z PASS Chinese glyph has visible geometry: 迹
+2026-10-07T12:35:26.5877110Z PASS Chinese world label has a compact, nonempty width: FALLEN STAR
+2026-10-07T12:35:26.5878630Z PASS World label keeps its stable object name and displays Chinese: STAR CORE
+2026-10-07T12:35:26.5880280Z PASS World label uses the bundled Chinese font: STAR CORE
+2026-10-07T12:35:26.5881860Z PASS World label uses its font's glyph atlas: STAR CORE
+2026-10-07T12:35:26.5883440Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:26.5885740Z PASS Chinese glyph has visible geometry: 核
+2026-10-07T12:35:26.5888640Z PASS Chinese world label has a compact, nonempty width: STAR CORE
+2026-10-07T12:35:26.5891570Z PASS World label keeps its stable object name and displays Chinese: APPRENTICE
+2026-10-07T12:35:26.5893350Z PASS World label uses the bundled Chinese font: APPRENTICE
+2026-10-07T12:35:26.5895030Z PASS World label uses its font's glyph atlas: APPRENTICE
+2026-10-07T12:35:26.5896770Z PASS Chinese glyph has visible geometry: 观
+2026-10-07T12:35:26.5898740Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:26.5900280Z PASS Chinese glyph has visible geometry: 学
+2026-10-07T12:35:26.5901800Z PASS Chinese glyph has visible geometry: 徒
+2026-10-07T12:35:26.5903410Z PASS Chinese world label has a compact, nonempty width: APPRENTICE
+2026-10-07T12:35:26.5904940Z PASS World label keeps its stable object name and displays Chinese: CODEX
+2026-10-07T12:35:26.5906470Z PASS World label uses the bundled Chinese font: CODEX
+2026-10-07T12:35:26.5907990Z PASS World label uses its font's glyph atlas: CODEX
+2026-10-07T12:35:26.5909580Z PASS Chinese glyph has visible geometry: 装
+2026-10-07T12:35:26.5912290Z PASS Chinese glyph has visible geometry: 备
+2026-10-07T12:35:26.5914820Z PASS Chinese glyph has visible geometry: 图
+2026-10-07T12:35:26.5916580Z PASS Chinese glyph has visible geometry: 鉴
+2026-10-07T12:35:26.5918070Z PASS Chinese world label has a compact, nonempty width: CODEX
+2026-10-07T12:35:26.5919480Z PASS World label keeps its stable object name and displays Chinese: CLASS TRIAL
+2026-10-07T12:35:26.5920830Z PASS World label uses the bundled Chinese font: CLASS TRIAL
+2026-10-07T12:35:26.5923730Z PASS World label uses its font's glyph atlas: CLASS TRIAL
+2026-10-07T12:35:26.5925930Z PASS Chinese glyph has visible geometry: 职
+2026-10-07T12:35:26.5927800Z PASS Chinese glyph has visible geometry: 业
+2026-10-07T12:35:26.5929470Z PASS Chinese glyph has visible geometry: 试
+2026-10-07T12:35:26.5930890Z PASS Chinese glyph has visible geometry: 炼
+2026-10-07T12:35:26.5932280Z PASS Chinese world label has a compact, nonempty width: CLASS TRIAL
+2026-10-07T12:35:26.5933630Z PASS Every expected Chinese world label was found once
+2026-10-07T12:35:26.5935170Z PASS Camera exists for Ranger-world.png
+2026-10-07T12:35:26.7343740Z PASS 3D render produced image data: Ranger-world.png
+2026-10-07T12:35:26.7355350Z CAPTURE Ranger-world.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:26.8594170Z PASS Ranger reaches level 100 through XP progression
+2026-10-07T12:35:26.8664380Z PASS Ranger learns 0 stage 2
+2026-10-07T12:35:26.8729150Z PASS Ranger learns 0 stage 3
+2026-10-07T12:35:26.8797590Z PASS Ranger learns 1 stage 1
+2026-10-07T12:35:26.8866340Z PASS Ranger learns 1 stage 2
+2026-10-07T12:35:26.8935050Z PASS Ranger learns 1 stage 3
+2026-10-07T12:35:26.9039850Z PASS Ranger learns 2 stage 1
+2026-10-07T12:35:26.9111500Z PASS Ranger learns 2 stage 2
+2026-10-07T12:35:26.9176070Z PASS Ranger learns 2 stage 3
+2026-10-07T12:35:26.9250710Z PASS Ranger learns 3 stage 1
+2026-10-07T12:35:26.9323330Z PASS Ranger learns 3 stage 2
+2026-10-07T12:35:26.9397280Z PASS Ranger learns 3 stage 3
+2026-10-07T12:35:26.9495880Z PASS Ranger learns 4 stage 1
+2026-10-07T12:35:26.9560730Z PASS Ranger learns 4 stage 2
+2026-10-07T12:35:26.9634660Z PASS Ranger learns 4 stage 3
+2026-10-07T12:35:26.9699830Z PASS Ranger learns 5 stage 1
+2026-10-07T12:35:26.9770830Z PASS Ranger learns 5 stage 2
+2026-10-07T12:35:26.9863890Z PASS Ranger learns 5 stage 3
+2026-10-07T12:35:26.9921280Z PASS Ranger learns 6 stage 1
+2026-10-07T12:35:26.9980940Z PASS Ranger learns 6 stage 2
+2026-10-07T12:35:27.0044740Z PASS Ranger learns 6 stage 3
+2026-10-07T12:35:27.0108470Z PASS Ranger learns 7 stage 1
+2026-10-07T12:35:27.0171080Z PASS Ranger learns 7 stage 2
+2026-10-07T12:35:27.0266910Z PASS Ranger learns 7 stage 3
+2026-10-07T12:35:27.0330330Z PASS Ranger learns 8 stage 1
+2026-10-07T12:35:27.0389680Z PASS Ranger learns 8 stage 2
+2026-10-07T12:35:27.0458960Z PASS Ranger learns 8 stage 3
+2026-10-07T12:35:27.0526310Z PASS Ranger learns 9 stage 1
+2026-10-07T12:35:27.0602750Z PASS Ranger learns 9 stage 2
+2026-10-07T12:35:27.0712180Z PASS Ranger learns 9 stage 3
+2026-10-07T12:35:27.0716190Z PASS Ranger learned offensive passive changes actual stats
+2026-10-07T12:35:27.0718620Z PASS Ranger passives cannot enter the hotbar
+2026-10-07T12:35:27.0720990Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0723130Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0725230Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0727080Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0729190Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0730910Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0732450Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0733960Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0735450Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0737050Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0738680Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0740190Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0743420Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0745350Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0747040Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0748490Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0750590Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0752080Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0753510Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0754940Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0756500Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0757910Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0759330Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0760750Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0762060Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0763350Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0764690Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0766110Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0768600Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0770330Z PASS Ranger loadout contains active skills only
+2026-10-07T12:35:27.0772940Z PASS Ranger passive cast attempts consume no energy and create no cooldown
+2026-10-07T12:35:27.0775810Z PASS Ranger inventory pauses combat
+2026-10-07T12:35:27.2781860Z PASS Ranger skill panel pauses combat
+2026-10-07T12:35:27.8793780Z PASS Ranger modal close restores gameplay
+2026-10-07T12:35:27.8802970Z COMBAT Ranger — projected body selection, attack direction, direct casts and uncommitted ground placement
+2026-10-07T12:35:27.8846380Z PASS Ranger Slime body projects inside the actual camera
+2026-10-07T12:35:27.8852410Z PASS Ranger selects Slime body instead of ground behind it
+2026-10-07T12:35:27.8875740Z PASS Ranger recalculates facing after movement before attacking Slime
+2026-10-07T12:35:27.8882590Z PASS Ranger projectile follows recalculated body direction
+2026-10-07T12:35:27.8886670Z PASS Ranger projectile travels from muzzle height toward Slime body height
+2026-10-07T12:35:27.8890120Z PASS Ranger cursor away from all bodies retains free aiming
+2026-10-07T12:35:27.8932750Z PASS Ranger Wisp body projects inside the actual camera
+2026-10-07T12:35:27.8939000Z PASS Ranger selects Wisp body instead of ground behind it
+2026-10-07T12:35:27.8948050Z PASS Ranger recalculates facing after movement before attacking Wisp
+2026-10-07T12:35:27.8954430Z PASS Ranger projectile follows recalculated body direction
+2026-10-07T12:35:27.8957400Z PASS Ranger projectile travels from muzzle height toward Wisp body height
+2026-10-07T12:35:27.8959840Z PASS Ranger cursor away from all bodies retains free aiming
+2026-10-07T12:35:27.9018700Z PASS Ranger Guardian body projects inside the actual camera
+2026-10-07T12:35:27.9025620Z PASS Ranger selects Guardian body instead of ground behind it
+2026-10-07T12:35:27.9035850Z PASS Ranger recalculates facing after movement before attacking Guardian
+2026-10-07T12:35:27.9043300Z PASS Ranger projectile follows recalculated body direction
+2026-10-07T12:35:27.9047870Z PASS Ranger projectile travels from muzzle height toward Guardian body height
+2026-10-07T12:35:27.9051210Z PASS Ranger cursor away from all bodies retains free aiming
+2026-10-07T12:35:27.9091100Z PASS Ranger basic projectile retains its original 1.15 second lifetime
+2026-10-07T12:35:27.9096030Z PASS Ranger uses the correct mage homing / straight arrow target policy
+2026-10-07T12:35:28.1422520Z PASS Ranger basic projectile remains alive before its original expiry
+2026-10-07T12:35:28.1427980Z PASS Ranger early steering stays inside the 70 degrees/second, .18 second correction budget
+2026-10-07T12:35:28.2758400Z PASS Ranger projectile survives the moving-target steering fixture
+2026-10-07T12:35:28.2766760Z PASS Ranger arrow stays straight after its brief correction window
+2026-10-07T12:35:29.4924280Z PASS Ranger basic projectile expires without a homing range extension
+2026-10-07T12:35:29.4941250Z PASS Ranger skill 0 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4945220Z PASS Ranger skill 1 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4947460Z PASS Ranger skill 2 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4949550Z PASS Ranger skill 3 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4951390Z PASS Ranger skill 4 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4953120Z PASS Ranger skill 5 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4954870Z PASS Ranger skill 6 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4956430Z PASS Ranger skill 7 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4958230Z PASS Ranger skill 8 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4959670Z PASS Ranger skill 9 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:29.4961460Z PASS Ranger invalid skill identifiers cannot request ground confirmation
+2026-10-07T12:35:29.5069060Z PASS Ranger entering skill preview spends no resources and starts no cooldown
+2026-10-07T12:35:29.5077740Z PASS Ranger an actual ground-confirmation skill displays its preview geometry
+2026-10-07T12:35:29.5124260Z PASS Ranger out-of-range placement respects cast distance, arena and intervening cover
+2026-10-07T12:35:29.5131190Z PASS Ranger cancelling preserves energy/cooldown and consumes the same-frame ordinary attack input
+2026-10-07T12:35:29.5138200Z PASS Ranger cancelling hides all placement geometry
+2026-10-07T12:35:29.5184770Z PASS Ranger cancelled preview can be entered again
+2026-10-07T12:35:29.5414750Z PASS Ranger confirmation keeps the precise chosen ground point and clears a prior monster lock
+2026-10-07T12:35:29.5422210Z PASS Ranger confirmation consumes the configured cost and cooldown exactly once
+2026-10-07T12:35:29.5424960Z PASS Ranger duplicate confirmation or cooldown preview cannot double-spend resources
+2026-10-07T12:35:29.5510580Z PASS Ranger a ready self/directional skill releases immediately without visible placement
+2026-10-07T12:35:29.5516960Z PASS Ranger direct release consumes its resource and cooldown exactly once
+2026-10-07T12:35:29.5520200Z PASS Ranger direct release rejects duplicate/different same-frame casts and suppresses ordinary attack without spending again
+2026-10-07T12:35:29.5638280Z PASS Ranger a ready ground skill may enter preview while the direct skill cools down
+2026-10-07T12:35:29.5643880Z PASS Ranger an unlearned direct-cast request cannot spend resources or replace an existing valid ground preview
+2026-10-07T12:35:29.5647260Z PASS Ranger teleport invalidates pending placement while preserving existing independent cooldowns
+2026-10-07T12:35:29.5678020Z PASS Ranger teleport leaves ready ground skills available
+2026-10-07T12:35:29.6882990Z PASS Ranger paused player loop cancels uncommitted placement without spending
+2026-10-07T12:35:29.6901000Z PASS Ranger unlearned direct skill 0 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:29.6939120Z PASS Ranger direct skill 0 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:29.6943870Z PASS Ranger direct skill 0 uses its configured energy and learned cooldown
+2026-10-07T12:35:29.6946910Z PASS Ranger direct skill 0 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:29.6991110Z PASS Ranger unlearned direct skill 4 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:29.7008780Z PASS Ranger direct skill 4 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:29.7013280Z PASS Ranger direct skill 4 uses its configured energy and learned cooldown
+2026-10-07T12:35:29.7016010Z PASS Ranger direct skill 4 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:29.7220100Z PASS Ranger unlearned direct skill 6 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:29.7465130Z PASS Ranger direct skill 6 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:29.7473330Z PASS Ranger direct skill 6 uses its configured energy and learned cooldown
+2026-10-07T12:35:29.7477180Z PASS Ranger direct skill 6 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:29.7515290Z PASS Ranger unlearned direct skill 7 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:29.7528090Z PASS Ranger direct skill 7 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:29.7531590Z PASS Ranger direct skill 7 uses its configured energy and learned cooldown
+2026-10-07T12:35:29.7534120Z PASS Ranger direct skill 7 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:29.7745590Z COMBAT Ranger completed 69 additional assertions.
+2026-10-07T12:35:29.7753470Z PASS Ranger charge component is attached to the real player
+2026-10-07T12:35:29.7756280Z PASS Only seven of the thirty-two active class skills require charging
+2026-10-07T12:35:29.8001090Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:29.8153790Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:29.8160290Z PASS Ranger confirmed ultimate starts its charge at zero progress
+2026-10-07T12:35:29.8163650Z PASS Ranger starting a charge spends no energy and starts no cooldown
+2026-10-07T12:35:29.8166290Z PASS Ranger pending charge creates visible owned gathering energy
+2026-10-07T12:35:29.8171330Z PASS Ranger charge visibly raises the weapon or draws the bow
+2026-10-07T12:35:29.8173780Z PASS Ranger a pending charge rejects other skills and duplicate starts
+2026-10-07T12:35:29.8177260Z PASS Ranger charge applies the actual player movement multiplier
+2026-10-07T12:35:29.8223610Z PASS Ranger ordinary attacks cannot commit during a charge
+2026-10-07T12:35:29.8228990Z PASS Ranger half-complete charge is still uncommitted
+2026-10-07T12:35:29.9736980Z PASS Ranger real paused frames and positive manual deltas cannot advance a paused charge
+2026-10-07T12:35:29.9749220Z PASS Ranger cancelling immediately hides owned charge geometry
+2026-10-07T12:35:29.9752900Z PASS Ranger cancellation consumes the input frame without charging its budget
+2026-10-07T12:35:29.9755280Z PASS Ranger cancel input cannot accidentally become a same-frame ordinary skill
+2026-10-07T12:35:30.0045190Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:30.0058050Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:30.0079770Z PASS Ranger native player-loop frames advance a live charge before its resource commit
+2026-10-07T12:35:30.0407190Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:30.0421090Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:30.0610660Z PASS Ranger exact completion commits the real cast budget once
+2026-10-07T12:35:30.0618390Z PASS Ranger release retains its original point and direction after movement and aim changes
+2026-10-07T12:35:30.0622170Z PASS Ranger duplicate completion and same-frame input cannot spend twice
+2026-10-07T12:35:30.0805260Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:30.0821500Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:30.0827920Z PASS Ranger resource revalidation fixture changes the shared budget during pending cast
+2026-10-07T12:35:30.0831940Z PASS Ranger insufficient energy at completion safely discards the pending cast
+2026-10-07T12:35:30.0853890Z PASS Ranger teleport preservation fixture has an existing independent cooldown
+2026-10-07T12:35:30.1018890Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:30.1037440Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:30.1043340Z PASS Ranger teleport cancels only the pending charge and preserves committed resources
+2026-10-07T12:35:30.1220280Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:30.1393020Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:30.1399150Z PASS Ranger dead-owner validation prevents a pending cast from releasing
+2026-10-07T12:35:30.1401810Z CHARGE Ranger passed real entry, frame progression, pause, fixed aim, cancellation, exact commit, energy revalidation and invalid-owner checks.
+2026-10-07T12:35:30.1612520Z PASS Ranger skill 0 spends its configured resource cost
+2026-10-07T12:35:30.1618220Z PASS Ranger skill 0 uses the awakened cooldown
+2026-10-07T12:35:30.1750770Z PASS Ranger skill can be configured on page two
+2026-10-07T12:35:30.1756270Z PASS Ranger page two preserves the existing skill cooldown
+2026-10-07T12:35:30.1939790Z PASS Ranger skill can be configured on page three
+2026-10-07T12:35:30.1944540Z PASS Ranger paging cannot bypass cooldown or double-spend resources
+2026-10-07T12:35:30.1947840Z PASS Ranger a basic attack hit restores eight resource points
+2026-10-07T12:35:30.4514360Z PASS Ranger pause freezes active cooldowns
+2026-10-07T12:35:31.4533610Z PASS Ranger remains alive after skill 0
+2026-10-07T12:35:31.4539500Z PASS Ranger skill 0 cooldown advances in live frames
+2026-10-07T12:35:31.4542570Z PASS Ranger skill 0 damages runtime enemies
+2026-10-07T12:35:31.4862550Z PASS Ranger skill 1 spends its configured resource cost
+2026-10-07T12:35:31.4869010Z PASS Ranger skill 1 uses the awakened cooldown
+2026-10-07T12:35:32.4611420Z PASS Ranger remains alive after skill 1
+2026-10-07T12:35:32.4616720Z PASS Ranger skill 1 cooldown advances in live frames
+2026-10-07T12:35:32.4618790Z PASS Ranger skill 1 damages runtime enemies
+2026-10-07T12:35:32.4871970Z PASS Ranger skill 2 spends its configured resource cost
+2026-10-07T12:35:32.4878160Z PASS Ranger skill 2 uses the awakened cooldown
+2026-10-07T12:35:33.7420050Z PASS Ranger remains alive after skill 2
+2026-10-07T12:35:33.7427150Z PASS Ranger skill 2 cooldown advances in live frames
+2026-10-07T12:35:33.7429900Z PASS Ranger skill 2 damages runtime enemies
+2026-10-07T12:35:33.7611060Z PASS Ranger skill 4 spends its configured resource cost
+2026-10-07T12:35:33.7616290Z PASS Ranger skill 4 uses the awakened cooldown
+2026-10-07T12:35:34.7571510Z PASS Ranger remains alive after skill 4
+2026-10-07T12:35:34.7579950Z PASS Ranger skill 4 cooldown advances in live frames
+2026-10-07T12:35:34.7582700Z PASS Ranger mobility skill moves the actual character
+2026-10-07T12:35:34.7751060Z PASS Ranger skill 5 spends its configured resource cost
+2026-10-07T12:35:34.7755970Z PASS Ranger skill 5 uses the awakened cooldown
+2026-10-07T12:35:35.7628010Z PASS Ranger remains alive after skill 5
+2026-10-07T12:35:35.7636140Z PASS Ranger skill 5 cooldown advances in live frames
+2026-10-07T12:35:35.7638530Z PASS Ranger skill 5 damages runtime enemies
+2026-10-07T12:35:35.8281500Z PASS Ranger healing fixture is injured and alive
+2026-10-07T12:35:35.8529530Z PASS Ranger skill 6 spends its configured resource cost
+2026-10-07T12:35:35.8537260Z PASS Ranger skill 6 uses the awakened cooldown
+2026-10-07T12:35:37.0103780Z PASS Ranger remains alive after skill 6
+2026-10-07T12:35:37.0110850Z PASS Ranger skill 6 cooldown advances in live frames
+2026-10-07T12:35:37.0114180Z PASS Ranger healing skill restores real health over time
+2026-10-07T12:35:37.0318880Z PASS Ranger skill 7 spends its configured resource cost
+2026-10-07T12:35:37.0328910Z PASS Ranger skill 7 uses the awakened cooldown
+2026-10-07T12:35:38.0253410Z PASS Ranger remains alive after skill 7
+2026-10-07T12:35:38.0260530Z PASS Ranger skill 7 cooldown advances in live frames
+2026-10-07T12:35:38.0267550Z PASS Ranger skill 7 damages runtime enemies
+2026-10-07T12:35:38.0685370Z PASS Ranger skill 9 spends its configured resource cost
+2026-10-07T12:35:38.0696410Z PASS Ranger skill 9 uses the awakened cooldown
+2026-10-07T12:35:41.9273840Z PASS Ranger remains alive after skill 9
+2026-10-07T12:35:41.9284050Z PASS Ranger skill 9 cooldown advances in live frames
+2026-10-07T12:35:41.9287150Z PASS Ranger skill 9 damages runtime enemies
+2026-10-07T12:35:41.9289490Z PASS Camera exists for Ranger-awakened-ultimate.png
+2026-10-07T12:35:42.1047200Z PASS 3D render produced image data: Ranger-awakened-ultimate.png
+2026-10-07T12:35:42.1062080Z CAPTURE Ranger-awakened-ultimate.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:42.1067590Z HERO Summoner — learning, passives, all eight active skills, camera capture
+2026-10-07T12:35:42.6694390Z PASS Summoner initializes correctly
+2026-10-07T12:35:42.9513020Z INVENTORY Summoner passed 104 classification, sorting and sale checks.
+2026-10-07T12:35:43.1329860Z PASS World exists for Chinese label validation
+2026-10-07T12:35:43.1334160Z PASS Chinese label font is bundled and dynamic
+2026-10-07T12:35:43.1336560Z PASS World-label resolver selects the packaged subset when present
+2026-10-07T12:35:43.1340460Z PASS All authored world labels are covered by localization checks
+2026-10-07T12:35:43.1342860Z PASS World label keeps its stable object name and displays Chinese: CAMP
+2026-10-07T12:35:43.1345020Z PASS World label uses the bundled Chinese font: CAMP
+2026-10-07T12:35:43.1347400Z PASS World label uses its font's glyph atlas: CAMP
+2026-10-07T12:35:43.1349350Z PASS Chinese glyph has visible geometry: 营
+2026-10-07T12:35:43.1351380Z PASS Chinese glyph has visible geometry: 地
+2026-10-07T12:35:43.1353230Z PASS Chinese world label has a compact, nonempty width: CAMP
+2026-10-07T12:35:43.1355310Z PASS World label keeps its stable object name and displays Chinese: FALLEN STAR
+2026-10-07T12:35:43.1357960Z PASS World label uses the bundled Chinese font: FALLEN STAR
+2026-10-07T12:35:43.1359940Z PASS World label uses its font's glyph atlas: FALLEN STAR
+2026-10-07T12:35:43.1361760Z PASS Chinese glyph has visible geometry: 沉
+2026-10-07T12:35:43.1363580Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:43.1365600Z PASS Chinese glyph has visible geometry: 遗
+2026-10-07T12:35:43.1367650Z PASS Chinese glyph has visible geometry: 迹
+2026-10-07T12:35:43.1369330Z PASS Chinese world label has a compact, nonempty width: FALLEN STAR
+2026-10-07T12:35:43.1370870Z PASS World label keeps its stable object name and displays Chinese: STAR CORE
+2026-10-07T12:35:43.1372400Z PASS World label uses the bundled Chinese font: STAR CORE
+2026-10-07T12:35:43.1374660Z PASS World label uses its font's glyph atlas: STAR CORE
+2026-10-07T12:35:43.1376790Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:43.1378420Z PASS Chinese glyph has visible geometry: 核
+2026-10-07T12:35:43.1380050Z PASS Chinese world label has a compact, nonempty width: STAR CORE
+2026-10-07T12:35:43.1381920Z PASS World label keeps its stable object name and displays Chinese: APPRENTICE
+2026-10-07T12:35:43.1383950Z PASS World label uses the bundled Chinese font: APPRENTICE
+2026-10-07T12:35:43.1386020Z PASS World label uses its font's glyph atlas: APPRENTICE
+2026-10-07T12:35:43.1387810Z PASS Chinese glyph has visible geometry: 观
+2026-10-07T12:35:43.1389490Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:35:43.1392520Z PASS Chinese glyph has visible geometry: 学
+2026-10-07T12:35:43.1395300Z PASS Chinese glyph has visible geometry: 徒
+2026-10-07T12:35:43.1397720Z PASS Chinese world label has a compact, nonempty width: APPRENTICE
+2026-10-07T12:35:43.1400000Z PASS World label keeps its stable object name and displays Chinese: CODEX
+2026-10-07T12:35:43.1402210Z PASS World label uses the bundled Chinese font: CODEX
+2026-10-07T12:35:43.1404340Z PASS World label uses its font's glyph atlas: CODEX
+2026-10-07T12:35:43.1406110Z PASS Chinese glyph has visible geometry: 装
+2026-10-07T12:35:43.1408140Z PASS Chinese glyph has visible geometry: 备
+2026-10-07T12:35:43.1409990Z PASS Chinese glyph has visible geometry: 图
+2026-10-07T12:35:43.1411970Z PASS Chinese glyph has visible geometry: 鉴
+2026-10-07T12:35:43.1414290Z PASS Chinese world label has a compact, nonempty width: CODEX
+2026-10-07T12:35:43.1418710Z PASS World label keeps its stable object name and displays Chinese: CLASS TRIAL
+2026-10-07T12:35:43.1420790Z PASS World label uses the bundled Chinese font: CLASS TRIAL
+2026-10-07T12:35:43.1422890Z PASS World label uses its font's glyph atlas: CLASS TRIAL
+2026-10-07T12:35:43.1424660Z PASS Chinese glyph has visible geometry: 职
+2026-10-07T12:35:43.1426310Z PASS Chinese glyph has visible geometry: 业
+2026-10-07T12:35:43.1427830Z PASS Chinese glyph has visible geometry: 试
+2026-10-07T12:35:43.1429470Z PASS Chinese glyph has visible geometry: 炼
+2026-10-07T12:35:43.1434090Z PASS Chinese world label has a compact, nonempty width: CLASS TRIAL
+2026-10-07T12:35:43.1439960Z PASS Every expected Chinese world label was found once
+2026-10-07T12:35:43.1442140Z PASS Camera exists for Summoner-world.png
+2026-10-07T12:35:43.2816790Z PASS 3D render produced image data: Summoner-world.png
+2026-10-07T12:35:43.2832600Z CAPTURE Summoner-world.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:35:43.3714740Z PASS Summoner reaches level 100 through XP progression
+2026-10-07T12:35:43.3824980Z PASS Summoner learns 0 stage 2
+2026-10-07T12:35:43.3885980Z PASS Summoner learns 0 stage 3
+2026-10-07T12:35:43.3950590Z PASS Summoner learns 1 stage 1
+2026-10-07T12:35:43.4020660Z PASS Summoner learns 1 stage 2
+2026-10-07T12:35:43.4107000Z PASS Summoner learns 1 stage 3
+2026-10-07T12:35:43.4189380Z PASS Summoner learns 2 stage 1
+2026-10-07T12:35:43.4297100Z PASS Summoner learns 2 stage 2
+2026-10-07T12:35:43.4364010Z PASS Summoner learns 2 stage 3
+2026-10-07T12:35:43.4438740Z PASS Summoner learns 3 stage 1
+2026-10-07T12:35:43.4512470Z PASS Summoner learns 3 stage 2
+2026-10-07T12:35:43.4579520Z PASS Summoner learns 3 stage 3
+2026-10-07T12:35:43.4641850Z PASS Summoner learns 4 stage 1
+2026-10-07T12:35:43.4744310Z PASS Summoner learns 4 stage 2
+2026-10-07T12:35:43.4803730Z PASS Summoner learns 4 stage 3
+2026-10-07T12:35:43.4867600Z PASS Summoner learns 5 stage 1
+2026-10-07T12:35:43.4932080Z PASS Summoner learns 5 stage 2
+2026-10-07T12:35:43.5001000Z PASS Summoner learns 5 stage 3
+2026-10-07T12:35:43.5076910Z PASS Summoner learns 6 stage 1
+2026-10-07T12:35:43.5185250Z PASS Summoner learns 6 stage 2
+2026-10-07T12:35:43.5261130Z PASS Summoner learns 6 stage 3
+2026-10-07T12:35:43.5344100Z PASS Summoner learns 7 stage 1
+2026-10-07T12:35:43.5429920Z PASS Summoner learns 7 stage 2
+2026-10-07T12:35:43.5517120Z PASS Summoner learns 7 stage 3
+2026-10-07T12:35:43.5599380Z PASS Summoner learns 8 stage 1
+2026-10-07T12:35:43.5730580Z PASS Summoner learns 8 stage 2
+2026-10-07T12:35:43.5830180Z PASS Summoner learns 8 stage 3
+2026-10-07T12:35:43.5901390Z PASS Summoner learns 9 stage 1
+2026-10-07T12:35:43.5988220Z PASS Summoner learns 9 stage 2
+2026-10-07T12:35:43.6073580Z PASS Summoner learns 9 stage 3
+2026-10-07T12:35:43.6077990Z PASS Summoner learned offensive passive changes actual stats
+2026-10-07T12:35:43.6080230Z PASS Summoner passives cannot enter the hotbar
+2026-10-07T12:35:43.6081940Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6083470Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6086440Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6093350Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6095590Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6097310Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6099190Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6100920Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6103520Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6107430Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6109080Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6110500Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6112020Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6113470Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6114910Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6116420Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6118770Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6167740Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6184200Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6213640Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6219970Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6223980Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6226070Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6234310Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6237210Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6239080Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6255090Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6258280Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6260700Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6262500Z PASS Summoner loadout contains active skills only
+2026-10-07T12:35:43.6265580Z PASS Summoner passive cast attempts consume no energy and create no cooldown
+2026-10-07T12:35:43.6270310Z PASS Summoner inventory pauses combat
+2026-10-07T12:35:43.8276390Z PASS Summoner skill panel pauses combat
+2026-10-07T12:35:44.4289880Z PASS Summoner modal close restores gameplay
+2026-10-07T12:35:44.4298940Z COMBAT Summoner — projected body selection, attack direction, direct casts and uncommitted ground placement
+2026-10-07T12:35:44.4389130Z PASS Summoner Slime body projects inside the actual camera
+2026-10-07T12:35:44.4396100Z PASS Summoner selects Slime body instead of ground behind it
+2026-10-07T12:35:44.4414760Z PASS Summoner recalculates facing after movement before attacking Slime
+2026-10-07T12:35:44.4421870Z PASS Summoner projectile follows recalculated body direction
+2026-10-07T12:35:44.4425310Z PASS Summoner projectile travels from muzzle height toward Slime body height
+2026-10-07T12:35:44.4427930Z PASS Summoner cursor away from all bodies retains free aiming
+2026-10-07T12:35:44.4456960Z PASS Summoner Wisp body projects inside the actual camera
+2026-10-07T12:35:44.4461900Z PASS Summoner selects Wisp body instead of ground behind it
+2026-10-07T12:35:44.4469680Z PASS Summoner recalculates facing after movement before attacking Wisp
+2026-10-07T12:35:44.4474940Z PASS Summoner projectile follows recalculated body direction
+2026-10-07T12:35:44.4477440Z PASS Summoner projectile travels from muzzle height toward Wisp body height
+2026-10-07T12:35:44.4479700Z PASS Summoner cursor away from all bodies retains free aiming
+2026-10-07T12:35:44.4530520Z PASS Summoner Guardian body projects inside the actual camera
+2026-10-07T12:35:44.4536320Z PASS Summoner selects Guardian body instead of ground behind it
+2026-10-07T12:35:44.4546850Z PASS Summoner recalculates facing after movement before attacking Guardian
+2026-10-07T12:35:44.4554310Z PASS Summoner projectile follows recalculated body direction
+2026-10-07T12:35:44.4558040Z PASS Summoner projectile travels from muzzle height toward Guardian body height
+2026-10-07T12:35:44.4560780Z PASS Summoner cursor away from all bodies retains free aiming
+2026-10-07T12:35:44.4596750Z PASS Summoner basic projectile retains its original 1.15 second lifetime
+2026-10-07T12:35:44.4601750Z PASS Summoner uses the correct mage homing / straight arrow target policy
+2026-10-07T12:35:44.6922700Z PASS Summoner basic projectile remains alive before its original expiry
+2026-10-07T12:35:44.8264710Z PASS Summoner projectile survives the moving-target steering fixture
+2026-10-07T12:35:44.8274680Z PASS Mage bolt still follows its original moving target after the ranger correction window has ended
+2026-10-07T12:35:44.9122850Z PASS Mage bolt keeps its last direction after target death and never retargets another monster
+2026-10-07T12:35:46.1321580Z PASS Summoner basic projectile expires without a homing range extension
+2026-10-07T12:35:46.1476810Z PASS Mage fallback selects nearest living monster inside the 14 metre / 35 degree cone
+2026-10-07T12:35:46.1493710Z PASS Mage ordinary attack actually acquires the valid cone fallback
+2026-10-07T12:35:46.1500970Z PASS Mage fallback ignores inactive closer monsters
+2026-10-07T12:35:46.1503340Z PASS Mage fallback cannot lock distant, sideward or rear monsters globally
+2026-10-07T12:35:46.1517370Z PASS Summoner skill 0 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1523020Z PASS Summoner skill 1 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1527060Z PASS Summoner skill 2 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1529500Z PASS Summoner skill 3 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1533670Z PASS Summoner skill 4 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1535360Z PASS Summoner skill 5 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1541120Z PASS Summoner skill 6 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1543740Z PASS Summoner skill 7 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1546690Z PASS Summoner skill 8 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1548880Z PASS Summoner skill 9 has its intended direct / ground-confirmation policy
+2026-10-07T12:35:46.1551350Z PASS Summoner invalid skill identifiers cannot request ground confirmation
+2026-10-07T12:35:46.1771160Z PASS Summoner entering skill preview spends no resources and starts no cooldown
+2026-10-07T12:35:46.1776610Z PASS Summoner an actual ground-confirmation skill displays its preview geometry
+2026-10-07T12:35:46.1866200Z PASS Summoner out-of-range placement respects cast distance, arena and intervening cover
+2026-10-07T12:35:46.1873250Z PASS Summoner cancelling preserves energy/cooldown and consumes the same-frame ordinary attack input
+2026-10-07T12:35:46.1878130Z PASS Summoner cancelling hides all placement geometry
+2026-10-07T12:35:46.1929200Z PASS Summoner cancelled preview can be entered again
+2026-10-07T12:35:46.2063600Z PASS Summoner confirmation keeps the precise chosen ground point and clears a prior monster lock
+2026-10-07T12:35:46.2087410Z PASS Summoner confirmation consumes the configured cost and cooldown exactly once
+2026-10-07T12:35:46.2090610Z PASS Summoner duplicate confirmation or cooldown preview cannot double-spend resources
+2026-10-07T12:35:46.2271360Z PASS Summoner a ready self/directional skill releases immediately without visible placement
+2026-10-07T12:35:46.2278820Z PASS Summoner direct release consumes its resource and cooldown exactly once
+2026-10-07T12:35:46.2282290Z PASS Summoner direct release rejects duplicate/different same-frame casts and suppresses ordinary attack without spending again
+2026-10-07T12:35:46.2348310Z PASS Summoner a ready ground skill may enter preview while the direct skill cools down
+2026-10-07T12:35:46.2354590Z PASS Summoner an unlearned direct-cast request cannot spend resources or replace an existing valid ground preview
+2026-10-07T12:35:46.2359230Z PASS Summoner teleport invalidates pending placement while preserving existing independent cooldowns
+2026-10-07T12:35:46.2392150Z PASS Summoner teleport leaves ready ground skills available
+2026-10-07T12:35:46.3599680Z PASS Summoner paused player loop cancels uncommitted placement without spending
+2026-10-07T12:35:46.3617190Z PASS Summoner unlearned direct skill 0 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:46.3709720Z PASS Summoner direct skill 0 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:46.3719150Z PASS Summoner direct skill 0 uses its configured energy and learned cooldown
+2026-10-07T12:35:46.3722380Z PASS Summoner direct skill 0 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:46.3762010Z PASS Summoner unlearned direct skill 2 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:46.4080700Z PASS Summoner direct skill 2 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:46.4087620Z PASS Summoner direct skill 2 uses its configured energy and learned cooldown
+2026-10-07T12:35:46.4090610Z PASS Summoner direct skill 2 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:46.4125720Z PASS Summoner unlearned direct skill 4 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:46.4218370Z PASS Summoner direct skill 4 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:46.8929100Z PASS Summoner direct skill 4 uses its configured energy and learned cooldown
+2026-10-07T12:35:46.8936600Z PASS Summoner direct skill 4 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:46.9108770Z PASS Summoner unlearned direct skill 5 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:46.9370390Z PASS Summoner direct skill 5 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:46.9376110Z PASS Summoner direct skill 5 uses its configured energy and learned cooldown
+2026-10-07T12:35:46.9381030Z PASS Summoner direct skill 5 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:46.9422860Z PASS Summoner unlearned direct skill 6 cannot release, display a preview, spend or start cooldown
+2026-10-07T12:35:46.9656590Z PASS Summoner direct skill 6 releases without needing a second click or showing preview geometry
+2026-10-07T12:35:46.9664720Z PASS Summoner direct skill 6 uses its configured energy and learned cooldown
+2026-10-07T12:35:46.9667430Z PASS Summoner direct skill 6 cannot double-spend through another Begin or Confirm
+2026-10-07T12:35:46.9700850Z COMBAT Summoner completed 77 additional assertions.
+2026-10-07T12:35:46.9708970Z PASS Summoner charge component is attached to the real player
+2026-10-07T12:35:46.9712260Z PASS Only seven of the thirty-two active class skills require charging
+2026-10-07T12:35:46.9870320Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.0008620Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.0016020Z PASS Summoner confirmed ultimate starts its charge at zero progress
+2026-10-07T12:35:47.0019030Z PASS Summoner starting a charge spends no energy and starts no cooldown
+2026-10-07T12:35:47.0022790Z PASS Summoner pending charge creates visible owned gathering energy
+2026-10-07T12:35:47.0026250Z PASS Summoner charge visibly raises the weapon or draws the bow
+2026-10-07T12:35:47.0028210Z PASS Summoner a pending charge rejects other skills and duplicate starts
+2026-10-07T12:35:47.0030190Z PASS Summoner charge applies the actual player movement multiplier
+2026-10-07T12:35:47.0034270Z PASS Summoner ordinary attacks cannot commit during a charge
+2026-10-07T12:35:47.0070930Z PASS Summoner half-complete charge is still uncommitted
+2026-10-07T12:35:47.1595400Z PASS Summoner real paused frames and positive manual deltas cannot advance a paused charge
+2026-10-07T12:35:47.1609620Z PASS Summoner cancelling immediately hides owned charge geometry
+2026-10-07T12:35:47.1613620Z PASS Summoner cancellation consumes the input frame without charging its budget
+2026-10-07T12:35:47.1617160Z PASS Summoner cancel input cannot accidentally become a same-frame ordinary skill
+2026-10-07T12:35:47.1890000Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.2003300Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.2040870Z PASS Summoner native player-loop frames advance a live charge before its resource commit
+2026-10-07T12:35:47.2260450Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.2374110Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.3023130Z PASS Summoner exact completion commits the real cast budget once
+2026-10-07T12:35:47.3029110Z PASS Summoner release retains its original point and direction after movement and aim changes
+2026-10-07T12:35:47.3033130Z PASS Summoner duplicate completion and same-frame input cannot spend twice
+2026-10-07T12:35:47.3112860Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.3224300Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.3229990Z PASS Summoner resource revalidation fixture changes the shared budget during pending cast
+2026-10-07T12:35:47.3234540Z PASS Summoner insufficient energy at completion safely discards the pending cast
+2026-10-07T12:35:47.3269300Z PASS Summoner teleport preservation fixture has an existing independent cooldown
+2026-10-07T12:35:47.3330340Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.3427200Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.3437470Z PASS Summoner teleport cancels only the pending charge and preserves committed resources
+2026-10-07T12:35:47.3584320Z PASS Charge fixture enters real ground preview
+2026-10-07T12:35:47.3716220Z PASS Ground confirmation routes into the charge controller
+2026-10-07T12:35:47.3726130Z PASS Summoner dead-owner validation prevents a pending cast from releasing
+2026-10-07T12:35:47.3729800Z CHARGE Summoner passed real entry, frame progression, pause, fixed aim, cancellation, exact commit, energy revalidation and invalid-owner checks.
+2026-10-07T12:35:47.3800300Z PASS Summoner fixture is a wilderness summoner
+2026-10-07T12:35:47.4311130Z PASS Wolf actual class skill creates a living companion belonging to its caster
+2026-10-07T12:35:47.4322190Z PASS Wolf bonded wolf/spirit remain permanent while awakened tree keeps finite lifetime
+2026-10-07T12:35:48.1879960Z PASS Wolf does not automatically provoke nearby ordinary wildlife
+2026-10-07T12:35:50.7618610Z PASS Wolf deals real combat damage after the player provokes an enemy
+2026-10-07T12:35:50.7644950Z PASS Wolf has real damageable health
+2026-10-07T12:35:50.7942200Z PASS Wolf receives bounded companion healing
+2026-10-07T12:35:50.7955610Z PASS Wolf can become the nearby monster's real combat target
+2026-10-07T12:35:50.7974090Z PASS Wolf death immediately removes the companion from its active cap
+2026-10-07T12:35:50.8395600Z PASS Spirit actual class skill creates a living companion belonging to its caster
+2026-10-07T12:35:50.8402090Z PASS Spirit bonded wolf/spirit remain permanent while awakened tree keeps finite lifetime
+2026-10-07T12:35:51.5243380Z PASS Spirit does not automatically provoke nearby ordinary wildlife
+2026-10-07T12:35:53.8605020Z PASS Spirit deals real combat damage after the player provokes an enemy
+2026-10-07T12:35:53.8616590Z PASS Spirit has real damageable health
+2026-10-07T12:35:53.8846570Z PASS Spirit receives bounded companion healing
+2026-10-07T12:35:53.8854650Z PASS Spirit can become the nearby monster's real combat target
+2026-10-07T12:35:53.8864430Z PASS Spirit death immediately removes the companion from its active cap
+2026-10-07T12:35:53.9393490Z PASS Treant actual class skill creates a living companion belonging to its caster
+2026-10-07T12:35:53.9400200Z PASS Treant bonded wolf/spirit remain permanent while awakened tree keeps finite lifetime
+2026-10-07T12:35:54.6692270Z PASS Treant does not automatically provoke nearby ordinary wildlife
+2026-10-07T12:35:56.8747030Z PASS Treant deals real combat damage after the player provokes an enemy
+2026-10-07T12:35:56.8758380Z PASS Ancient guardian's actual heavy hit applies knockdown
+2026-10-07T12:35:56.8765700Z PASS Treant has real damageable health
+2026-10-07T12:35:56.9063630Z PASS Treant receives bounded companion healing
+2026-10-07T12:35:56.9069980Z PASS Treant can become the nearby monster's real combat target
+2026-10-07T12:35:56.9143310Z PASS Treant death immediately removes the companion from its active cap
+2026-10-07T12:35:56.9191150Z PASS Learned wolf contract commands the existing permanent foundation without replacing or freely healing it
+2026-10-07T12:35:56.9238840Z PASS Teleport transfers only living permanent partners to legal new ground, preserving health and clearing commands
+2026-10-07T12:35:56.9244040Z PASS Teleport still invalidates old temporary pets and excludes them from the new encounter cap
+2026-10-07T12:35:56.9265560Z PASS Pack switch keeps permanent foundation but gives spirit its documented upkeep lifetime
+2026-10-07T12:35:56.9377920Z PASS Awakened pack command fills available four-pet slots without replacing its permanent foundation
+2026-10-07T12:35:56.9390190Z PASS Bonded switch removes timed extras and keeps exactly one wolf and one spirit
+2026-10-07T12:35:56.9423920Z PASS A dead foundation alone is resummoned; the other living partner is retained
+2026-10-07T12:35:56.9548620Z PASS A higher-rank contract updates the maximum without multiplying or refilling the living companion's absolute HP
+2026-10-07T12:35:57.0018020Z PASS Wolf contract fills the ordinary four-member pack
+2026-10-07T12:35:57.0264670Z PASS Full-pack recast creates no replacement or extra companion
+2026-10-07T12:35:57.0269410Z PASS Full-pack recast retains each living instance and absolute HP while refreshing its own lifetime
+2026-10-07T12:35:57.0272970Z PASS Full-pack recast retains each living instance and absolute HP while refreshing its own lifetime
+2026-10-07T12:35:57.0275460Z PASS Full-pack recast retains each living instance and absolute HP while refreshing its own lifetime
+2026-10-07T12:35:57.0277470Z PASS Full-pack recast retains each living instance and absolute HP while refreshing its own lifetime
+2026-10-07T12:35:57.0513490Z PASS Repeated pack refresh does not add lifetimes together
+2026-10-07T12:35:57.0521410Z PASS Repeated pack refresh does not add lifetimes together
+2026-10-07T12:35:57.0524120Z PASS Repeated pack refresh does not add lifetimes together
+2026-10-07T12:35:57.0527770Z PASS Repeated pack refresh does not add lifetimes together
+2026-10-07T12:35:57.0540660Z PASS Perfect-dodge command opportunity outlasts the actual base wolf cooldown
+2026-10-07T12:35:57.0544910Z PASS Perfect dodge preserves companion command, position, and attack cadence without recall
+2026-10-07T12:35:57.0549340Z PASS Perfect dodge preserves companion command, position, and attack cadence without recall
+2026-10-07T12:35:57.0551970Z PASS Perfect dodge preserves companion command, position, and attack cadence without recall
+2026-10-07T12:35:57.0553810Z PASS Perfect dodge preserves companion command, position, and attack cadence without recall
+2026-10-07T12:35:57.0559280Z PASS Dodge protection halves a companion's direct incoming damage
+2026-10-07T12:35:57.0585960Z PASS Dodge protection and companion area resistance yield 27.5 percent incoming area damage
+2026-10-07T12:35:57.1790860Z PASS Paused time cannot expire the pending companion command opportunity
+2026-10-07T12:35:57.1933050Z PASS One contract consumes the perfect-dodge opportunity once for the whole pack
+2026-10-07T12:35:57.1957000Z PASS Each member receives the same empowered command from the single consumed opportunity
+2026-10-07T12:35:57.1960370Z PASS Each member receives the same empowered command from the single consumed opportunity
+2026-10-07T12:35:57.1962830Z PASS Each member receives the same empowered command from the single consumed opportunity
+2026-10-07T12:35:57.1964900Z PASS Each member receives the same empowered command from the single consumed opportunity
+2026-10-07T12:35:57.2102960Z PASS The next contract cannot reuse an already consumed dodge opportunity
+2026-10-07T12:35:57.2107100Z PASS The next contract cannot reuse an already consumed dodge opportunity
+2026-10-07T12:35:57.2113260Z PASS The next contract cannot reuse an already consumed dodge opportunity
+2026-10-07T12:35:57.2116490Z PASS The next contract cannot reuse an already consumed dodge opportunity
+2026-10-07T12:35:57.2121270Z PASS An encounter transfer cannot inherit a command opportunity
+2026-10-07T12:35:57.2682130Z PASS Charged contract enters through the production skill dispatcher
+2026-10-07T12:35:57.2686540Z PASS Charged contract captures the selected living enemy before later aim changes
+2026-10-07T12:35:57.3071880Z PASS Released companion commands the captured enemy and clears the charge reference
+2026-10-07T12:35:57.3079050Z PASS Captured contract retains its original point and commits its resource cost once
+2026-10-07T12:35:57.3819170Z PASS Charged contract enters through the production skill dispatcher
+2026-10-07T12:35:57.4235520Z PASS Tree contract confirms its selected target point
+2026-10-07T12:35:57.4241030Z PASS Charged contract captures the selected living enemy before later aim changes
+2026-10-07T12:35:57.4754240Z PASS Released companion commands the captured enemy and clears the charge reference
+2026-10-07T12:35:57.4763370Z PASS Captured contract retains its original point and commits its resource cost once
+2026-10-07T12:35:57.5238520Z PASS Stale-target fixture enters actual tree placement
+2026-10-07T12:35:57.5325530Z PASS Tree charge captures the soon-to-be-stale enemy
+2026-10-07T12:35:57.5677800Z PASS A stale captured enemy falls back to the captured legal point instead of the newer focus target
+2026-10-07T12:35:57.5836390Z PASS Companion fixture commits its isolated high-rank build
+2026-10-07T12:35:57.5839850Z PASS Build fixture seeds a real Spirit skill cooldown
+2026-10-07T12:35:57.5967150Z PASS Real paused refund immediately updates the existing permanent wolf and Spirit to rank one
+2026-10-07T12:35:57.5974330Z PASS Living Spirit damage and maximum HP match the newly committed learned rank
+2026-10-07T12:35:57.5977210Z PASS Refund preserves absolute HP, attack recovery, remaining command time, paid empowerment and unspent dodge token
+2026-10-07T12:35:57.6248740Z PASS Real rank purchases immediately strengthen the living Spirit without free healing
+2026-10-07T12:35:57.6451390Z PASS Combined build reset also reconciles its permanent companion in the same paused call
+2026-10-07T12:35:57.6531920Z PASS Rank-three preset updates the same living Spirit
+2026-10-07T12:35:57.6685930Z PASS Repeated lower-rank preset neither retains rank-three power nor heals/resets its companion
+2026-10-07T12:35:57.6717720Z PASS Repeated lower-rank preset neither retains rank-three power nor heals/resets its companion
+2026-10-07T12:35:57.6742690Z PASS Repeated lower-rank preset neither retains rank-three power nor heals/resets its companion
+2026-10-07T12:35:57.6746110Z PASS All live build operations preserve actual hero skill cooldown/energy and the unspent command token
+2026-10-07T12:35:57.6889770Z PASS Paused route change immediately makes the Spirit timed
+2026-10-07T12:35:57.6932280Z PASS Gear fixture starts with four living pack members
+2026-10-07T12:35:57.7066040Z PASS Paused equipment commit immediately enforces the two-pet cap with existing eviction priority
+2026-10-07T12:35:57.7069440Z PASS Higher-health mechanic equipment cannot multiply current companion HP or reset attack recovery
+2026-10-07T12:35:57.7160490Z PASS One paused preset atomically removes gear and promotes the same timed Spirit to its learned bonded rank
+2026-10-07T12:35:57.7165250Z PASS Immediate transfer before unpausing retains the just-bonded Spirit and skill cooldown
+2026-10-07T12:35:57.7167370Z PASS New encounter still clears old command opportunities by existing policy
+2026-10-07T12:35:57.7232110Z PASS Failed-write fixture restores high-rank investment first
+2026-10-07T12:35:57.7263960Z PASS Blocked refund cannot publish a lower companion rank before its profile commit
+2026-10-07T12:35:57.7283460Z PASS Transfer independently reconciles stale permanent rank even if a direct profile edit emitted no change event
+2026-10-07T12:35:57.7417060Z PASS Vanguard repeated real teleports never allocate companion owner state
+2026-10-07T12:35:57.7547690Z PASS Arcanist repeated real teleports never allocate companion owner state
+2026-10-07T12:35:57.7611750Z PASS Ranger repeated real teleports never allocate companion owner state
+2026-10-07T12:35:57.7815050Z PASS Retirement fixture owns one bond and both companion entries before destruction
+2026-10-07T12:35:57.7914920Z PASS Actual destroyed Unity owner releases its managed dictionary key
+2026-10-07T12:35:57.7918550Z PASS Owner teardown immediately retires every owned pet even when its Update is disabled
+2026-10-07T12:35:57.7925540Z PASS Repeated retirement of a destroyed owner is safe and does not retain its key
+2026-10-07T12:35:57.8113310Z PASS Forward removal keeps the oldest spirit and starter without skipping adjacent removals
+2026-10-07T12:35:57.8119760Z PASS Repeated capacity checks do not change retained health, attack recovery or permanent lifetime
+2026-10-07T12:35:57.8146730Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8161970Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8182280Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8197840Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8232980Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8250070Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8270030Z PASS Ordinary summon population never exceeds four during repeated casts
+2026-10-07T12:35:57.8273260Z PASS Repeated summons replace the oldest ordinary companion
+2026-10-07T12:35:57.8377900Z PASS Guardian replacement preserves the separate four ordinary plus one guardian cap
+2026-10-07T12:35:58.9614780Z PASS Actual rejuvenation ticks heal both the caster and living companions
+2026-10-07T12:35:59.0822620Z PASS Companion lifetime freezes while the game is paused
+2026-10-07T12:35:59.1071080Z PASS Changing encounter epoch dismisses every old temporary companion
+2026-10-07T12:35:59.1160240Z PASS Owner death immediately dismisses its companion in the live update path
+2026-10-07T12:35:59.1181410Z PASS Lifetime expiry runs through live dismissal and frees the ordinary summon slot
+2026-10-07T12:35:59.1272300Z PASS Boss resistance reduces both airborne duration and lift height
+2026-10-07T12:35:59.2427100Z PASS Airborne control raises the actual monster model above the ground
+2026-10-07T12:35:59.2433230Z PASS Repeated hits cannot restart the same airborne arc
+2026-10-07T12:35:59.2594320Z PASS Guardian stone armor reduces frontal damage 35%, but rear hits and its windup expose full damage
+2026-10-07T12:35:59.2605390Z SUMMONER passed owner retirement, non-summoner transition isolation, oldest-first capacity, full-pack refresh, captured charge targets/points, non-disruptive dodge protection and command consumption, real skill summons, neutral wildlife, attacks, health/healing, permanent contracts, route switches, finite packs, 4+1 cap, pause, permanent transfers and temporary epoch/death cleanup, visible airborne resistance and guardian armor.
+2026-10-07T12:35:59.3201140Z PASS Summoner skill 0 spends its configured resource cost
+2026-10-07T12:35:59.3205910Z PASS Summoner skill 0 uses the awakened cooldown
+2026-10-07T12:35:59.3382420Z PASS Summoner skill can be configured on page two
+2026-10-07T12:35:59.3386120Z PASS Summoner page two preserves the existing skill cooldown
+2026-10-07T12:35:59.3733620Z PASS Summoner skill can be configured on page three
+2026-10-07T12:35:59.3738580Z PASS Summoner paging cannot bypass cooldown or double-spend resources
+2026-10-07T12:35:59.3743570Z PASS Summoner a basic attack hit restores eight resource points
+2026-10-07T12:35:59.6352300Z PASS Summoner pause freezes active cooldowns
+2026-10-07T12:36:00.6440390Z PASS Summoner remains alive after skill 0
+2026-10-07T12:36:00.6445890Z PASS Summoner skill 0 cooldown advances in live frames
+2026-10-07T12:36:00.6448100Z PASS Summoner skill 0 damages runtime enemies
+2026-10-07T12:36:00.6652470Z PASS Summoner skill 1 spends its configured resource cost
+2026-10-07T12:36:00.6659180Z PASS Summoner skill 1 uses the awakened cooldown
+2026-10-07T12:36:01.7287520Z PASS Summoner remains alive after skill 1
+2026-10-07T12:36:01.7293630Z PASS Summoner skill 1 cooldown advances in live frames
+2026-10-07T12:36:01.7295990Z PASS Summoner skill 1 damages runtime enemies
+2026-10-07T12:36:01.7715930Z PASS Summoner skill 2 spends its configured resource cost
+2026-10-07T12:36:01.7760480Z PASS Summoner skill 2 uses the awakened cooldown
+2026-10-07T12:36:02.8690930Z PASS Summoner remains alive after skill 2
+2026-10-07T12:36:02.8695910Z PASS Summoner skill 2 cooldown advances in live frames
+2026-10-07T12:36:02.8698560Z PASS Summoning skill creates its actual combat companion
+2026-10-07T12:36:02.9105440Z PASS Summoner skill 4 spends its configured resource cost
+2026-10-07T12:36:02.9110250Z PASS Summoner skill 4 uses the awakened cooldown
+2026-10-07T12:36:03.8809210Z PASS Summoner remains alive after skill 4
+2026-10-07T12:36:03.8814930Z PASS Summoner skill 4 cooldown advances in live frames
+2026-10-07T12:36:03.8819190Z PASS Summoning skill creates its actual combat companion
+2026-10-07T12:36:03.9227320Z PASS Summoner skill 5 spends its configured resource cost
+2026-10-07T12:36:03.9232170Z PASS Summoner skill 5 uses the awakened cooldown
+2026-10-07T12:36:03.9566810Z PASS Summoner defense ability reduces actual incoming damage
+2026-10-07T12:36:04.9195710Z PASS Summoner remains alive after skill 5
+2026-10-07T12:36:04.9202820Z PASS Summoner skill 5 cooldown advances in live frames
+2026-10-07T12:36:04.9443360Z PASS Summoner healing fixture is injured and alive
+2026-10-07T12:36:04.9764010Z PASS Summoner skill 6 spends its configured resource cost
+2026-10-07T12:36:04.9770150Z PASS Summoner skill 6 uses the awakened cooldown
+2026-10-07T12:36:06.1748140Z PASS Summoner remains alive after skill 6
+2026-10-07T12:36:06.1752210Z PASS Summoner skill 6 cooldown advances in live frames
+2026-10-07T12:36:06.1754270Z PASS Summoner healing skill restores real health over time
+2026-10-07T12:36:06.1941670Z PASS Summoner skill 7 spends its configured resource cost
+2026-10-07T12:36:06.1945480Z PASS Summoner skill 7 uses the awakened cooldown
+2026-10-07T12:36:09.0787420Z PASS Summoner remains alive after skill 7
+2026-10-07T12:36:09.0797450Z PASS Summoner skill 7 cooldown advances in live frames
+2026-10-07T12:36:09.0800090Z PASS Summoner skill 7 damages runtime enemies
+2026-10-07T12:36:09.1164870Z PASS Summoner skill 9 spends its configured resource cost
+2026-10-07T12:36:09.1169760Z PASS Summoner skill 9 uses the awakened cooldown
+2026-10-07T12:36:12.9892370Z PASS Summoner remains alive after skill 9
+2026-10-07T12:36:12.9896410Z PASS Summoner skill 9 cooldown advances in live frames
+2026-10-07T12:36:12.9898240Z PASS Summoning skill creates its actual combat companion
+2026-10-07T12:36:12.9900100Z PASS Camera exists for Summoner-awakened-ultimate.png
+2026-10-07T12:36:13.1504890Z PASS 3D render produced image data: Summoner-awakened-ultimate.png
+2026-10-07T12:36:13.1515140Z CAPTURE Summoner-awakened-ultimate.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:36:13.1518770Z DUNGEON — portal, three real waves, boss, loot, death, respawn and persisted reload
+2026-10-07T12:36:13.1523290Z PASS Portal opens a blocking tier selector without entering early
+2026-10-07T12:36:13.2135150Z PASS Confirming the selector creates dungeon wave one
+2026-10-07T12:36:13.2306590Z GROUND LOOT — actual landing, range, blocked input and scene-exit settlement
+2026-10-07T12:36:13.2316280Z PASS RollLoot creates data without inventory or scene collection
+2026-10-07T12:36:13.2470180Z PASS Fresh gear lands visibly with protection and remains outside inventory
+2026-10-07T12:36:13.2474650Z PASS Ground gear has actual model, rarity glow and label renderers
+2026-10-07T12:36:13.2477810Z PASS Repeated spawning of one item retains a single pickup
+2026-10-07T12:36:13.2613030Z PASS Pickup cannot happen during the first 0.6 seconds even at player feet
+2026-10-07T12:36:14.0514300Z PASS Nearby landed gear enters the actual bag through Update
+2026-10-07T12:36:14.0519790Z PASS Repeated collection and respawning cannot duplicate collected gear
+2026-10-07T12:36:14.8686200Z PASS Landed gear outside pickup range stays on the ground
+2026-10-07T12:36:15.0184020Z PASS A player 2.1 metres away does not collect gear
+2026-10-07T12:36:15.2348380Z PASS A player inside two metres automatically collects gear
+2026-10-07T12:36:16.1352030Z PASS An open blocking panel prevents nearby automatic pickup
+2026-10-07T12:36:16.3357800Z PASS A real pause prevents nearby pickup until resumed
+2026-10-07T12:36:16.5368380Z PASS A dead session cannot collect nearby gear
+2026-10-07T12:36:16.7515880Z PASS Unblocking living gameplay resumes automatic pickup
+2026-10-07T12:36:16.7538490Z PASS An uncollected distant drop remains pending before camp return
+2026-10-07T12:36:17.1849240Z PASS Returning to camp settles all pending gear before old scene cleanup
+2026-10-07T12:36:17.1857860Z PASS Successful camp transition releases both old-world receipt sets after settlement
+2026-10-07T12:36:17.1931910Z PASS Rejected wilderness collection retains the exact rolled ID as one visible session-owned pickup
+2026-10-07T12:36:17.1934450Z PASS A retained wilderness drop prevents replacement enemy producers while existing enemies remain
+2026-10-07T12:36:17.7308260Z PASS Actual wilderness pickup Update retains failed data and backs off disk retries
+2026-10-07T12:36:17.7343860Z PASS Blocked wilderness pickup leaves primary and backup bytes unchanged
+2026-10-07T12:36:18.9798230Z PASS After recovery the same wilderness identity is collected exactly once through real Update
+2026-10-07T12:36:18.9802320Z PASS A retired wilderness pickup cannot collect again through either adapter
+2026-10-07T12:36:18.9946850Z PASS Full bag plus protected mailbox retains a valuable wilderness item instead of discarding or selling it
+2026-10-07T12:36:19.0179770Z PASS Freeing one bag slot admits the retained protected identity exactly once
+2026-10-07T12:36:19.0865760Z PASS Room boundary fixture starts with both real collected receipt sets
+2026-10-07T12:36:19.1907860Z PASS Successful real room travel retires both receipt sets after old world/epoch and preserves skill cooldown
+2026-10-07T12:36:19.1911590Z PASS Late old-room enemy callbacks cannot recreate drops or rewards after receipt retirement
+2026-10-07T12:36:20.0014240Z PASS Returning to title collects distant and protected gear before destroying the player
+2026-10-07T12:36:20.8454220Z PASS Scene-exit pickups survive the actual persisted reload
+2026-10-07T12:36:20.9038490Z PASS Repeated explicit exit settlement is idempotent
+2026-10-07T12:36:20.9040680Z GROUND LOOT complete; restoring profile and isolated save bytes, then preparing a fresh first wave.
+2026-10-07T12:36:20.9445120Z PASS World exists for Chinese label validation
+2026-10-07T12:36:20.9447250Z PASS Chinese label font is bundled and dynamic
+2026-10-07T12:36:20.9448670Z PASS World-label resolver selects the packaged subset when present
+2026-10-07T12:36:20.9451050Z PASS All authored world labels are covered by localization checks
+2026-10-07T12:36:20.9452490Z PASS World label keeps its stable object name and displays Chinese: THE FALLEN SANCTUM
+2026-10-07T12:36:20.9453830Z PASS World label uses the bundled Chinese font: THE FALLEN SANCTUM
+2026-10-07T12:36:20.9455440Z PASS World label uses its font's glyph atlas: THE FALLEN SANCTUM
+2026-10-07T12:36:20.9457130Z PASS Chinese glyph has visible geometry: 沉
+2026-10-07T12:36:20.9458430Z PASS Chinese glyph has visible geometry: 星
+2026-10-07T12:36:20.9459730Z PASS Chinese glyph has visible geometry: 遗
+2026-10-07T12:36:20.9461050Z PASS Chinese glyph has visible geometry: 迹
+2026-10-07T12:36:20.9462410Z PASS Chinese world label has a compact, nonempty width: THE FALLEN SANCTUM
+2026-10-07T12:36:20.9463710Z PASS Every expected Chinese world label was found once
+2026-10-07T12:36:20.9472060Z PASS Destructible scenery has visible geometry: Breakable Pot
+2026-10-07T12:36:20.9474250Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Pot
+2026-10-07T12:36:20.9475760Z PASS Destructible scenery has visible geometry: Breakable Rubble
+2026-10-07T12:36:20.9477160Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Rubble
+2026-10-07T12:36:20.9478690Z PASS Destructible scenery has visible geometry: Breakable Crate
+2026-10-07T12:36:20.9480050Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Crate
+2026-10-07T12:36:20.9481360Z PASS Destructible scenery has visible geometry: Breakable Pot
+2026-10-07T12:36:20.9482620Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Pot
+2026-10-07T12:36:20.9483990Z PASS Destructible scenery has visible geometry: Breakable Crate
+2026-10-07T12:36:20.9485320Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Crate
+2026-10-07T12:36:20.9486620Z PASS Destructible scenery has visible geometry: Breakable Rubble
+2026-10-07T12:36:20.9488190Z PASS Imported destructible scenery stays at meter scale within its gameplay footprint: Breakable Rubble
+2026-10-07T12:36:20.9489840Z PASS Camera exists for Dungeon-wave-one.png
+2026-10-07T12:36:21.0981060Z PASS 3D render produced image data: Dungeon-wave-one.png
+2026-10-07T12:36:21.0997610Z CAPTURE Dungeon-wave-one.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:36:21.1002470Z PASS Enemy batch belongs to the current wave or its immediate successor
+2026-10-07T12:36:21.1004880Z Dungeon advances to distinct wave 1
+2026-10-07T12:36:21.3527480Z PASS Completed wave 1 pauses for a blessing after every reinforcement is defeated
+2026-10-07T12:36:21.3789940Z PASS A blessing explicitly advances wave 1
+2026-10-07T12:36:21.3793200Z PASS Repeated blessing confirmation cannot grant or advance twice
+2026-10-07T12:36:21.3794820Z PASS Enemy batch belongs to the current wave or its immediate successor
+2026-10-07T12:36:21.3796370Z Dungeon advances to distinct wave 2
+2026-10-07T12:36:21.6259910Z PASS Completed wave 2 pauses for a blessing after every reinforcement is defeated
+2026-10-07T12:36:21.6409540Z PASS A blessing explicitly advances wave 2
+2026-10-07T12:36:21.6412100Z PASS Repeated blessing confirmation cannot grant or advance twice
+2026-10-07T12:36:21.6413440Z PASS Enemy batch belongs to the current wave or its immediate successor
+2026-10-07T12:36:21.6414620Z Dungeon advances to distinct wave 3
+2026-10-07T12:36:21.6417880Z PASS Final wave contains the guardian boss
+2026-10-07T12:36:21.6419210Z PASS Camera exists for Dungeon-boss.png
+2026-10-07T12:36:21.7836060Z PASS 3D render produced image data: Dungeon-boss.png
+2026-10-07T12:36:21.7842300Z CAPTURE Dungeon-boss.png — actual runtime Camera.Render, 1600 × 900 (world only)
+2026-10-07T12:36:21.9791820Z PASS Three waves and two explicit blessings award exactly one clear
+2026-10-07T12:36:21.9794830Z PASS Ordinary three-wave completion is a terminal combat state independently of special modes
+2026-10-07T12:36:21.9797530Z PASS A late lethal hostile hit after ordinary clear cannot kill the player or apply a death penalty
+2026-10-07T12:36:21.9827510Z PASS Ordinary-clear terminal policy rejects stale enemy damage and kill rewards without awarding another clear
+2026-10-07T12:36:21.9829970Z PASS Dungeon rewards remain visibly on the ground until pickup
+2026-10-07T12:36:21.9986130Z PASS The completed run offers exactly one chest
+2026-10-07T12:36:21.9988520Z PASS Opening again cannot reroll or grant another reward during the reveal
+2026-10-07T12:36:21.9995810Z PASS The saved chest receipt survives reload without granting again
+2026-10-07T12:36:22.0119260Z PASS Acknowledging the receipt clears only the reveal state
+2026-10-07T12:36:22.6245790Z PASS Dungeon exit automatically collects remaining equipment exactly once
+2026-10-07T12:36:22.6248560Z PASS Dungeon exit clears terminal combat state and heals at camp
+2026-10-07T12:36:22.6290540Z PASS Lethal damage opens death state and stops combat
+2026-10-07T12:36:22.6292060Z PASS Death preserves earned gold under the current recovery policy
+2026-10-07T12:36:23.4774280Z PASS Respawn restores health and preserves equipment
+2026-10-07T12:36:23.4790250Z PASS Isolated progress is saved successfully
+2026-10-07T12:36:23.4925970Z PASS Save-and-title ends active combat
+2026-10-07T12:36:24.1868380Z PASS Continue reloads isolated level and dungeon progress
+2026-10-07T12:36:24.1871380Z PASS Persisted evolution restored for skill 0
+2026-10-07T12:36:24.1872730Z PASS Persisted evolution restored for skill 1
+2026-10-07T12:36:24.1873940Z PASS Persisted evolution restored for skill 2
+2026-10-07T12:36:24.1875110Z PASS Persisted evolution restored for skill 3
+2026-10-07T12:36:24.1876230Z PASS Persisted evolution restored for skill 4
+2026-10-07T12:36:24.1877280Z PASS Persisted evolution restored for skill 5
+2026-10-07T12:36:24.1878380Z PASS Persisted evolution restored for skill 6
+2026-10-07T12:36:24.1879560Z PASS Persisted evolution restored for skill 7
+2026-10-07T12:36:24.1880610Z PASS Persisted evolution restored for skill 8
+2026-10-07T12:36:24.1881640Z PASS Persisted evolution restored for skill 9
+2026-10-07T12:36:24.2091250Z COMPLETE: four heroes, 32 active casts, touch controls and new encounter systems exercised in the Unity player loop.
+2026-10-07T12:36:24.2094210Z PASS No game/runtime errors or other unclassified console exceptions
+2026-10-07T12:36:24.2112770Z RUNTIME SUCCESS | 2302 assertions | 10 captures | 0 runtime errors | 0 editor infrastructure exceptions (full stacks retained) | 100.5 sec

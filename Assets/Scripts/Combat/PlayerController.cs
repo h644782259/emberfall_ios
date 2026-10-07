@@ -490,13 +490,13 @@ namespace Emberfall
         private readonly List<MobileSkillPolicy.Candidate> mobileAimCandidates=new List<MobileSkillPolicy.Candidate>();
         internal void PrepareMobileSkillAim(int skill)
         {EnemyController enemy;Vector3 point;ResolveMobileSkillAim(skill,out enemy,out point);AimTarget=enemy;aimPoint=point;}
-        internal void ResolveMobileSkillAim(int skill,out EnemyController enemy,out Vector3 point)
+        internal void ResolveMobileSkillAim(int skill,out EnemyController enemy,out Vector3 point,bool observeOnly=false)
         {
             var preview=SkillTargetingController.Describe(HeroClass,skill,session.Progression.Profile.skillRanks[skill]);
             if(preview.shape==SkillTargetingController.Shape.Self){enemy=null;point=transform.position;return;}
             if(HeroClass==HeroClass.Summoner&&(skill==2||skill==4||skill==9))
             {var team=SummonedCompanion.ExplicitFocus(this);if(team!=null){enemy=team;point=CombatFx.Flat(team.transform.position);return;}}
-            var pinned=MobilePinnedTarget;
+            var pinned=observeOnly?ReadMobilePinnedTarget():MobilePinnedTarget;
             if(pinned!=null&&MobilePinAppliesToSkill(skill)){enemy=pinned;point=CombatFx.Flat(pinned.transform.position);return;}
             float range=preview.distance>0?preview.distance:14f;
             mobileAimCandidates.Clear();
@@ -1075,7 +1075,7 @@ namespace Emberfall
                     else if (skillFeedbackCooldown <= 0)
                     {
                         session.ReportControlFailure("dodge",dodgeCooldown>0?"冷却":jumping?"空中":"位移中");
-                        session.Notify(dodgeCooldown > 0 ? "闪避冷却中（" + dodgeCooldown.ToString("0.0") + " 秒）" : jumping ? "落地后才能闪避。" : "位移结束后才能闪避。");
+                        if(!MobileControls.Active)session.Notify(dodgeCooldown > 0 ? "闪避冷却中（" + dodgeCooldown.ToString("0.0") + " 秒）" : jumping ? "落地后才能闪避。" : "位移结束后才能闪避。");
                         skillFeedbackCooldown = .5f;
                     }
                 }
@@ -1126,31 +1126,15 @@ namespace Emberfall
         {
             if (skillFeedbackCooldown > 0) return;
             session.ReportControlFailure("dodge","无落点");
-            session.Notify("前方有障碍或没有安全落点，请走桥或调整方向。");
+            if(!MobileControls.Active)session.Notify("前方有障碍或没有安全落点，请走桥或调整方向。");
             skillFeedbackCooldown = .8f;
         }
 
         private bool CanUseMovementSkill(int skill, int rank)
-        {
-            bool forwardDash = HeroClass == HeroClass.Vanguard && skill == 5;
-            bool retreat = HeroClass == HeroClass.Ranger && skill == 4;
-            if (!forwardDash && !retreat) return true;
-            Vector3 direction = CombatFx.Flat((ValidAimTarget(AimTarget) ? AimTarget.transform.position : aimPoint) - transform.position);
-            if (direction.sqrMagnitude < .0001f) direction = transform.forward;
-            direction.Normalize();
-            if (retreat) direction = -direction;
-            float distance = (forwardDash ? 7f : 5f) * GameBalance.SkillRangeMultiplier(rank);
-            Vector3 end = Vector3.ClampMagnitude(CombatFx.Flat(transform.position) + direction * distance, session.ArenaRadius - .65f);
-            return WorldTraversal.CanLeap(transform.position, end, .45f);
-        }
+        { return CanUseMovementSkillAt(skill,rank,ValidAimTarget(AimTarget)?AimTarget.transform.position:aimPoint); }
 
         internal bool SkillTargetingReady(int skill)
-        {
-            if(session==null||IsDead||!session.HasStarted||session.InputBlocked||jumping||skill<0||skill>=GameBalance.SkillCount||GameBalance.IsPassive(skill)||
-                charge!=null&&(charge.IsCharging||charge.ConsumedThisFrame))return false;
-            int rank=session.Progression.Profile.skillRanks[skill];
-            return rank>0&&skillRuntime.Remaining(skill)<=0&&Energy>=GameBalance.SkillEnergyCost(HeroClass,skill)&&CanUseMovementSkill(skill,rank);
-        }
+        { return SkillBudgetReady(skill)&&CanUseMovementSkill(skill,session.Progression.Profile.skillRanks[skill]); }
         internal Vector3 ResolveSkillGroundTarget(Vector3 point,float range,bool fixedPoint=false)
         {
             Vector3 target=fixedPoint?point:transform.position+Vector3.ClampMagnitude(CombatFx.Flat(point-transform.position),9f*range);
@@ -1166,7 +1150,7 @@ namespace Emberfall
         internal bool CanBeginSkillTargeting(int skill)
         {
             if(SkillTargetingReady(skill))return true;
-            if(session==null || IsDead || !session.HasStarted || session.InputBlocked || skill<0 || skill>=GameBalance.SkillCount || GameBalance.IsPassive(skill)) return false;
+            if(session==null || session.Player!=this || skillRuntime==null || IsDead || !session.HasStarted || session.InputBlocked || skill<0 || skill>=GameBalance.SkillCount || GameBalance.IsPassive(skill)) return false;
             if (jumping) { session.ReportControlFailure("skill"+skill,"空中"); return false; }
             if(charge != null && (charge.IsCharging || charge.ConsumedThisFrame)) { session.ReportControlFailure("skill"+skill,"施法中"); return false; }
             int rank=session.Progression.Profile.skillRanks[skill];
@@ -1174,11 +1158,13 @@ namespace Emberfall
             if(rank<=0) failure="按 K 学习这个技能后再施放。";
             else if(skillRuntime.Remaining(skill)>0) failure=GameBalance.SkillName(HeroClass,skill)+" 冷却中（"+skillRuntime.Remaining(skill).ToString("0.0")+" 秒）";
             else if(Energy<GameBalance.SkillEnergyCost(HeroClass,skill)) failure="能量不足：普攻命中回复 8 点，持续回复每秒 4 点。";
+            else if(!SkillHealingHasEffect(skill,rank)) failure="生命已满，无需使用治疗技能。";
+            else if(skill==6&&session.ChallengeRun&&session.InDungeon&&session.HealingCharges<=0) failure="治疗充能已耗尽。";
             else if(!CanUseMovementSkill(skill,rank)) failure="前方有障碍或没有安全落点，请走桥或调整方向。";
             if(failure==null) return true;
-            session.ReportControlFailure("skill"+skill,rank<=0?"未学":skillRuntime.Remaining(skill)>0?"冷却":Energy<GameBalance.SkillEnergyCost(HeroClass,skill)?"缺能":"无落点");
+            session.ReportControlFailure("skill"+skill,rank<=0?"未学":skillRuntime.Remaining(skill)>0?"冷却":Energy<GameBalance.SkillEnergyCost(HeroClass,skill)?"缺能":!SkillHealingHasEffect(skill,rank)?"无需治疗":skill==6&&session.ChallengeRun&&session.InDungeon&&session.HealingCharges<=0?"无充能":"无落点");
             if (CombatReviewEvents.Enabled && Energy<GameBalance.SkillEnergyCost(HeroClass,skill)) CombatReviewEvents.Emit("noenergy",CombatReviewObjectId.Get(this),skill:skill);
-            if(skillFeedbackCooldown<=0) { session.Notify(failure); skillFeedbackCooldown=.8f; }
+            if(!MobileControls.Active&&skillFeedbackCooldown<=0) { session.Notify(failure); skillFeedbackCooldown=.8f; }
             return false;
         }
 
@@ -1250,15 +1236,15 @@ namespace Emberfall
             {
                 if (skillFeedbackCooldown <= 0)
                 {
-                    session.Notify("按 K 打开技能面板，升级后消耗技能点学习技能。");
+                    session.ReportControlFailure("skill"+slot,"未学");
+                    if(!MobileControls.Active)session.Notify("按 K 打开技能面板，升级后消耗技能点学习技能。");
                     skillFeedbackCooldown = 2f;
                 }
                 return;
             }
             if (!CanUseMovementSkill(slot, rank)) { TraversalFailure(); return; }
             // Limited healing rank one has no defensive benefit: do not pay for an empty heal.
-            if (slot == 6 && rank == 1 && session.ChallengeRun && session.InDungeon && Health >= MaxHealth
-                && (HeroClass != HeroClass.Summoner || !SummonedCompanion.HasHealingTarget(this)))
+            if (!SkillHealingHasEffect(slot,rank))
             { session.Notify("生命已满，无需使用治疗技能。"); return; }
             if (slot == 6 && skillRuntime.Remaining(slot) <= 0 && Energy >= GameBalance.SkillEnergyCost(HeroClass, slot) && !session.TrySpendHealingCharge()) return;
             if (!skillRuntime.TryConsume(slot, rank, ActiveRunBonuses == null ? 1f : ActiveRunBonuses.CooldownMultiplier))
@@ -1266,7 +1252,8 @@ namespace Emberfall
                 if (skillFeedbackCooldown <= 0)
                 {
                     float remaining = skillRuntime.Remaining(slot);
-                    session.Notify(remaining > 0 ? GameBalance.SkillName(HeroClass,slot) + " 冷却中（" + remaining.ToString("0.0") + " 秒）" : "能量不足：需要 " + GameBalance.SkillEnergyCost(HeroClass,slot) + " 点；普攻命中回复 8 点，持续回复每秒 4 点。");
+                    session.ReportControlFailure("skill"+slot,remaining>0?"冷却":"缺能");
+                    if(!MobileControls.Active)session.Notify(remaining > 0 ? GameBalance.SkillName(HeroClass,slot) + " 冷却中（" + remaining.ToString("0.0") + " 秒）" : "能量不足：需要 " + GameBalance.SkillEnergyCost(HeroClass,slot) + " 点；普攻命中回复 8 点，持续回复每秒 4 点。");
                     skillFeedbackCooldown = .8f;
                 }
                 return;

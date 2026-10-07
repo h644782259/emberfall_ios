@@ -1,0 +1,7 @@
+Unity editor: /Applications/Unity/Hub/Editor/6000.6.4f1/Unity.app/Contents/MacOS/Unity
+iOS Build Support: present
+Xcode command-line tools: found (device signing still requires your selected team).
+Close this project in Unity and Xcode before exporting.
+Fixed Xcode project exported: /Users/admin/Desktop/自开发/emberfall_ios/Builds/iOS/Xcode/Emberfall.xcodeproj
+Open Emberfall.xcodeproj, select the Emberfall scheme, your developer team and connected device, then Run.
+No historical export, signed IPA, or device installation was retained or performed.

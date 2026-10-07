@@ -44,7 +44,7 @@ namespace Emberfall
             Text(TouchRect(layout.Header.X,layout.Header.Y+31,layout.Header.Width,17),
                 string.IsNullOrEmpty(notice)?subtitle:PlatformText(notice),TouchFont(12),string.IsNullOrEmpty(notice)?muted:gold,false,false,TextAnchor.MiddleLeft);
             Rule(16*TouchRatio,60*TouchRatio,(layout.Width-32)*TouchRatio,jade);
-            if(Button(MobilePanelRect(layout.Close),pauseInstead?"菜单":"×",jade,canClose||pauseInstead))
+            if(NavigationButton(MobilePanelRect(layout.Close),pauseInstead?"菜单":"×",jade,canClose||pauseInstead))
             {if(pauseInstead)session.SetPaused(true);else ClosePanel();BlockUITransition();return true;}
             return false;
         }

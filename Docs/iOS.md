@@ -2,7 +2,7 @@
 
 这是 **0.4.0** 游戏源码的 iPhone 构建流程。[iPhone 独立仓库](https://github.com/h644782259/emberfall_ios)与 [Windows 主项目](https://github.com/h644782259/emberfall_win)共享四职业、技能成长、副本、装备养成、多存档和物品快捷栏玩法。推荐在 Mac 克隆后导出 Xcode 工程，再由 Xcode 直接安装到自己的设备。Windows 发行包不能转换成 iPhone 安装包。
 
-工程现要求 Unity 6000.6.4f1。当前云端只用已安装的6000.6.3f1程序集做兼容编译；未执行目标版本导入、生成 Xcode 工程、签名 IPA 或 iPhone/iPad 真机测试。差异与整合范围见 [iOS 主线整合说明](iOS-Integration.md)。
+工程要求 Unity 6000.6.4f1。本机已完成该版本运行时验证、Xcode 导出和未签名原生构建；本轮未签名安装或完成 iPhone/iPad 真机验收。证据与边界见 [本机整合验证](Validation/iOS-Integration-20261007/README.md)。
 
 ## 1. 准备 Mac 和 iPhone
 
@@ -26,7 +26,7 @@ Unity Hub → Add project from disk → 选择包含 `Assets`、`Packages`、`Pr
 
 ## 3. 导出 Xcode 源工程
 
-可在 Unity 使用 **Emberfall → 导出 iPhone Xcode 工程 Export iOS**。默认输出固定为 `Builds/iOS/Xcode`；若目录非空会停止，不覆盖已有签名设置，也不自动产生多份大型工程。需要保留多版时请明确指定新的 `--output` 目录。导出日志固定为 `Logs/ios-export-latest.log`。也可先关闭此项目的 Unity 编辑器，在 Mac Terminal 运行：
+日常更新使用下面的 Mac 脚本，导出前关闭此项目的 Unity 和 Xcode。默认实际目录固定为 `Builds/iOS/Xcode`，工程名固定为 `Emberfall.xcodeproj`，scheme 为 `Emberfall`。先在临时目录导出，成功后替换固定工程并删除旧导出；失败保留当前工程。脚本沿用当前工程唯一的签名团队，可用 `--team-id` 覆盖。日志固定为 `Logs/ios-export-latest.log`。Unity 菜单直接导出仍使用 Unity 默认工程名，非空目录会停止。
 
 ```bash
 # 只检查工具和模块，不启动 Unity 或构建
@@ -47,25 +47,25 @@ bash Tools/Export-iOS.sh \
 
 `--team-id ABCDE12345` 是可选项；不知道 Team ID 就省略，稍后在 Xcode 选择 Personal Team。不要把 Apple 账号、证书、私钥、描述文件或密码提交到仓库。脚本不读取 Apple 凭据，不会自动签名、安装、发布或上传。
 
-输出必须位于 `Builds/iOS` 下的一个空子目录，已有工程不会被覆盖。成功后包含 `Unity-iPhone.xcodeproj`、Unity/IL2CPP 源代码和游戏数据；日志位于 `Logs/ios-export-*.log`。复制到另一台 Mac 时带上**整个输出目录**。
+输出必须位于 `Builds/iOS` 下的实际子目录。脚本成功后包含 `Emberfall.xcodeproj`、Unity/IL2CPP 源代码和游戏数据；日志位于 `Logs/ios-export-latest.log`。复制到另一台 Mac 时带上**整个输出目录**。
 
-Windows 可执行 `pwsh -File Tools/Export-iOS.ps1 -CheckOnly` 检查模块。缺少 iOS 模块时脚本明确报错并停止，不创建伪造工程；这台开发机的当前状态正是如此。
+Windows 可执行 `pwsh -File Tools/Export-iOS.ps1 -CheckOnly` 检查模块。缺少 iOS 模块时脚本明确报错并停止，不创建伪造工程。
 
 ## 4. Xcode 选择签名和设备
 
-1. 如果导出目录存在 `Unity-iPhone.xcworkspace`，打开它；否则打开 `Unity-iPhone.xcodeproj`。
+1. 打开 `Builds/iOS/Xcode/Emberfall.xcodeproj`。
 2. 选择蓝色工程 → **TARGETS → Unity-iPhone → Signing & Capabilities**，勾选 **Automatically manage signing**。
 3. 在 **Team** 选择自己的 **Personal Team** 或已有开发团队。确认 **Bundle Identifier** 与导出时填写的一致且唯一；若提示标识被占用，换一个唯一标识。保留 UnityFramework 的 Unity 生成配置，不要给它另加无关能力。
-4. 顶部 Scheme 选择 **Unity-iPhone**，运行目标选择已连接的真实 iPhone，而不是 Simulator 或 Any iOS Device。首次配对或准备调试支持时等待 Xcode 完成。
+4. 顶部 Scheme 选择 **Emberfall**，运行目标选择已连接的真实 iPhone，而不是 Simulator 或 Any iOS Device。首次配对或准备调试支持时等待 Xcode 完成。
 5. 点击 **Run ▶**（Cmd+R）。Xcode 构建、开发签名并安装到所选设备。若 iPhone 要求信任开发者或开启开发者模式，按其设置提示完成后再运行。
 
 若失败，先读 Xcode 的具体签名/设备错误。常见原因是尚未选择 Team、Bundle ID 已被占用、手机没有信任电脑、Xcode 不支持手机的 iOS 版本或开发签名过期。免费 Team 不需要通过 Archive/TestFlight 流程才能在自己的设备运行。
 
 ## 5. 触屏操作与桌面调试
 
-- 左下摇杆控制移动；可同时用另一根手指按住右下攻击按钮进行普通攻击。
+- 屏幕左侧三分之一空白区域按下出现浮动摇杆控制移动；可同时用另一根手指按住右下攻击按钮进行普通攻击。
 - 攻击按钮左上方是闪现，再往左上方是跳跃；攻击按钮上方是生命药剂。跳跃与闪现可越过河水，起点与落点都需可通行，不能穿过树木、岩石或墙体。
-- 战斗区两排十格固定显示全部职业技能，不翻页；已学主动技能可点，被动和未学技能显示不同状态且不可点。药剂使用独立按钮。
+- 战斗区保留八个主动技能按钮，不翻页；可用技能高亮，两被动技能放在状态卡展示。药剂使用独立按钮并显示数量角标。
 - 点击范围技能会自动选有效焦点或附近目标并释放，无需二次选点；原有蓄力技能仍显示前摇进度，有效闪现可取消蓄力。空白区域上下拖动调整镜头俯仰；列表内容可直接手指拖动滚动。
 - HUD 图标可打开行囊、技能树、操作指南和暂停菜单，以及返回营地、进入副本；进入副本需靠近传送门，战斗中不能直接回营。背包与技能界面会暂停战斗。
 
@@ -82,11 +82,11 @@ iPhone 存档在应用自己的沙盒中，Windows 的 `%USERPROFILE%` 路径不
 ## 7. 真机验收
 
 - 检查横屏切换、文字、安全区、多指移动与攻击、跳跃、闪现、药剂按钮、技能自动瞄准与蓄力取消、蓄力、背包/技能树、第四职业召唤、副本掉落和返回营地。
-- 检查十格技能不翻页、内容拖动不误点、空白区域镜头拖动，以及河岸安全落点、桥梁通行和实体障碍阻挡。
+- 检查八主动技能和两被动状态展示、内容拖动不误点、空白区域镜头拖动，以及河岸安全落点、桥梁通行和实体障碍阻挡。
 - 检查锁屏、切到后台、来电/音频中断后，游戏暂停与声音恢复是否正常；创建多个角色、覆盖确认/取消、暂停读取、退出重启后选择不同存档加载。
 - 连续战斗与多召唤物场景检查性能和温度，按 `Tests/PLAYTEST.md` 验证核心玩法。桌面通过不能替代 iPhone 真机测试。
 
-构建日志、`Builds/iOS`、Xcode 中间输出和个人签名材料应保持为本地产物，不提交 Git。升级源码后导出新的空目录，再在 Xcode 为新工程选择同一 Bundle Identifier 和 Team，可以避免覆盖旧的手动配置文件。
+构建日志、`Builds/iOS`、Xcode 中间输出和个人签名材料应保持为本地产物，不提交 Git。升级源码后运行相同导出命令，仍打开固定工程；成功后不保留旧导出。仅签名团队自动沿用，其他手动 Xcode 配置应放入导出逻辑，否则重新导出会重置。本机构建缓存使用 `Builds/iOS/DerivedData`。
 
 ## iPad 安装
 

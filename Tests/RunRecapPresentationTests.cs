@@ -18,6 +18,13 @@ public static class RunRecapPresentationTests
         Check(measured.EmberCreated==6&&measured.EmberEffective==4&&measured.FrostCreated==6&&measured.FrostEffective==0,"mechanism result snapshots copy actual instance counts");
         Check(measuredView.MechanismEvidence.Length==2&&measuredView.MechanismEvidence[0].Contains("生成 6 / 生效 4")&&measuredView.MechanismEvidence[1].Contains("生成 6 / 生效 0"),"structured ordinary recap distinguishes generated and effective instances");
         Check(measuredView.Tip.Contains("未造成生命损失")&&!measuredView.Tip.Contains("秒"),"one factual mechanic retry suggestion without invented timings");
+        foreach(var counts in new[]{new[]{6,0,6,0},new[]{0,0,6,0},new int[4]})
+        {
+            string detail="生成失败 · 敌人模型与状态 · 种子 987654 / 房间 3 / 布局 2 / 守印 / 敌人 4";
+            var failed=new RunRecapPresentation(new RunRecapSnapshot(false,true,false,1,3,5,0,0,12,null,0,null,null,null,false,false,
+                failureReason:"GenerationOrPathFailure",mechanismCounts:counts,generationFailureDetail:detail));
+            Check(failed.Tip.Contains(detail)&&!failed.Tip.Contains("烬地有")&&!failed.Tip.Contains("霜环回响有"),"generation diagnostics survive ineffective mechanic evidence");
+        }
         var empty=new RunRecapPresentation(Snapshot());
         Check(empty.Metrics.Length==0 && empty.ExtraActions.Length==0 && empty.Mechanics.Length==0 && empty.Blessings.Length==0,"hide empty sections");
         Check(!empty.HasDamage && !empty.HasProgress,"do not fabricate hit/reward rows");
