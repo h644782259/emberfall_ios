@@ -107,8 +107,8 @@ namespace Emberfall.Editor
                 Vector2 offset = (Vector2)Field(typeof(GameUI), "guiOffset").GetValue(ui);
                 Func<Vector2, Vector2> screen = point => new Vector2(point.x * scale + offset.x, Screen.height - point.y * scale - offset.y);
                 float ratio=MobileControls.Layout.Scale/scale;
-                check(slots.Length == 10 && Mathf.Abs(slots[0].width-48*ratio)<.1f && slots[9].width>0, "Mobile HUD exposes all ten skills with 48-unit targets");
-                for (int i = 0; i < 10; i++)
+                check(slots.Length == 10 && Mathf.Abs(slots[0].width-(MobileControls.Layout.Tablet?72:60)*ratio)<.1f && slots[7].width>0 && slots[8].width==0 && slots[9].width==0, "Mobile HUD exposes eight active skills with enlarged targets and no passive slots");
+                for (int i = 0; i < MobileSkillPolicy.ButtonCount; i++)
                 {
                     check(safe.Contains(screen(slots[i].min)) && safe.Contains(screen(slots[i].max-Vector2.one*.01f)), "Skill target stays in safe area");
                     for(int j=i+1;j<10;j++)check(!slots[i].Overlaps(slots[j]), "Active skill targets never overlap");
@@ -120,7 +120,7 @@ namespace Emberfall.Editor
                 controls.ProcessPointer(42,TouchPhase.Began,attack);controls.ProcessPointer(42,TouchPhase.Began,dodge);
                 check(!MobileControls.ConsumeDodge(),"Repeated Began cannot change a captured finger role");
                 controls.ProcessPointer(42,TouchPhase.Ended,attack);
-                for(int i=0;i<MobileSkillPolicy.ButtonCount;i++)check(MobileSkillPolicy.SkillAtButton(i)==i,"Each direct button retains its stable skill identity");
+                for(int i=0;i<MobileSkillPolicy.ButtonCount;i++)check(MobileSkillPolicy.IsActiveSkill(MobileSkillPolicy.SkillAtButton(i)),"Each direct button retains its stable skill identity");
                 foreach (EnemyController enemy in originalEnemies) if (enemy != null) enemy.gameObject.SetActive(false);
                 game.Player.Teleport(new Vector3(0, 0, -5));
                 game.Player.transform.rotation = Quaternion.identity;
@@ -128,14 +128,14 @@ namespace Emberfall.Editor
                 fixtureEnemy = game.Enemies[game.Enemies.Count - 1]; fixtureEnemy.enabled = false;
                 check(WorldTraversal.HasLineOfSight(game.Player.transform.position, fixtureEnemy.transform.position), "Autoaim fixture target is genuinely visible in the authored world");
                 float energy = game.Player.Energy;
-                foreach (int inactive in new[] { 3, 8, 7 })
+                foreach (int inactive in new[] { 8, 9, 6 })
                 {
                     Vector2 point = screen(slots[inactive].center);
                     controls.ProcessPointer(50 + inactive, TouchPhase.Began, point);
                     controls.ProcessPointer(50 + inactive, TouchPhase.Ended, point);
                 }
                 check(!charge.IsCharging && !targeting.IsTargeting && game.Player.Energy == energy && game.Player.SkillCooldownRemaining(7) == 0,
-                    "Learned passive and unlearned active slots never cast or spend resources");
+                    "Hidden passive entries and unlearned active button never cast or spend resources");
                 controls.ProcessPointer(60, TouchPhase.Began, first);
                 controls.ProcessPointer(60, TouchPhase.Ended, second);
                 check(game.Player.Energy == energy && game.Player.SkillCooldownRemaining(0) == 0,
@@ -153,7 +153,7 @@ namespace Emberfall.Editor
 
                 fixtureRuntime.Advance(200); fixtureRuntime.FillEnergy();
                 frame = Time.frameCount; while (Time.frameCount == frame) yield return null;
-                Vector2 ultimate = screen(slots[9].center);
+                Vector2 ultimate = screen(slots[7].center);
                 controls.ProcessPointer(62, TouchPhase.Began, ultimate);
                 controls.ProcessPointer(62, TouchPhase.Ended, ultimate);
                 check(charge.IsCharging && !targeting.IsTargeting && game.Player.Energy == game.Player.MaxEnergy &&

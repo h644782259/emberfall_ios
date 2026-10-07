@@ -12,6 +12,13 @@ public static class MobileControlLayoutTests
         foreach(var preset in new[]{-1,0,1})foreach(var d in devices)
         {
             var l=new MobileControlLayout(d[0],d[1],d[2],preset);
+            Check(l.Skills.Length==8,"only eight active skill targets");
+            foreach(var skill in l.Skills)Check(skill.Width==(l.Tablet?72:60)&&skill.Height==skill.Width,"phone and tablet enlarged touch targets");
+            foreach(var hint in l.SkillOpportunities)
+            {
+                Check(hint.X>=0&&hint.Y>=0&&hint.X+hint.Width<=l.Width&&hint.Y+hint.Height<=l.Height,"skill opportunity safe area");
+                foreach(var skill in l.Skills)Check(!hint.Overlaps(skill),"opportunity feedback stays outside skill targets");
+            }
             var targets=new List<MobileControlLayout.Area>{l.Joystick,l.Attack,l.Dodge,l.Potion,l.Jump,l.Menu,l.Inventory,l.SkillsMenu,l.Interact,l.FocusCommand,l.RecallCommand};targets.AddRange(l.Skills);
             foreach(var r in targets)
             {

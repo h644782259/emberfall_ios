@@ -18,15 +18,16 @@ namespace Emberfall
             lastOwner=owner;lastEpoch=epoch;lastKind=state.Kind;hadWindow=state.Window;
             if(!state.Window)return;
             if(style==null)style=new GUIStyle(GUI.skin.label){alignment=TextAnchor.MiddleCenter,fontStyle=FontStyle.Bold,font=GameFont.Shared};
-            style.fontSize=Mathf.RoundToInt(9*unit);
+            bool compact=area.width<40*unit;
+            style.fontSize=Mathf.RoundToInt((compact?8:9)*unit);
             Color previous=GUI.color;
             GUI.color=new Color(.025f,.045f,.06f,.95f*opacity);GUI.DrawTexture(area,Texture2D.whiteTexture);
             Color tint=state.Actionable?new Color(.35f,.86f,.64f,opacity):new Color(.58f,.61f,.65f,opacity);
             style.normal.textColor=tint;GUI.color=Color.white;
             // The one-character mechanism seal is distinct from the skill identity.
-            GUI.Label(new Rect(area.x+unit,area.y,13*unit,area.height),state.Symbol,style);
-            GUI.Label(new Rect(area.x+16*unit,area.y,area.width-16*unit,area.height),state.Remaining.ToString("0.0"),style);
-            float radius=6*unit,cx=area.x+7.5f*unit,cy=area.y+area.height*.5f;
+            GUI.Label(new Rect(area.x+unit,area.y,(compact?11:13)*unit,area.height),state.Symbol,style);
+            GUI.Label(new Rect(area.x+(compact?12:16)*unit,area.y,area.width-(compact?12:16)*unit,area.height),state.Remaining.ToString("0.0"),style);
+            float radius=(compact?5:6)*unit,cx=area.x+(compact?6.5f:7.5f)*unit,cy=area.y+area.height*.5f;
             if(state.Duration>0)
                 for(int i=0;i<24;i++)
                 {

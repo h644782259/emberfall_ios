@@ -16,7 +16,7 @@ namespace Emberfall
         public readonly bool Tablet;
         public readonly Area Joystick, MoveZone, Attack, Dodge, Potion, Jump, Cancel, Menu, Inventory, SkillsMenu, Interact;
         public readonly Area EncounterText, BossHealth, Notice, AdventureStatus, FocusCommand, RecallCommand, CombatView;
-        public readonly Area[] Skills = new Area[10];
+        public readonly Area[] Skills = new Area[MobileSkillPolicy.ButtonCount];
         public readonly Area[] SkillOpportunities = new Area[10];
         public readonly Area CounterOpportunity, ComboOpportunity;
         public MobileControlLayout(float pixelWidth,float pixelHeight,float dpi,int positionPreset=0)
@@ -31,16 +31,21 @@ namespace Emberfall
             Width=pixelWidth/Scale;Height=pixelHeight/Scale;
             Joystick=Centered(90,Height-86,128);
             MoveZone=new Area(12,Height-172,175,160);
-            Attack=Centered(Width-61,Height-57,84);
+            Attack=Centered(Width-61,Height-55,80);
             Dodge=Centered(Width-152,Height-56,62);
             Jump=Centered(Width-224,Height-56,56);
             Cancel=Jump; // Same thumb position, mutually exclusive with jump.
             Potion=Centered(50,Height-211,54);
             Interact=new Area(78,Height-244,108,48);
-            float groupShift=positionPreset<0?-Math.Min(16,Height-316):positionPreset>0?2:0;
+            float groupShift=positionPreset<0?-Math.Min(16,Math.Max(0,Height-320)):positionPreset>0?2:0;
+            float skillSize=Tablet?72:60, step=skillSize+8;
+            float rowStep=skillSize+16;
+            float lowerRow=Height-(Tablet?142:128)+groupShift;
             for(int i=0;i<Skills.Length;i++)
-                Skills[i]=Centered(Width-252+(i%5)*54,Height-(i<5?204:140)+groupShift,48);
-            for(int i=0;i<Skills.Length;i++)SkillOpportunities[i]=new Area(Skills[i].X,Skills[i].Y+Skills[i].Height+1,Skills[i].Width,14);
+            {
+                Skills[i]=Centered(Width-12-skillSize/2-(3-i%4)*step,lowerRow-(i<4?rowStep:0),skillSize);
+                SkillOpportunities[MobileSkillPolicy.SkillAtButton(i)]=new Area(Skills[i].X+(i<4?0:skillSize/2),lowerRow-rowStep+skillSize/2+1,skillSize/2,14);
+            }
             CounterOpportunity=new Area(Attack.X,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             ComboOpportunity=new Area(Attack.X+Attack.Width/2,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             FocusCommand=new Area(Skills[0].X-102,Skills[0].Y+1,48,48);
@@ -50,15 +55,15 @@ namespace Emberfall
             SkillsMenu=Centered(Width-150,32,48);
             // Keep encounter feedback below the menu row, above the skill strip.
             // A centered bar at y=98 crosses the first skill row on 320-unit phones.
-            EncounterText=new Area(Width-184,62,172,18);
-            BossHealth=new Area(Width-184,83,172,5);
+            EncounterText=new Area(Width-184,60,172,18);
+            BossHealth=new Area(Width-184,81,172,5);
             // Four short objective lines + a real capture bar. At 568x320 the
             // card ends at y=84, above interaction and the first skill row.
             float objectiveWidth=Math.Min(236,Width-380);
             AdventureStatus=new Area((Width-objectiveWidth)/2,8,objectiveWidth,76);
             // The short feedback card uses the gap between the movement zone and
             // jump button, below the skill strip, never covering an action target.
-            Notice=new Area(198,Height-106+Math.Max(0,groupShift),Math.Min(320,Jump.X-210),94-Math.Max(0,groupShift));
+            Notice=new Area(198,Height-85+Math.Max(0,groupShift),Math.Min(320,Jump.X-210),73-Math.Max(0,groupShift));
             float viewLeft=MoveZone.X+MoveZone.Width+3,viewTop=FocusCommand.Y+FocusCommand.Height+4;
             CombatView=ChooseCombatView(viewLeft,viewTop,Skills[0].X-viewLeft-4,Notice.Y-viewTop-4);
         }
