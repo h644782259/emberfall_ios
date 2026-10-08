@@ -249,7 +249,7 @@ namespace Emberfall
             if(saveSlotsDirty)RefreshSaveSlots();
             if(!titleCreatingHero){DrawAdventureHome();return;}
             var l=MobileControls.Layout;
-            Fill(new Rect(0,0,width,height),new Color(.018f,.029f,.048f,1));
+            // Title backdrop covers the full viewport before safe-area content.
             var title=new MobileTitleLayout(l.Width,l.Height,MobileTitleLayout.IsIPad(SystemInfo.deviceModel));
             Rect TitleRect(float x,float y,float w,float h) => TouchRect(title.Rect(x,y,w,h));
             int TitleFont(float size) => TouchFont(size*title.Zoom);
@@ -269,29 +269,29 @@ namespace Emberfall
         }
         private void DrawMobileSaveSelection()
         {
-            var l=MobileControls.Layout;float x=(l.Width-520)/2,y=12;
-            Fill(new Rect(0,0,width,height),new Color(.018f,.029f,.048f,1));
-            Text(TouchRect(x,y,520,30),"角色存档  ·  "+saveSlots.Count,TouchFont(21),pale,true);
-            Rect viewport=TouchRect(x,y+42,520,l.Height-135);float ratio=TouchRatio;
+            var l=MobileControls.Layout;float panelWidth=MobileControls.IsIPad?Mathf.Min(900,l.Width-32):520;float x=(l.Width-panelWidth)/2,y=12;
+            // Title backdrop covers the full viewport before safe-area content.
+            Text(TouchRect(x,y,panelWidth,30),"角色存档  ·  "+saveSlots.Count,TouchFont(21),pale,true);
+            Rect viewport=TouchRect(x,y+42,panelWidth,l.Height-135);float ratio=TouchRatio;
             if(mobileSaveSelectionIssue!=saveSelectionError)
             {mobileSaveSelectionIssue=saveSelectionError;if(!string.IsNullOrEmpty(saveSelectionError)){CancelMobileScroll();saveSelectionScroll=Vector2.zero;}}
-            float issueHeight=string.IsNullOrEmpty(saveSelectionError)?0:MeasureMobileParagraph(saveSelectionError,478,14,true)+16;
-            saveSelectionScroll=BeginTouchScroll("mobile-saves",viewport,saveSelectionScroll,new Rect(0,0,500*ratio,Mathf.Max(viewport.height,(issueHeight+saveSlots.Count*68)*ratio)));
-            if(issueHeight>0)DrawMobileParagraph(10,6,478,saveSelectionError,14,gold,true);
+            float issueHeight=string.IsNullOrEmpty(saveSelectionError)?0:MeasureMobileParagraph(saveSelectionError,panelWidth-42,14,true)+16;
+            saveSelectionScroll=BeginTouchScroll("mobile-saves",viewport,saveSelectionScroll,new Rect(0,0,(panelWidth-20)*ratio,Mathf.Max(viewport.height,(issueHeight+saveSlots.Count*68)*ratio)));
+            if(issueHeight>0)DrawMobileParagraph(10,6,panelWidth-42,saveSelectionError,14,gold,true);
             for(int i=0;i<saveSlots.Count;i++)
             {
-                var slot=saveSlots[i];Rect r=new Rect(0,(issueHeight+i*68)*ratio,498*ratio,60*ratio);
+                var slot=saveSlots[i];Rect r=new Rect(0,(issueHeight+i*68)*ratio,(panelWidth-22)*ratio,60*ratio);
                 Fill(r,card);Border(r,selectedSaveId==slot.Id?gold:jade*.35f);
-                Text(new Rect(12*ratio,r.y+7*ratio,320*ratio,23*ratio),slot.DisplayName,TouchFont(16),pale,true);
+                Text(new Rect(12*ratio,r.y+7*ratio,(panelWidth-200)*ratio,23*ratio),slot.DisplayName,TouchFont(16),pale,true);
                 string id=slot.Id=="legacy"?"旧存档":slot.Id.Substring(0,8);
-                Text(new Rect(12*ratio,r.y+34*ratio,470*ratio,19*ratio),id+"  ·  "+(slot.SavedAtUtc==System.DateTime.MinValue?"时间未知":slot.SavedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))+(slot.DeletionPending?"  删除未完成":""),TouchFont(12),muted);
+                Text(new Rect(12*ratio,r.y+34*ratio,(panelWidth-50)*ratio,19*ratio),id+"  ·  "+(slot.SavedAtUtc==System.DateTime.MinValue?"时间未知":slot.SavedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))+(slot.DeletionPending?"  删除未完成":""),TouchFont(12),muted);
                 if(GUI.Button(r,GUIContent.none,invisibleButton)){selectedSaveId=slot.Id;saveSelectionError=null;}
             }
             EndTouchScroll();
-            float bottom=l.Height-62;
-            if(NavigationButton(TouchRect(x,bottom,128,48),"返回",jade))ClosePanel();
-            DrawDeleteSaveButton(TouchRect(x+144,bottom,156,48));
-            if(PrimaryButton(TouchRect(x+316,bottom,204,48),"读取角色",gold,saveSlots.Exists(a=>a.Id==selectedSaveId&&a.CanLoad)))ContinueSelectedSave();
+            float bottom=l.Height-62;float footerUnit=(panelWidth-32)/3;
+            if(NavigationButton(TouchRect(x,bottom,footerUnit,48),"返回",jade))ClosePanel();
+            DrawDeleteSaveButton(TouchRect(x+footerUnit+16,bottom,footerUnit,48));
+            if(PrimaryButton(TouchRect(x+2*(footerUnit+16),bottom,footerUnit,48),"读取角色",gold,saveSlots.Exists(a=>a.Id==selectedSaveId&&a.CanLoad)))ContinueSelectedSave();
         }
         private string mobileSaveSelectionIssue;
         private void DrawMobileGuide()

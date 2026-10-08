@@ -95,7 +95,10 @@ namespace Emberfall
             float tacticHeight=0;
             if(tactics)for(int i=0;i<3;i++)tacticHeight+=Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(RunChoices.Description(RunChoices.ChapterTactic(profile,mobile,i))),textWidth)/u+66;
             if(tactics)tacticHeight+=60;
-            float total=438+tacticHeight+errorH+32+48+12+48+12+previewH+60+storyH;
+            int chestMode=node==ChapterNode.ForestCourt?0:node==ChapterNode.Redrock?1:2;
+            int chestTier=Mathf.Min(100,session.SelectedChapterTier+(int)difficulty*5);
+            float rewardsHeight=DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,false);
+            float total=48+rewardsHeight+tacticHeight+errorH+32+48+12+48+12+previewH+60+storyH;
             chapterScroll=BeginTouchScroll("chapter-entry",body,chapterScroll,new Rect(0,0,contentWidth*u,Mathf.Max(body.height/u,total)*u));
             float y=0,w=(contentWidth-16)/3;
             if(errorH>0){Text(new Rect(8*u,y*u,textWidth,(errorH-12)*u),chapterEntryError,Mathf.RoundToInt(13*u),gold,false,true);y+=errorH;}
@@ -113,7 +116,7 @@ namespace Emberfall
             if(Button(new Rect(112*u,y*u,48*u,48*u),"−",jade,session.SelectedChapterTier>1)){ChangeChapterTier(-1);EndTouchScroll();return;}
             if(Button(new Rect(168*u,y*u,48*u,48*u),"+",jade,session.SelectedChapterTier<session.Progression.UnlockedChapterTier(session.SelectedChapterNode))){ChangeChapterTier(1);EndTouchScroll();return;}
             y+=60;Text(new Rect(8*u,y*u,textWidth,previewH*u),preview,Mathf.RoundToInt(13*u),muted,false,true);y+=previewH;
-            GUI.BeginGroup(new Rect(0,y*u,contentWidth*u,390*u));DrawAdventureRewards((int)node,Mathf.Min(100,session.SelectedChapterTier+(int)difficulty*5),contentWidth,u,false);GUI.EndGroup();y+=390;
+            entryRewardViewport=body;GUI.BeginGroup(new Rect(0,y*u,contentWidth*u,rewardsHeight*u));DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,true);GUI.EndGroup();y+=rewardsHeight;
             DrawRewardToken(new Rect(8*u,y*u,textWidth,36*u),1,ChapterEntryPresentation.RewardMaterials(profile,node,difficulty,session.SelectedChapterTier),u);y+=48;
             if(tactics)
             {
