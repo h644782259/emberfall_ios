@@ -52,7 +52,10 @@ if $check_only; then
   exit 0
 fi
 
-if [[ -z "$output" ]]; then output="$project_root/Builds/iOS/Xcode"; fi
+if [[ -z "$output" ]]; then
+  if [[ "$sdk" == simulator ]]; then output="$project_root/Builds/iOS/Simulator";
+  else output="$project_root/Builds/iOS/Xcode"; fi
+fi
 if [[ "$output" != /* ]]; then output="$project_root/$output"; fi
 [[ ! -L "$output" ]] || { echo 'The fixed export must be a real directory, not a link.' >&2; exit 2; }
 output="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$output")"
@@ -71,7 +74,7 @@ fi
 mkdir -p "$project_root/Logs" "$project_root/Builds/iOS"
 staging="$(mktemp -d "$project_root/Builds/iOS/.Xcode-stage-XXXXXX")"
 trap 'rm -rf -- "$staging"' EXIT
-log_file="$project_root/Logs/ios-export-latest.log"
+log_file="$project_root/Logs/ios-export-$sdk-latest.log"
 args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$staging" -emberfallIosBundleId "$bundle_id" -emberfallIosSdk "$sdk")
 if [[ -n "$team_id" ]]; then args+=(-emberfallIosTeamId "$team_id"); fi
 echo 'Close this project in Unity and Xcode before exporting.'

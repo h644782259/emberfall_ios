@@ -386,7 +386,7 @@ namespace Emberfall
             if(mobile)movement+=new Vector3(MobileControls.Move.x,0,MobileControls.Move.y);
             movement = Vector3.ClampMagnitude(movement,1);
             bool wantsJump = (mobile && MobileControls.ConsumeJump()) || Input.GetKeyDown(KeyCode.Space);
-            if (wantsJump) TryJump();
+            if (wantsJump) TryJump(movement);
             bool wantsBlink = mobile ? MobileControls.ConsumeDodge() : Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
             if (wantsBlink) TryBlink(movement);
             else if (blinkBufferTime > 0) TryBlinkCore(bufferedBlinkDirection, false);
@@ -1094,12 +1094,21 @@ namespace Emberfall
             }
         }
 
-        internal bool TryJump()
+        internal bool TryJump(Vector3 direction=default(Vector3))
         {
             if (session == null || IsDead || !session.HasStarted || session.InputBlocked || jumping || TraversalStartedThisFrame || movementSkillLock > 0 || (charge != null && charge.IsCharging)) return false;
             Vector3 origin = CombatFx.Flat(transform.position);
             if (!WorldTraversal.IsWalkable(origin, .45f)) return false;
             jumpOrigin = origin; jumpDestination = origin;
+            Vector3 travel=Vector3.ClampMagnitude(CombatFx.Flat(direction),1);
+            if(travel.sqrMagnitude>.0001f)
+            {
+                float bonus=(passiveTime>0?passiveSpeed:0)+(mobilityTime>0?.1f+mobilityRank*.05f:0)+(pursuitTime>0?.2f:0)+(burnStrideTime>0?.2f:0);
+                Vector3 desired=Vector3.ClampMagnitude(origin+travel*stats.MoveSpeed*(1+bonus)*MovementMultiplier*.55f,Mathf.Max(1,session.ArenaRadius-.65f));
+                Vector3 delta=desired-origin;Vector3 forward=delta.normalized;
+                float distance=PlayerUpgradeRules.FindSafeBlinkDistance(delta.magnitude,d=>WorldTraversal.HasGroundPath(origin,origin+forward*d,.45f),d=>WorldTraversal.IsWalkable(origin+forward*d,.45f));
+                jumpDestination=origin+forward*distance;
+            }
             jumpAge = 0;
             jumping = true;
             traversalFrame = Time.frameCount;
@@ -1166,7 +1175,14 @@ namespace Emberfall
             if (!jumping || deltaTime <= 0 || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime)) return;
             jumpAge += deltaTime;
             float progress = Mathf.Clamp01(jumpAge / .55f);
-            transform.position = Vector3.Lerp(jumpOrigin,jumpDestination,progress) + Vector3.up * (Mathf.Sin(progress * Mathf.PI) * 1.65f);
+            Vector3 ground=Vector3.Lerp(jumpOrigin,jumpDestination,progress);
+            if(!rangerVault)
+            {
+                Vector3 current=CombatFx.Flat(transform.position);
+                ground=WorldTraversal.Move(current,ground-current,.45f);
+                if(progress>=1f)jumpDestination=ground;
+            }
+            transform.position = ground + Vector3.up * (Mathf.Sin(progress * Mathf.PI) * 1.65f);
             if (progress >= 1f)
             {
                 jumping = false;

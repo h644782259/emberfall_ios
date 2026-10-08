@@ -23,21 +23,20 @@ namespace Emberfall
         {
             if(!ChapterSelectionIsCurrent()||!ChapterProgression.IsUnlocked(chapterSelectionOwner,node))return false;
             session.SelectedChapterNode=node;session.SelectedChapterDifficulty=ChapterDifficulty.Normal;session.SelectedChapterTactic=-1;
-            chapterScroll=Vector2.zero;chapterStoryExpanded=false;chapterEntryError=null;CancelMobileScroll();BlockUITransition();return true;
+            chapterScroll=Vector2.zero;chapterStoryExpanded=false;chapterEntryError=null;CancelMobileScroll();return true;
         }
         private bool SelectChapterDifficulty(ChapterDifficulty difficulty)
         {
             if(!ChapterSelectionIsCurrent()||!ChapterProgression.CanEnter(chapterSelectionOwner,session.SelectedChapterNode,difficulty))return false;
-            session.SelectedChapterDifficulty=difficulty;chapterEntryError=null;BlockUITransition();return true;
+            session.SelectedChapterDifficulty=difficulty;chapterEntryError=null;return true;
         }
         private void ChangeChapterTier(int delta)
         {
             if(!ChapterSelectionIsCurrent())return;
             session.SelectedChapterTier=Mathf.Clamp(session.SelectedChapterTier+(delta<0?-1:delta>0?1:0),1,session.Progression.HighestUnlockedAdventureTier);
-            BlockUITransition();
         }
         private void SetChapterLimitedHealing(bool limited)
-        {if(!ChapterSelectionIsCurrent())return;session.SelectedChapterLimitedHealing=limited;BlockUITransition();}
+        {if(!ChapterSelectionIsCurrent())return;session.SelectedChapterLimitedHealing=limited;}
         private bool ConfirmSelectedChapter()
         {
             if(!ChapterSelectionIsCurrent()||!ChapterProgression.CanEnter(chapterSelectionOwner,session.SelectedChapterNode,session.SelectedChapterDifficulty))return false;
@@ -119,19 +118,19 @@ namespace Emberfall
             if(tactics)
             {
                 if(Button(new Rect(0,y*u,contentWidth*u,48*u),session.SelectedChapterTactic<0?"本节点战术 · 不携带 ✓":"本节点战术 · 不携带",jade))
-                {session.SelectedChapterTactic=-1;BlockUITransition();EndTouchScroll();return;}
+                {session.SelectedChapterTactic=-1;EndTouchScroll();return;}
                 y+=60;
                 for(int i=0;i<3;i++)
                 {
                     var tactic=RunChoices.ChapterTactic(profile,mobile,i);
                     if(Button(new Rect(0,y*u,contentWidth*u,48*u),RunChoices.Name(tactic)+(session.SelectedChapterTactic==i?" ✓":""),session.SelectedChapterTactic==i?gold:jade))
-                    {session.SelectedChapterTactic=i;BlockUITransition();EndTouchScroll();return;}
+                    {session.SelectedChapterTactic=i;EndTouchScroll();return;}
                     y+=54;string description=RunChoices.Description(tactic);
                     float dh=Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(description),textWidth)/u;
                     Text(new Rect(8*u,y*u,textWidth,dh*u),description,Mathf.RoundToInt(12*u),muted,false,true);y+=dh+12;
                 }
             }
-            if(Button(new Rect(0,y*u,contentWidth*u,48*u),chapterStoryExpanded?"收起故事线索":"展开故事线索",jade)){chapterStoryExpanded=!chapterStoryExpanded;BlockUITransition();EndTouchScroll();return;}
+            if(Button(new Rect(0,y*u,contentWidth*u,48*u),chapterStoryExpanded?"收起故事线索":"展开故事线索",jade)){chapterStoryExpanded=!chapterStoryExpanded;EndTouchScroll();return;}
             y+=60;if(chapterStoryExpanded)Text(new Rect(8*u,y*u,textWidth,(storyH-12)*u),story,Mathf.RoundToInt(14*u),pale,false,true);EndTouchScroll();
             if(Button(ChapterRect(layout.FooterButton(0,2),u),"返回副本选择",jade)){CloseChapterSelection();session.EnterDungeon();return;}
             if(Button(ChapterRect(layout.FooterButton(1,2),u),"进入 "+ChapterDefinition.Get(node).Name,gold,ChapterProgression.CanEnter(profile,node,difficulty)))

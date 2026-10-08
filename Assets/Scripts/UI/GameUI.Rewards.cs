@@ -61,11 +61,8 @@ namespace Emberfall
             Text(new Rect(w.x+28,w.y+20,w.width-56,18),"F A L L E N   S T A R",10,gold,true);
             Text(new Rect(w.x+28,w.y+45,w.width-248,42),revealed?(complete?"宝箱奖励":"开启宝箱"):"遗迹馈赠",28,pale,true);
             Text(new Rect(w.x+28,w.y+92,w.width-56,24),revealed?(complete?ChestRevealPresentation.Outcome(reward):"已保存奖励 · 可以跳过揭晓动画"):ChestRevealPresentation.ChoiceDisclosure,14,muted);
-            if(Button(new Rect(w.xMax-200,w.y+43,78,36),"菜单",jade)){session.SetPaused(true);BlockUITransition();return;}
-            if(Button(new Rect(w.xMax-110,w.y+43,82,36),chestDetails?"收起规则":"奖励规则",muted))chestDetails=!chestDetails;
             Rect body=new Rect(w.x+28,w.y+132,w.width-56,w.height-208);
-            if(chestDetails)DrawDesktopChestRules(body);
-            else if(complete)DrawDesktopChestResult(body,reward,accent);
+            if(complete)DrawDesktopChestResult(body,reward,accent);
             else if(revealed)DrawChestRevealTransition(body,reward,new Rect(body.x,body.y,ChestRevealPresentation.DesktopArtSize(body.height),ChestRevealPresentation.DesktopArtSize(body.height)));
             else
             {
@@ -101,12 +98,10 @@ namespace Emberfall
             Rect art=new Rect(r.x,r.y,size,size);Fill(art,new Color(.025f,.045f,.07f));Border(art,accent);
             DrawChestCommittedReward(art,reward,accent);
             Rect details=new Rect(art.xMax+24,r.y,r.width-size-24,r.height);
-            string result=ChestRevealPresentation.ResultWithCollection(reward,session.Progression.Profile);
-            string error=session.Progression.LastError;
-            string copy=(string.IsNullOrEmpty(error)?"":error+"\n\n")+result;
-            float total=Mathf.Max(details.height,Style(18,true,true).CalcHeight(new GUIContent(copy),details.width-26)+20);
+            string error=session.Progression.LastError;float contentWidth=details.width-20;
+            float total=Mathf.Max(details.height,DrawChestRewardContents(contentWidth,1,reward,error,false));
             desktopChestResultScroll=BeginTouchScroll("desktop-chest-result",details,desktopChestResultScroll,new Rect(0,0,details.width-16,total));
-            Text(new Rect(4,8,details.width-26,total-16),copy,18,accent,true,true);EndTouchScroll();
+            DrawChestRewardContents(contentWidth,1,reward,error,true);EndTouchScroll();
         }
         private void DrawChestRevealTransition(Rect r,ChestReward reward,Rect destination)
         {
