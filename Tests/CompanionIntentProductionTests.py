@@ -150,6 +150,8 @@ namespace Emberfall {
 }
 class Program{static void Main(){Console.WriteLine("PASS: "+Emberfall.SummonedCompanion.Verify()+" production companion intent assertions");}}
 '''.replace('METHODS',methods)
+shell=shell.replace('public class ProgressionStub{','public class ProgressionStub{public float MechanicPowerMultiplier(EquipmentMechanic m)=>1;')
+
 if __name__ == '__main__':
  spec=importlib.util.spec_from_file_location('cv',root/'Tools/cloud-validation.py');cv=importlib.util.module_from_spec(spec);spec.loader.exec_module(cv)
  with tempfile.TemporaryDirectory(prefix='companion-intent-') as folder:

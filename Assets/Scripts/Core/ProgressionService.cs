@@ -1938,7 +1938,6 @@ namespace Emberfall
         {
             int mask=HubTravelRules.UnlockedMask(Profile.unlockedHubMask,Profile.level,Profile.clearedRuns);
             if(!HubTravelRules.IsUnlocked(mask,hub))return Fail("城镇尚未解锁："+HubTravelRules.UnlockHint(hub));
-            if(Math.Abs(hub-Profile.currentHub)>1)return Fail("请沿地图逐站旅行，先到相邻城镇。");
             GameProfile candidate=Snapshot();candidate.currentHub=hub;candidate.unlockedHubMask=mask;return CommitCandidate(candidate);
         }
 
@@ -2314,7 +2313,7 @@ namespace Emberfall
         // Includes auto-sold drops which no longer have an inventory entry.
         internal bool HasCommittedWorldLoot(string itemId) { return collectedLootIds.Contains(itemId); }
 
-        /// <summary>Protected overflow is persisted for claiming. A full pending queue rejects
+        /// <summary>Overflow remains visible and owned. The retained-item safety boundary rejects
         /// acquisition without consuming the drop; the caller must retain it or block departure.</summary>
         public bool CollectLoot(ItemData item)
         {
