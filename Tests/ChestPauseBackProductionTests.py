@@ -15,12 +15,12 @@ update=member('UI/GameUI.cs','private void Update()')
 allowed=member('UI/GameUI.Lifecycle.cs','public bool GameplayBackAllowed')
 rewards=(root/'Assets/Scripts/UI/GameUI.MobileRewards.cs').read_text()
 chrome=member('UI/GameUI.MobilePanels.cs','private bool DrawMobilePanelChrome(')
-assert 'DrawMobilePanelChrome(layout, title, subtitle, true, true)' in rewards
+assert 'DrawMobilePanelChrome(layout, title, subtitle, showClose:false)' in rewards
 assert 'if(pauseInstead)session.SetPaused(true);else ClosePanel();' in chrome
 shell=r'''
 using System;using UnityEngine;
 namespace UnityEngine {
- public enum KeyCode { Escape,I,K }
+ public enum KeyCode { Escape,I,K,M }
  public static class Time {public static int frameCount;}
  public static class Input {public static bool GetKeyDown(KeyCode key)=>key==KeyCode.Escape;public static bool GetMouseButton(int b)=>false;}
 }
@@ -52,12 +52,12 @@ namespace Emberfall {
   private bool suppressHotbarMouse,hotbarPointerConfiguring=false,chestDetails;
   private bool PauseUtilityVisible=>false;private bool AndroidBackExitEnabled=>true;
   private ExitStub exitRequest=new ExitStub();private string exitError;
-  private void ClearRewardMoment(){}private void RefreshLayout(){}private void ReconcileMobileScroll(){}private void ReconcileCollectionPreview(){}
+  private void ClearRewardMoment(){}private bool UITransitionBlocked=>false;private void RefreshLayout(){}private void ReconcileTitleBackdrop(){}private void EnsurePendingChestPanel(){}private void ReconcileMobileScroll(){}private void ReconcileCollectionPreview(){}
   private void ReconcileClassSwitchSurface(){}private void ReconcileBuildPlanSurface(){}private void ReconcileProgressionGoalSurface(){}
   private void CancelMobileCast(){mobileCastFinger=-1000;}private void CancelHotbarPointer(){hotbarPointerSlot=-1;}
   private void BlockUITransition(){transitionBlocks++;}private void ClosePanel(){closeCalls++;panel=Panel.None;}
   private void ResetChestReveal(){resetCalls++;}private void RequestExit(bool b){exitRequest.Open=true;}
-  private void TogglePanel(Panel value){panel=value;}
+  private void CloseTravelMap(){}private void OpenTravelMap(){}private void TogglePanel(Panel value){panel=value;}
   ALLOWED
   UPDATE
   public static int Verify(){
