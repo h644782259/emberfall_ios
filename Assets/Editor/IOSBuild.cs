@@ -43,8 +43,18 @@ namespace Emberfall.Editor
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, bundleId);
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.iOS, ScriptingImplementation.IL2CPP);
             PlayerSettings.SetApiCompatibilityLevel(NamedBuildTarget.iOS, ApiCompatibilityLevel.NET_Standard_2_0);
-            PlayerSettings.SetArchitecture(NamedBuildTarget.iOS, 1); // ARM64 device, not Simulator.
-            PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
+            string sdk = Argument("-emberfallIosSdk") ?? "device";
+            if (sdk != "device" && sdk != "simulator")
+                throw new BuildFailedException("iOS SDK must be device or simulator.");
+            PlayerSettings.SetArchitecture(NamedBuildTarget.iOS, 1);
+            PlayerSettings.iOS.sdkVersion = sdk == "simulator"
+                ? iOSSdkVersion.SimulatorSDK : iOSSdkVersion.DeviceSDK;
+            if (sdk == "simulator")
+                {
+                var settings = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/ProjectSettings.asset")[0]);
+                settings.FindProperty("iOSSimulatorArchitecture").intValue = 1; // ARM64 simulator.
+                settings.ApplyModifiedPropertiesWithoutUndo();
+            }
             ConfigureDeviceFamily();
             PlayerSettings.iOS.targetOSVersionString = "15.0";
             PlayerSettings.iOS.buildNumber = "1";
