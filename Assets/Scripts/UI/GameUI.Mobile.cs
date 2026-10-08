@@ -215,20 +215,22 @@ namespace Emberfall
         {
             if(saveSlotsDirty)RefreshSaveSlots();var l=MobileControls.Layout;
             Fill(new Rect(0,0,width,height),new Color(.018f,.029f,.048f,1));
-            float x=(l.Width-528)/2,y=(l.Height-300)/2;
-            Text(TouchRect(x,y,528,30),"星烬纪元",TouchFont(25),pale,true);
-            Text(TouchRect(x,y+31,528,16),"初选职业可在安全营地自由切换",TouchFont(11),muted);
+            var title=new MobileTitleLayout(l.Width,l.Height,MobileTitleLayout.IsIPad(SystemInfo.deviceModel));
+            Rect TitleRect(float x,float y,float w,float h) => TouchRect(title.Rect(x,y,w,h));
+            int TitleFont(float size) => TouchFont(size*title.Zoom);
+            Text(TitleRect(0,0,528,30),"星烬纪元",TitleFont(25),pale,true);
+            Text(TitleRect(0,31,528,16),"初选职业可在安全营地自由切换",TitleFont(11),muted);
             for(int i=0;i<4;i++)
             {
-                var hero=(HeroClass)i;Color tint=GameBalance.ClassColor(hero);Rect r=TouchRect(x+i*134,y+50,126,166);
+                var hero=(HeroClass)i;Color tint=GameBalance.ClassColor(hero);Rect r=TitleRect(i*134,50,126,166);
                 Fill(r,new Color(.055f,.09f,.13f));Border(r,selectedClass==hero?gold:tint*.45f,selectedClass==hero?2:1);
-                DrawCrest(TouchRect(x+i*134+26,y+68,74,78),hero,tint);
-                Text(TouchRect(x+i*134+5,y+166,116,31),GameBalance.ClassName(hero),TouchFont(18),pale,true,false,TextAnchor.MiddleCenter);
+                DrawCrest(TitleRect(i*134+26,68,74,78),hero,tint);
+                Text(TitleRect(i*134+5,166,116,31),GameBalance.ClassName(hero),TitleFont(18),pale,true,false,TextAnchor.MiddleCenter);
                 if(GUI.Button(r,GUIContent.none,invisibleButton))selectedClass=hero;
             }
-            if(NavigationButton(TouchRect(x,y+237,254,52),"选择角色存档",jade,saveSlots.Count>0))OpenSaveSelection();
-            if(PrimaryButton(TouchRect(x+274,y+237,254,52),"新建冒险",gold))StartSelectedHero();
-            if(!string.IsNullOrEmpty(session.Progression.LastError))Text(TouchRect(x,y+291,528,22),session.Progression.LastError,TouchFont(11),gold);
+            if(DrawButton(TitleRect(0,237,254,52),"选择角色存档",ButtonRole.Navigation,saveSlots.Count>0,fontSize:TitleFont(15)))OpenSaveSelection();
+            if(DrawButton(TitleRect(274,237,254,52),"新建冒险",ButtonRole.Primary,fontSize:TitleFont(15)))StartSelectedHero();
+            if(!string.IsNullOrEmpty(session.Progression.LastError))Text(TitleRect(0,291,528,22),session.Progression.LastError,TitleFont(11),gold);
         }
         private void DrawMobileSaveSelection()
         {

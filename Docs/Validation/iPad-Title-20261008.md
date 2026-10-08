@@ -1,0 +1,9 @@
+# iPad character selection sizing — 2026-10-08
+
+The title/character chooser previously occupied a fixed 528 by 300 touch-unit region on every device. On the reported 2420 by 1668 iPad screenshot it occupied approximately 35% of screen width and 28% of height.
+
+Only this title screen now uses a local 1.75x maximum scale on devices whose model identifies an iPad. The scale fits the current safe-area-derived layout width and height, retaining 24 logical units of margin and space for the save-error row. Four class cards stay side by side; crests, class names, heading, action labels and clickable rectangles scale together. The existing global GUI matrix, combat HUD density, phone title geometry and save-selection page are unchanged. Narrow iPad windows automatically reduce the local scale.
+
+Validation: all four selected cloud checks passed with unchanged source hashes: mobile-title-layout (2466 production title draw/layout/hitbox assertions using managed GUI boundaries), mobile-layout (15257 assertions), asset-meta-guids, and ios-runtime-compile (0 warnings/errors against pinned Unity references). The title test covers iPad and iPhone model strings, landscape/portrait/narrow safe-area sizes, three densities, each class selection and both footer actions. This is not a Unity rendering or physical-device acceptance claim. Full 292-check results belong to the preceding d902cc8 candidate; this local UI follow-up uses the listed targeted checks.
+
+Mac follow-up: rebuild this commit, confirm iPad title panel near 1.75x the old size (approximately 62% screen width / 49% height for the reported scene), readable heading/class/button labels, all four cards visible, correct class selection and footer clicks, error text inside the safe area, rotation/window resize, and unchanged iPhone title and combat HUD. Main remains unmerged pending acceptance.
