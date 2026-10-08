@@ -24,6 +24,11 @@ namespace Emberfall
             return "\n可选精通 · "+goal+"。本次节点成功保存才记录；无战斗加成，不影响普通通关。"+
                 (earned?"\n徽记 / 称号「"+badge+"」 · 记录第 "+tier+" 阶":"\n徽记 / 称号「"+badge+"」尚未取得");
         }
+        public static int RewardMaterials(GameProfile profile,ChapterNode node,ChapterDifficulty difficulty,int tier)
+        {
+            int bit=ChapterProgression.DifficultyRewardBit(node,difficulty);
+            return ChapterProgression.CompletionMaterials(profile,node,tier)+(bit!=0&&(profile.chapterDifficultyRewardMask&bit)==0?ChapterProgression.DifficultyFirstRewardMaterials:0);
+        }
         public static string Preview(GameProfile profile,ChapterNode node,ChapterDifficulty difficulty,int tier,bool limited)
         {
             string health=ChapterDefinition.HealthMultiplier(difficulty).ToString("0.##",CultureInfo.InvariantCulture);
@@ -34,7 +39,7 @@ namespace Emberfall
             return DifficultyName(difficulty)+" · 敌人生命 ×"+health+" / 伤害 ×"+damage+"\n"+
                 ChapterDefinition.DifficultyMechanic(node,difficulty)+"\n"+
                 "解锁 · 普通通关解锁困难，困难通关解锁英雄；阶数和治疗规则独立。\n"+
-                (limited?"限疗：初始3次治疗充能。":"普通治疗：使用携带药剂。")+"\n"+
+
                 "完成奖励 "+(total+firstDifficulty)+" 碎片（重复 "+repeat+(total>repeat?" + 节点首次1":"")+(firstDifficulty>0?" + 本难度首次4":"")+"）；困难/英雄每节点各一次，全章额外最多24；不发旧副本宝箱。\n"+
                 "旧档按合法逐档完成记录一次补领；缺失或非法记录不推断，实际通关后领取。\n"+
                 (!profile.firstClearRewardClaimed?(profile.pendingFirstClearReward?"共享一次首通核心已待领取；本次不重复。\n":(node==ChapterNode.StarPlatform?"星台通关完成整章，可领取共享一次首通核心。\n":"首通核心需完成整章：通关星台；本节点不授予资格。\n")):"")+TierEffect(node)+MasteryProgress(profile,node,difficulty);
@@ -50,7 +55,7 @@ namespace Emberfall
         {
             if(result==null)return "章节记录暂不可用";
             string text=ChapterDefinition.Get(result.Node).Name+" · "+DifficultyName(result.Difficulty)+" · 第 "+result.Tier+" 阶\n"+
-                "携带药剂 "+result.EntryPotions+" · "+(result.LimitedHealing?"限疗规则":"普通治疗")+"\n\n";
+                "携带药剂 "+result.EntryPotions+"\n\n";
             if(result.Failed)return text+"止步房间 "+(result.Room+1)+" / "+ChapterDefinition.RoomCount(result.Node)+"\n"+
                 (result.Node==ChapterNode.ForestCourt?"封印 "+result.Seals+"/2 · 一 "+result.FirstSealSeconds.ToString("0.0")+"s · 二 "+result.SecondSealSeconds.ToString("0.0")+"s\n":"")+
                 "最后受击："+(string.IsNullOrEmpty(result.LastHit)?"未记录":result.LastHit)+" · "+result.LastHitAmount.ToString("0.#")+"\n"+

@@ -251,6 +251,7 @@ namespace Emberfall
 
         private void BeginAdventure()
         {
+            if(!Progression.CollectGroundSupplies(Progression.Profile.groundGold,Progression.Profile.groundPotions)){Notify(Progression.LastError);return;}
             HasStarted = true;
             IsDead = false;
             Paused = false;
@@ -491,16 +492,19 @@ namespace Emberfall
             int experience = boss ? 100 + level * 12 : (InDungeon ? 22 : 16) + level * 2;
             int gold = boss ? 85 + DungeonTier * 20 : Random.Range(7, 15) + level;
             if(InDungeon&&!boss) { float share=Mathf.Clamp(6f/Mathf.Max(6,wavePopulation),.5f,1f);experience=Mathf.RoundToInt(experience*share);gold=Mathf.Max(1,Mathf.RoundToInt(gold*share)); }
+            if(InDungeon)gold=Mathf.RoundToInt(gold*(1f+.15f*TierRewardBand.Of(DungeonTier)));
             if(chapterKill)experience=chapterExperience;
             // Queue before callbacks or loot delivery can fail. An outer combat
             // finally ends the action and persists every admitted reward.
             if (CombatImpactBatch.InAction) CombatImpactBatch.AfterCurrentAction(Progression.Save);
-            Progression.GrantEnemyKillReward(gold, experience, deferSave: CombatImpactBatch.InAction);
-            LogSystem("+" + gold + " 金币 · +" + experience + " 经验");
+            int potions=InDungeon&&(boss||Random.Range(0,100)<AdventureRewardRules.PotionChance(DungeonTier))?1+TierRewardBand.Of(DungeonTier)/2:0;
+            Progression.GrantEnemyKillReward(gold, experience, deferSave: CombatImpactBatch.InAction,ground:InDungeon,potions:potions);
+            if(InDungeon)SpawnGroundSupplies(position,gold,potions);
+            LogSystem((InDungeon?"地面补给 · ":"+"+gold+" 金币 · ")+"+"+experience+" 经验");
             SpawnFloatingText(position + Vector3.up * 2, "+" + experience + " XP  +" + gold + " G", new Color(.95f, .83f, .4f));
-            if (boss || Random.value < (InDungeon ? .7f : .5f))
+            if (boss || Random.value < (InDungeon ? .65f+.05f*TierRewardBand.Of(DungeonTier) : .5f))
             {
-                ItemData loot = Progression.RollLoot(Progression.Profile.level + (boss ? 1 : 0), boss, InDungeon ? DungeonTier : 0);
+                ItemData loot = Progression.RollLoot(Progression.Profile.level, boss, InDungeon ? DungeonTier : 0);
                 DeliverEnemyLoot(loot, position);
             }
             enemy.BeginDeath();
@@ -800,6 +804,8 @@ namespace Emberfall
 
         private bool PreserveWorldLoot()
         {
+            if(Progression!=null&&!Progression.CollectGroundSupplies(Progression.Profile.groundGold,Progression.Profile.groundPotions))return false;
+            if(world!=null)foreach(var supply in world.GetComponentsInChildren<GroundSupplyPickup>()){supply.gameObject.SetActive(false);Destroy(supply.gameObject);}
             if (Progression == null || pendingLoot.Count == 0) return true;
             CollectRemainingDungeonLoot();
             if (pendingLoot.Count == 0) return true;
