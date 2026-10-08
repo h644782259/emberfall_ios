@@ -32,7 +32,11 @@ public static class SkillIconAtlasTests
   }
   check(signatures.Count==4,"gold fragment thread and experience pictograms are distinct");
   var disc=UIIconAtlas.ControlDisc();check(disc.CapturedPixels[0].a==0&&disc.CapturedPixels[24*48+24].a>.9f&&ReferenceEquals(disc,UIIconAtlas.ControlDisc()),"battle controls have a transparent circular silhouette and reusable disc");
-  var utility=UIIconAtlas.Utility("potion");check(utility.width==64,"utility cache keeps existing format");int before=UnityEngine.Object.Destroyed;UIIconAtlas.Clear();check(UnityEngine.Object.Destroyed-before==158,"all120skill variants32floating glyphs four resource glyphs disc and utility are released");
+  var ring=UIIconAtlas.ControlRing();check(ring.width==64&&ring.CapturedPixels[32*64+32].a==0&&ring.CapturedPixels[0].a==0,"continuous rim remains hollow with transparent corners");
+  for(int step=0;step<72;step++){double angle=step*Math.PI/36;int x=(int)Math.Round(32+30*Math.Cos(angle)),y=(int)Math.Round(32+30*Math.Sin(angle));float strongest=0;for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){int sx=Math.Max(0,Math.Min(63,x+dx)),sy=Math.Max(0,Math.Min(63,y+dy));strongest=Math.Max(strongest,ring.CapturedPixels[sy*64+sx].a);}check(strongest>.2f,"rim has connected visible coverage through every angle");}
+  check(ReferenceEquals(ring,UIIconAtlas.ControlRing())&&!ReferenceEquals(ring,UIIconAtlas.ControlRing(true)),"thin rim and halo use bounded separate cached textures");
+  var page=UIIconAtlas.SkillPageArrow();int pageInk=0;foreach(var pixel in page.CapturedPixels)if(pixel.a>.2f){pageInk++;check(pixel.r==1&&pixel.g==1&&pixel.b==1,"page arrows are white raster graphics without font dependencies");}check(pageInk>48&&pageInk<48*48&&ReferenceEquals(page,UIIconAtlas.SkillPageArrow()),"page switch graphic is visible and cached");
+  var utility=UIIconAtlas.Utility("potion");check(utility.width==64,"utility cache keeps existing format");int before=UnityEngine.Object.Destroyed;UIIconAtlas.Clear();check(UnityEngine.Object.Destroyed-before==161,"all120skill variants32floating glyphs four resource glyphs disc and utility are released");
   return "PASS: "+n+" production skill icon raster/cache assertions (not rendered readability)";
  }
 }

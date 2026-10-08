@@ -127,6 +127,19 @@ namespace Emberfall
             var ink=new Icon(Color.white,48);ink.Disc(32,32,30);texture=ink.Finish("Circular battle control");cache[key]=texture;return texture;
         }
 
+        public static Texture2D ControlRing(bool glow=false)
+        {
+            int key=glow?2000002:2000001;Texture2D texture;if(cache.TryGetValue(key,out texture))return texture;
+            var ink=new Icon(Color.white,64);ink.Ring(32,32,30,glow?4f:1.1f);
+            texture=ink.Finish(glow?"Soft control halo":"Continuous control rim");cache[key]=texture;return texture;
+        }
+        public static Texture2D SkillPageArrow()
+        {
+            const int key=2000003;Texture2D texture;if(cache.TryGetValue(key,out texture))return texture;
+            var ink=new Icon(Color.white,48);ink.Arrow(15,23,48,23);ink.Arrow(48,41,15,41);
+            texture=ink.Finish("Skill page switch arrows",true);cache[key]=texture;return texture;
+        }
+
         public static Texture2D Utility(string name)
         {
             if (name == "inventory") name = "bag";
