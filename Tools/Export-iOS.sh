@@ -9,19 +9,21 @@ bundle_id="com.h644782259.emberfall.ios"
 team_id=""
 output=""
 check_only=false
+sdk="device"
 
 usage() {
-  echo 'Usage: bash Tools/Export-iOS.sh [--unity /path/to/Unity] [--bundle-id com.yourname.emberfall] [--team-id ABCDE12345] [--output Builds/iOS/MyExport] [--check-only]'
+  echo 'Usage: bash Tools/Export-iOS.sh [--unity /path/to/Unity] [--bundle-id com.yourname.emberfall] [--team-id ABCDE12345] [--output Builds/iOS/MyExport] [--sdk device|simulator] [--check-only]'
 }
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --unity|--bundle-id|--team-id|--output)
+    --unity|--bundle-id|--team-id|--output|--sdk)
       [[ $# -ge 2 ]] || { usage >&2; exit 2; }
       case "$1" in
         --unity) unity_path="$2" ;;
         --bundle-id) bundle_id="$2" ;;
         --team-id) team_id="$2" ;;
         --output) output="$2" ;;
+        --sdk) sdk="$2" ;;
       esac
       shift 2 ;;
     --check-only) check_only=true; shift ;;
@@ -30,6 +32,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+[[ "$sdk" == device || "$sdk" == simulator ]] || { echo "SDK must be device or simulator" >&2; exit 2; }
 [[ "$(uname -s)" == Darwin ]] || { echo 'This script is for macOS. Use Export-iOS.ps1 for the Windows prerequisite check.' >&2; exit 2; }
 [[ -x "$unity_path" ]] || { echo "Unity editor not found: $unity_path. Install $editor_version with Unity Hub, or pass --unity." >&2; exit 2; }
 ios_support="$(dirname -- "$unity_path")/../PlaybackEngines/iOSSupport"
@@ -69,7 +72,7 @@ mkdir -p "$project_root/Logs" "$project_root/Builds/iOS"
 staging="$(mktemp -d "$project_root/Builds/iOS/.Xcode-stage-XXXXXX")"
 trap 'rm -rf -- "$staging"' EXIT
 log_file="$project_root/Logs/ios-export-latest.log"
-args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$staging" -emberfallIosBundleId "$bundle_id")
+args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$staging" -emberfallIosBundleId "$bundle_id" -emberfallIosSdk "$sdk")
 if [[ -n "$team_id" ]]; then args+=(-emberfallIosTeamId "$team_id"); fi
 echo 'Close this project in Unity and Xcode before exporting.'
 if ! "$unity_path" "${args[@]}"; then
