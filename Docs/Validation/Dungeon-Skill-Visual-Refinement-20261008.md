@@ -33,3 +33,7 @@ Tested source commit: `b1baf57676599a13765f5bfad17cff3b21390c27`. 305/305 full c
 iOS passes 305/305 with no unmatched requested checks or failures.
 
 No actual Unity Editor, Unity JsonUtility migration, rendered UI, GPU validation, Windows player build or iOS package/device execution was performed. UI acceptance and real-engine save migration remain user validation requirements; main is not updated by this follow-up.
+
+## Authorized main delivery
+
+The user explicitly requested merging and pushing main. Latest skill-binding/equipment-control main changes are integrated by normal merge. Combined frozen source `ac25fa2602c2b90ea5bcc6b41302e48312c4305c` passes 24/24 targeted checks, including platform API compilation, reward ownership and clear atomicity, upgrade/unequip, binding policy, actual pause/sidebar/binding dispatch, skill/mastery/popup, inventory actions, merchant prices and persistence navigation. Report: `Dungeon-Skill-Final-Evidence-20261008/main-delivery-combined-report.json`. Source stayed unchanged; no unmatched requested checks. Existing UI fixtures were updated to actual latest-main signatures and sidebar geometry; production behavior is preserved. This final combined tree has targeted verification, not a repeated full 304/305 suite; prior full reports and Windows baseline failures remain separately recorded. No Mac/device/UI execution. This evidence commit changes Docs only.
