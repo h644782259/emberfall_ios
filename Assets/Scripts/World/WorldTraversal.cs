@@ -4,10 +4,10 @@ using UnityEngine;
 namespace Emberfall
 {
     /// <summary>Shared ground rules for direct movement, leaps and creature routes.</summary>
-    public static class WorldTraversal
+    public static partial class WorldTraversal
     {
         public sealed class ObstacleHandle { internal ObstacleHandle(){} }
-        private struct Obstacle { public Vector2 Center, Half; public float Radius; public ObstacleHandle Handle; }
+        private struct Obstacle { public Vector2 Center, Half; public float Radius,Height; public ObstacleHandle Handle; }
         // Immutable-in-use search order; private and never returned or written after initialization.
         private static readonly int[] NeighborX = { -1, 0, 1, -1, 1, -1, 0, 1 };
         private static readonly int[] NeighborY = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -187,6 +187,91 @@ namespace Emberfall
             return safeDistance >= .35f;
         }
 
+        // A blocked movement skill still casts: use the last safe point, including the origin.
+        public static Vector3 ResolveSkillLanding(Vector3 from, Vector3 direction, float distance, float radius, float bound)
+        {
+            Vector3 landing;
+            TryResolveBlink(from,direction,distance,radius,bound,out landing);
+            if(from.y>.05f)return from;
+            return landing;
+        }
+
+        public static ObstacleHandle AddPlatform(Vector3 center,Vector2 size,float height)
+        {
+            if(!Finite(height)||height<.2f||height>1.1f||size.x<1.2f||size.y<1.2f)return null;
+            var handle=AddDynamicBox(center,size);
+            if(handle==null)return null;
+            int last=obstacles.Count-1;var obstacle=obstacles[last];obstacle.Height=height;obstacles[last]=obstacle;return handle;
+        }
+        public static void AddJumpPlatform(Vector3 center,float radius,float height)
+        {
+            obstacles.Add(new Obstacle { Center=new Vector2(center.x,center.z), Radius=radius, Height=height });
+            grids.Clear();revision++;
+        }
+        private static bool ContainsTop(Obstacle o,Vector3 point,float radius)
+        {
+            if(o.Height<=0)return false;
+            if(o.Radius>0)
+            {float r=Mathf.Max(0,o.Radius-.12f);return new Vector2(point.x-o.Center.x,point.z-o.Center.y).sqrMagnitude<=r*r;}
+            return Mathf.Abs(point.x-o.Center.x)<=o.Half.x-radius&&Mathf.Abs(point.z-o.Center.y)<=o.Half.y-radius;
+        }
+        public static float SurfaceHeight(Vector3 point,float radius=.45f)
+        {
+            float height=0;
+            foreach(var o in obstacles)if(ContainsTop(o,point,radius))height=Mathf.Max(height,o.Height);
+            return height;
+        }
+        private static bool ClearAtHeight(Vector3 point,float radius,float height)
+        {
+            if(!Finite(point.x)||!Finite(point.z)||!Finite(height)||CombatFx.Flat(point).magnitude>arena-radius)return false;
+            foreach(var o in obstacles)
+            {
+                if(o.Height>0&&height>=o.Height-.015f)continue;
+                Vector2 d=new Vector2(point.x-o.Center.x,point.z-o.Center.y);
+                if(o.Radius>0){float clearance=o.Height>0?Mathf.Min(radius,.12f):radius;if(d.sqrMagnitude<(o.Radius+clearance)*(o.Radius+clearance))return false;}
+                else {var nearest=new Vector2(Mathf.Max(0,Mathf.Abs(d.x)-o.Half.x),Mathf.Max(0,Mathf.Abs(d.y)-o.Half.y));if(nearest.sqrMagnitude<=radius*radius)return false;}
+            }
+            return true;
+        }
+        public static bool CanStand(Vector3 point,float radius=.45f)
+        {
+            float height=SurfaceHeight(point,radius);
+            return Mathf.Abs(point.y-height)<.035f&&ClearAtHeight(point,radius,height)&&(height>0||IsWalkable(point,radius));
+        }
+        public static bool TryResolvePlatformJump(Vector3 from,Vector3 direction,float distance,float radius,out Vector3 landing)
+        {
+            landing=from;direction=CombatFx.Flat(direction).normalized;
+            if(!CanStand(from,radius)||direction.sqrMagnitude<.01f)return false;
+            // Try the intended distance first; shorter safe points allow landing on
+            // a narrow box without requiring pixel-perfect movement input.
+            for(float d=distance;d>=.05f;d-=.05f)
+            {
+                var to=CombatFx.Flat(from)+direction*d;to.y=SurfaceHeight(to,radius);
+                if(to.y<=0&&from.y<=0)continue;
+                if(!CanStand(to,radius))continue;
+                int samples=Mathf.Max(24,Mathf.CeilToInt(d/.08f));bool clear=true;
+                for(int i=0;i<=samples;i++)
+                {float t=i/(float)samples;var p=Vector3.Lerp(from,to,t);float y=p.y+Mathf.Sin(t*Mathf.PI)*1.65f;if(!ClearAtHeight(p,radius,y)){clear=false;break;}}
+                if(clear){landing=to;return true;}
+            }
+            return false;
+        }
+        private static Vector3 MoveOnPlatform(Vector3 from,Vector3 delta,float radius)
+        {
+            delta=CombatFx.Flat(delta);int steps=Mathf.Max(1,Mathf.CeilToInt(delta.magnitude/.12f));var step=delta/steps;
+            for(int i=0;i<steps;i++)
+            {
+                var next=from+step;float top=SurfaceHeight(next,radius);
+                // Ground actors cannot walk onto a raised top. Leaving its rim is
+                // blocked until jumping down, so a stationary actor never sinks.
+                if(Mathf.Abs(top-from.y)>.035f||!ClearAtHeight(next,radius,top))break;
+                next.y=top;from=next;
+            }
+            return from;
+        }
+        public static bool HeightAttackAllowed(Vector3 from,Vector3 to,bool ranged)
+        {return Mathf.Abs(from.y-to.y)<(ranged?2.5f:.65f);}
+
         private static bool Finite(float value) { return !float.IsNaN(value) && !float.IsInfinity(value); }
 
         private static bool ClearSegment(Vector3 from, Vector3 to, float radius, bool ignoreWater, ObstacleHandle ignored=null)
@@ -195,12 +280,14 @@ namespace Emberfall
             for (int i = 0; i <= samples; i++)
             {
                 Vector3 p = Vector3.Lerp(from, to, i / (float)samples);
-                if (ignoreWater ? !ClearOfSolids(p, radius, ignored) : !IsWalkable(p, radius)) return false;
+                if(ignoreWater&&(from.y>.05f||to.y>.05f)){if(!ClearAtHeight(p,radius,p.y+.9f))return false;}
+                else if (ignoreWater ? !ClearOfSolids(p, radius, ignored) : !IsWalkable(p, radius)) return false;
             }
             return true;
         }
         public static Vector3 Move(Vector3 from, Vector3 delta, float radius = .45f)
         {
+            if(from.y>.05f&&CanStand(from,radius))return MoveOnPlatform(from,delta,radius);
             from = CombatFx.Flat(from); delta = CombatFx.Flat(delta);
             if (!IsWalkable(from, radius)) from = NearestWalkable(from, radius);
             int steps = Mathf.Max(1, Mathf.CeilToInt(delta.magnitude / .16f));
