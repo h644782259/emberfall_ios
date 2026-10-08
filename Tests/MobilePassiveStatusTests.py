@@ -1,69 +1,62 @@
-"""Real passive HUD, active button mapping and ProcessPointer with managed draw/touch boundaries."""
+"""Execute production mobile HUD methods with managed drawing boundaries, not Unity rendering."""
 from pathlib import Path
-import os,sys,subprocess
+import subprocess,tempfile,sys,os
 root=Path(__file__).resolve().parents[1]
-def adapt(f):
- start=f.index('public static class MobilePinnedTargetProductionTests');end=f.index('namespace Emberfall{internal static class ReturningCounterRules',start);f=f[:start]+f[end:]
- start=f.index(' public class GameUI{');end=f.index('\n',start);f=f[:start]+f[end:]
- f=f.replace('public static class Mathf{','public static class Mathf{public static int RoundToInt(float x)=>(int)System.Math.Round(x);')
- f=f.replace('public class GameSession{','public class GameSession{public string ControlFailure(string key)=>Failure;')
- return f
-ui=r'''
-using System;using System.Collections.Generic;using UnityEngine;using Emberfall;
-namespace UnityEngine{public enum TextAnchor{MiddleCenter}}
+def method(s,key):
+ a=s.index(key);b=s.index('{',a)+1;n=1
+ while n:n+=(s[b]=='{')-(s[b]=='}');b+=1
+ return s[a:b]
+mobile=(root/'Assets/Scripts/UI/GameUI.Mobile.cs').read_text()
+assert 'DrawMobileVitals(l);' in method(mobile,'private void DrawMobileHUD(')
+assert 'DrawMobilePassiveIdentities' not in mobile
+assert 'Box(goal' not in mobile and 'blockedRects.Add(goal)' not in mobile
+modes=(root/'Assets/Scripts/UI/GameUI.Modes.cs').read_text()
+assert 'Box(r' not in method(modes,'private void DrawMobileModeStatus(')
+with tempfile.TemporaryDirectory(prefix='mobile-hud-') as tmp:
+ p=Path(tmp)
+ for rel in ['UI/MobileControlLayout','Combat/MobileSkillPolicy']:(p/(Path(rel).name+'.cs')).write_text((root/'Assets/Scripts'/(rel+'.cs')).read_text())
+ (p/'Methods.cs').write_text('using UnityEngine;namespace Emberfall{partial class GameUI{'+''.join(method(mobile,k) for k in ['private void DrawMobileHotbar(','private void DrawMobileVitals(','private void DrawMobileObjectiveText('])+'}}')
+ (p/'Fixture.cs').write_text(r"""
+using System;using System.Collections.Generic;using UnityEngine;
+namespace UnityEngine{
+ public struct Vector2{public float x,y;public Vector2(float a,float b){x=a;y=b;}}
+ public struct Rect{public float x,y,width,height;public Rect(float a,float b,float c,float d){x=a;y=b;width=c;height=d;}public float yMax=>y+height;public Vector2 center=>new Vector2(x+width/2,y+height/2);}
+ public struct Color{public Color(float r,float g,float b,float a=1){}public static Color white=>new Color();public static Color operator*(Color c,float n)=>c;}
+ public static class Mathf{public static float Max(float a,float b)=>Math.Max(a,b);public static float Min(float a,float b)=>Math.Min(a,b);public static float Sin(float x)=>(float)Math.Sin(x);public static int CeilToInt(float x)=>(int)Math.Ceiling(x);}
+ public static class Time{public static float unscaledTime;}
+ public enum TextAnchor{MiddleCenter}
+ public class GUIContent{public string text;public GUIContent(string s){text=s;}public static GUIContent none=new GUIContent("");}
+ public class GUIStyle{public int size;public Vector2 CalcSize(GUIContent c)=>new Vector2(c.text.Length*size,size+2);public float CalcHeight(GUIContent c,float w)=>(float)Math.Ceiling(c.text.Length*size/w)*(size+2);}
+ public static class GUI{public static bool Click;public static List<Rect> Hits=new List<Rect>();public static bool Button(Rect r,GUIContent c,GUIStyle s){Hits.Add(r);return Click;}}
+}
 namespace Emberfall{
- public partial class GameUI{
-  GameSession session;enum Panel{None}Panel panel;float scale=1;Vector2 guiOffset;List<Rect> blockedRects=new List<Rect>();Rect[] hotbarSlots=new Rect[8];MobileSkillTap mobileTap=new MobileSkillTap();Color pale,muted;
-  public bool LifecycleTouchBlocked,CompanionCommandsVisible,MobileInteractionVisible;public void RefreshTouchViewport(){}public void ActivateFreeCommand(bool b){}public void ActivateMobileInteraction(int f){}
-  float TouchRatio=>MobileControls.Layout.Scale/scale;Rect TouchRect(MobileControlLayout.Area a)=>new Rect(a.X*TouchRatio,a.Y*TouchRatio,a.Width*TouchRatio,a.Height*TouchRatio);int TouchFont(float s)=>Mathf.RoundToInt(s*TouchRatio);
-  public bool TryBeginTouchSkill(int f,Vector2 p)=>BeginMobileCast(f,p);public void UpdateTouchSkill(int f,Vector2 p,bool ended,bool cancelled)=>ContinueMobileCast(f,p,ended,cancelled);
-  public List<int> Identities=new List<int>();public List<bool> Learned=new List<bool>();public List<Rect> Glyphs=new List<Rect>();public List<string> Captions=new List<string>();
-  void DrawSkillIdentity(Rect r,HeroClass hero,int skill,int rank,bool learned,int size){Identities.Add(skill);Learned.Add(learned);Glyphs.Add(r);}
-  void Text(Rect r,string s,int font,Color c,bool bold,bool wrap,TextAnchor anchor){Captions.Add(s);if(font>r.height+1)throw new Exception("passive caption clipped");}
-  public GameUI(GameSession s){session=s;guiOffset=new Vector2(MobileControls.SafeArea.x,Screen.height-MobileControls.SafeArea.yMax);for(int i=0;i<8;i++)hotbarSlots[i]=TouchRect(MobileControls.Layout.Skills[i]);}
-  public void DrawPassives(){blockedRects.Clear();Identities.Clear();Learned.Clear();Glyphs.Clear();Captions.Clear();DrawMobilePassiveIdentities();}
-  public int CapturedSkill=>mobileTap.Skill;public bool Captured=>mobileTap.Active;
+ public enum HeroClass{Warrior,Ranger,Elementalist,Summoner}
+ public class GameProfile{public HeroClass heroClass;}
+ public class Progression{public GameProfile Profile=new GameProfile();}
+ public class Player{public float Health=70,MaxHealth=100,Energy=40,MaxEnergy=80;public bool IsSkillAvailable(int n)=>true;}
+ public class Session{public Player Player=new Player();public Progression Progression=new Progression();}
+ public static class MobileControls{public static MobileControlLayout Layout;}
+ public static class EffectPreferences{public static float TouchOpacity=>1;}
+ public static class UIIconAtlas{public static int ControlDisc()=>-1;public static int Skill(HeroClass c,int i,int size)=>i;public static Color SkillColor(HeroClass c,int i)=>new Color();}
+ partial class GameUI{
+ Session session=new Session();float controlOpacity=1;float TouchRatio=>MobileControls.Layout.Scale;MobileSkillTap mobileTap=new MobileSkillTap();Rect[] hotbarSlots=new Rect[8];List<Rect> blockedRects=new List<Rect>();Color jade,pale,gold,muted;GUIStyle invisibleButton=new GUIStyle();
+ List<int> icons=new List<int>(),availability=new List<int>();List<(Rect,float)> bars=new List<(Rect,float)>();List<string> labels=new List<string>();int maps;
+ Rect TouchRect(MobileControlLayout.Area r)=>new Rect(r.X*TouchRatio,r.Y*TouchRatio,r.Width*TouchRatio,r.Height*TouchRatio);int TouchFont(float f)=>(int)Math.Round(f*TouchRatio);Rect MobileVisualRect(Rect r)=>r;
+ void DrawIcon(Rect r,int token,Color c){if(token>=0)icons.Add(token);}void DrawMobileSkillAvailability(Rect r,int i){availability.Add(i);}void Text(Rect r,string s,int f,Color c,bool bold=false,bool wrap=false,TextAnchor anchor=TextAnchor.MiddleCenter){labels.Add(s);}void Bar(Rect r,float v,Color c){bars.Add((r,v));}
+ string PlatformText(string s)=>s;GUIStyle Style(int size,bool bold,bool wrap)=>new GUIStyle{size=size};void OpenTravelMap(){maps++;}
+ static int assertions;static void C(bool b,string s){assertions++;if(!b)throw new Exception(s);}
+ public static void Main(){
+ foreach(var d in new[]{(568f,320f,163f),(1440f,650f,320f),(2048f,1536f,264f)})foreach(int preset in new[]{-1,0,1})foreach(HeroClass hero in Enum.GetValues(typeof(HeroClass))){
+ var l=MobileControls.Layout=new MobileControlLayout(d.Item1,d.Item2,d.Item3,preset);var ui=new GameUI();ui.session.Progression.Profile.heroClass=hero;for(int i=0;i<8;i++)ui.hotbarSlots[i]=ui.TouchRect(l.Skills[i]);ui.DrawMobileHotbar();ui.DrawMobileVitals(l);
+ int[] expected={0,1,2,4,5,6,7,9};C(ui.icons.Count==8&&ui.availability.Count==8,"eight active skill identities remain");for(int i=0;i<8;i++)C(ui.icons[i]==expected[i]&&ui.availability[i]==expected[i],"unchanged active skill mapping");C(ui.blockedRects.Count==9,"only active buttons and compact vitals own HUD input");C(!ui.labels.Contains("被动")&&!ui.labels.Contains("未学"),"passive badges hidden");C(ui.bars.Count==2&&Math.Abs(ui.bars[0].Item2-.7f)<.001&&Math.Abs(ui.bars[1].Item2-.5f)<.001,"health and energy retain live values");C(Math.Abs(ui.bars[0].Item1.x-l.PlayerHealth.X*l.Scale)<.01&&Math.Abs(ui.bars[1].Item1.y-l.PlayerEnergy.Y*l.Scale)<.01,"draw uses bottom vitals geometry");
+ ui.blockedRects.Clear();GUI.Hits.Clear();GUI.Click=true;Rect bounds=ui.TouchRect(l.AdventureStatus);float y=bounds.y;ui.DrawMobileObjectiveText(bounds,ref y,"目标",11,ui.gold,true,true);ui.DrawMobileObjectiveText(bounds,ref y,"进度 2 / 3",10,ui.pale);
+ C(ui.blockedRects.Count==1&&GUI.Hits.Count==1&&ui.maps==1,"only title locates through actual button");C(GUI.Hits[0].width<bounds.width&&GUI.Hits[0].height<bounds.height/2,"title hitbox measures text instead of full objective slot");C(y<bounds.y+bounds.height,"short goal has no blank reserved drawing");int before=ui.labels.Count;ui.DrawMobileObjectiveText(bounds,ref y,"",10,ui.pale);C(ui.labels.Count==before,"empty detail draws nothing");
+ }
+ Console.WriteLine("PASS "+assertions+" production HUD drawing, active identity, vital and text-hitbox assertions (managed GUI boundary)");}
  }
 }
-public static class MobilePassiveStatusTests{
- static int count;static void C(bool b,string m){count++;if(!b)throw new Exception(m);}
- static bool Shown(MobileControls c)=>(bool)typeof(MobileControls).GetField("hasJoystickOrigin",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).GetValue(c);
- public static string Run(){
-  foreach(var size in new[]{(568f,320f,163f),(1440f,650f,320f),(2048f,1536f,264f)})foreach(int preset in new[]{-1,0,1})foreach(HeroClass kind in Enum.GetValues(typeof(HeroClass)))foreach(int rank in new[]{0,3}){
-   Screen.width=size.Item1;Screen.height=size.Item2;MobileControls.SafeArea=new Rect(20,10,Screen.width-40,Screen.height-20);var l=MobileControls.Layout=new MobileControlLayout(Screen.width-40,Screen.height-20,size.Item3,preset);
-   var game=new GameSession();var hero=new PlayerController(game);hero.HeroClass=kind;game.Progression.Profile.heroClass=kind;game.Progression.Profile.skillRanks[3]=game.Progression.Profile.skillRanks[8]=rank;
-   var target=new EnemyController(8);game.Enemies.Add(target);hero.PinMobileTarget(target);var hud=new GameUI(game);var controls=new MobileControls(game,hud);MobileControls.ResetInput();hud.DrawPassives();float energy=hero.Energy;
-   C(hud.Identities.Count==2&&hud.Identities[0]==3&&hud.Identities[1]==8,"two passive identities remain separate from eight active buttons");C(hud.Learned.TrueForAll(v=>v==(rank>0))&&hud.Captions.TrueForAll(v=>v==(rank>0?"被动":"未学")),"passive state reflects learned rank without promising a cast");
-   for(int i=0;i<2;i++){
-    var a=MobilePassiveStatusLayout.Indicator(i);C(a.X>=l.PlayerStatus.X&&a.Y>=l.PlayerStatus.Y&&a.X+a.Width<=l.PlayerStatus.X+l.PlayerStatus.Width&&a.Y+a.Height<=l.PlayerStatus.Y+l.PlayerStatus.Height&&!a.Overlaps(l.Map),"passive indicators fit existing status card");
-    C(!a.Overlaps(MobilePassiveStatusLayout.HealthBar)&&!a.Overlaps(MobilePassiveStatusLayout.EnergyBar)&&!a.Overlaps(l.CombatView),"passives preserve resources and clear central combat view");
-    foreach(var skill in l.Skills)C(!a.Overlaps(skill),"passive state never overlaps active hitbox");
-    foreach(var action in new[]{l.Attack,l.Jump,l.Dodge,l.Potion,l.FocusCommand,l.RecallCommand,l.AdventureStatus,l.EncounterText,l.BossHealth})C(!a.Overlaps(action),"passive state does not cover actions or objectives");
-    var point=controls.Control(a);C(hud.IsScreenPointOverHUD(point),"real passive renderer registers HUD ownership");controls.ProcessPointer(90+i,TouchPhase.Began,point);controls.ProcessPointer(90+i,TouchPhase.Moved,new Vector2(point.x+80,point.y));
-    C(!Shown(controls)&&MobileControls.Move.magnitude==0&&!MobileControls.AttackHeld&&!hud.Captured&&hero.MobilePinnedTarget==target&&hero.Energy==energy&&hero.Casts==0,"passive pointer cannot become joystick cast or world aim");controls.ProcessPointer(90+i,TouchPhase.Ended,point);
-   }
-   int[] expected={0,1,2,4,5,6,7,9};C(MobileSkillPolicy.ButtonCount==8&&l.Skills.Length==8,"eight active buttons retained");
-   for(int i=0;i<8;i++){var point=controls.Control(l.Skills[i]);controls.ProcessPointer(100+i,TouchPhase.Began,point);C(hud.Captured&&hud.CapturedSkill==expected[i],"real pointer captures existing active mapping including ultimate at button seven");controls.ProcessPointer(100+i,TouchPhase.Canceled,point);C(!hud.Captured&&hero.Casts==0,"cancellation retains no cast or captured passive state");}
-  }
-  return "PASS "+count+" real passive renderer/geometry/active mapping/pointer assertions; managed GUI and input boundary";
- }
-}
-'''
-def add_ui(p):
- mobile=(root/'Assets/Scripts/UI/GameUI.Mobile.cs').read_text();desktop=(root/'Assets/Scripts/UI/GameUI.cs').read_text()
- methods=''.join(extract('UI/GameUI.Mobile.cs',x) for x in ['private void DrawMobilePassiveIdentities(','private bool BeginMobileCast(','private void ContinueMobileCast(','public void CancelMobileCast('])
- methods+=''.join(extract('UI/GameUI.cs',x) for x in ['private Vector2 ScreenToUI(','public bool IsScreenPointOverHUD(','public bool IsScreenPointOverUI('])
- (p/'UI.cs').write_text(ui);(p/'UIMethods.cs').write_text('using UnityEngine;namespace Emberfall{public partial class GameUI{'+methods+'}}');(p/'MobilePassiveStatusLayout.cs').write_text((root/'Assets/Scripts/UI/MobilePassiveStatusLayout.cs').read_text())
- assert 'MobilePassiveStatusLayout.HealthBar' in mobile and 'MobilePassiveStatusLayout.EnergyBar' in mobile
- assert 'DrawMobilePassiveIdentities();' in extract('UI/GameUI.Mobile.cs','private void DrawMobileHotbar(')
- body=extract('UI/GameUI.Mobile.cs','private void DrawMobilePassiveIdentities(');assert 'Button(' not in body and 'mobileTap' not in body and 'IsSkillAvailable' not in body
-harness=(root/'Tests/MobilePinnedTargetProductionTests.py').read_text().split(' env=dict')[0]
-harness=harness.replace("(r/'Tests/MobilePinnedTargetProductionTests.cs').read_text()","adapt((r/'Tests/MobilePinnedTargetProductionTests.cs').read_text())").replace('MobilePinnedTargetProductionTests.Run()','MobilePassiveStatusTests.Run()')
-harness+='''\n add_ui(p)
- env=dict(os.environ,DOTNET_CLI_HOME=str(p/'cli'),DOTNET_NOLOGO='1');build=[dotnet,'build',str(project),'--configfile',str(p/'NuGet.Config'),'-v:q'];run=[dotnet,str(p/'bin/Debug/net8.0/Test.dll')]
- subprocess.run(build,env=env,check=True);subprocess.run(run,env=env,check=True)
- target=p/'UIMethods.cs';good=target.read_text();assert 'blockedRects.Add(area);' in good;target.write_text(good.replace('blockedRects.Add(area);',''))
- subprocess.run(build,env=env,check=True,stdout=subprocess.DEVNULL);r=subprocess.run(run,env=env,capture_output=True,text=True);assert r.returncode and 'real passive renderer registers HUD ownership' in r.stdout+r.stderr,r.stdout+r.stderr
- print('PASS compiled negative: missing passive HUD blocker rejected')
-'''
-exec(compile(harness,__file__,'exec'))
+""")
+ (p/'Test.csproj').write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><NuGetAudit>false</NuGetAudit><NoWarn>0649;0414</NoWarn></PropertyGroup></Project>')
+ (p/'NuGet.Config').write_text('<configuration><packageSources><clear/></packageSources></configuration>')
+ env=dict(os.environ,DOTNET_CLI_HOME=str(p/'cli'),DOTNET_NOLOGO='1')
+ subprocess.run([sys.argv[1] if len(sys.argv)>1 else 'dotnet','run','--project',str(p/'Test.csproj')],env=env,check=True)
