@@ -842,7 +842,7 @@ namespace Emberfall
             {
                 MapDot(field, new Vector3(0, 0, -10), gold, 7);
                 MapDot(field, new Vector3(0, 0, 11), jade, 7);
-                for (int npc = 0; npc < 3; npc++) MapDot(field, GameSession.HubNpcPosition(npc), gold, 4);
+                for (int npc = 0; npc < 2; npc++) MapDot(field, GameSession.HubNpcPosition(npc), gold, 4);
             }
             for (int i = 0; i < session.Enemies.Count; i++)
             {
@@ -1120,7 +1120,7 @@ namespace Emberfall
             float y = height - 54;
             DrawHubActions(x, y - 50);
             Rect catalog=new Rect(x-46,y,38,38);
-            if(IconButton(new Rect(width-64,18,38,38),"confirm","","目标 · 实战试炼与成长进度",gold))OpenProgressionGoals();
+            if(IconButton(new Rect(width-216,18,38,38),"confirm","","目标 · 实战试炼与成长进度",gold))OpenProgressionGoals();
 
             if (IconButton(new Rect(x, y, 38, 38), "inventory", "I", "行囊 · I\n查看属性、穿戴装备与时装，使用已有补给。交易请找商人，强化请找铁匠。", jade))
                 TogglePanel(Panel.Inventory);
@@ -1339,6 +1339,7 @@ namespace Emberfall
 
         private void SellInventoryItem(string id,bool confirmed=false)
         {
+            if(!MerchantServiceActive){Feedback(false,"请在商人处选择并出售装备。");return;}
             if(!confirmed&&session.Progression.PresetReferences(id).Length>0){RequestPresetSale(id);return;}
             int row = bagItems.FindIndex(item => item.id == id);
             if (row < 0) return;
@@ -1620,7 +1621,7 @@ namespace Emberfall
             }
             Text(new Rect(right, w.y + 472, 330, 71), "按住右键：左右环绕，上下调整俯仰。\n右键单击：取消选点或蓄力；滚轮缩放。\n空格原地跳跃，无冷却；Shift 闪现可跨河。\n背包与技能界面会暂停战斗。", 12, muted, false, true);
             if (Button(new Rect(w.x + 24, w.y + 575, 650, 39), "自定义技能按键", gold)) OpenBindings();
-            if (Button(new Rect(right, w.y + 575, 338, 39), controlsReturnPause ? "返回暂停菜单" : "返回冒险", jade)) ClosePanel();
+            if (controlsReturnPause && Button(new Rect(right, w.y + 575, 338, 39), "返回暂停菜单", jade)) ClosePanel();
         }
 
         private void DrawKeyCap(Rect r, string key, string action, Color accent)

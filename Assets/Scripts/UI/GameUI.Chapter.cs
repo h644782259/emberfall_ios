@@ -50,11 +50,6 @@ namespace Emberfall
             if(panel!=Panel.Chapter)return false;
             panel=Panel.None;chapterSelectionOwner=null;chapterEntryError=null;CancelMobileScroll();session.SetUIBlocking(false);BlockUITransition();return true;
         }
-        private void OpenChapterExchange()
-        {
-            if(!ChapterSelectionIsCurrent())return;
-            chapterSelectionOwner=null;chapterEntryError=null;campTab=1;panel=Panel.Camp;CancelMobileScroll();BlockUITransition();
-        }
         private bool RetryChapterSettlement()
         {if(!session.ChapterFinished||!session.ChapterRewardPending)return false;bool saved=session.TrySettleChapterReward();BlockUITransition();return saved;}
         private void ReturnFromChapter()
@@ -138,9 +133,8 @@ namespace Emberfall
             }
             if(Button(new Rect(0,y*u,contentWidth*u,48*u),chapterStoryExpanded?"收起故事线索":"展开故事线索",jade)){chapterStoryExpanded=!chapterStoryExpanded;BlockUITransition();EndTouchScroll();return;}
             y+=60;if(chapterStoryExpanded)Text(new Rect(8*u,y*u,textWidth,(storyH-12)*u),story,Mathf.RoundToInt(14*u),pale,false,true);EndTouchScroll();
-            if(Button(ChapterRect(layout.FooterButton(0,3),u),"返回营地",jade)){CloseChapterSelection();return;}
-            if(Button(ChapterRect(layout.FooterButton(1,3),u),"机制兑换",jade)){OpenChapterExchange();return;}
-            if(Button(ChapterRect(layout.FooterButton(2,3),u),"进入 "+ChapterDefinition.Get(node).Name,gold,ChapterProgression.CanEnter(profile,node,difficulty)))
+            if(Button(ChapterRect(layout.FooterButton(0,2),u),"返回副本选择",jade)){CloseChapterSelection();session.EnterDungeon();return;}
+            if(Button(ChapterRect(layout.FooterButton(1,2),u),"进入 "+ChapterDefinition.Get(node).Name,gold,ChapterProgression.CanEnter(profile,node,difficulty)))
             {ConfirmSelectedChapter();return;}
         }
         private MobilePanelLayout ChapterPanelGeometry()

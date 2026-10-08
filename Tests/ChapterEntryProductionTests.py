@@ -31,14 +31,14 @@ namespace Emberfall {
   public RunStub ChapterRun=new RunStub();public ChapterRunReceipt Receipt;public int ChapterRewardMaterials=>Receipt==null?0:Receipt.Materials;public int ConfirmCalls,ReturnCalls;
   public bool ConfirmChapterEnter(){ConfirmCalls++;if(!AllowConfirm||!Progression.TryBeginChapterNode(SelectedChapterNode,SelectedChapterDifficulty,SelectedChapterTier,out Receipt))return false;for(int room=0;room<ChapterDefinition.RoomCount(Receipt.Node);room++)for(int i=0;i<(Receipt.Node==ChapterNode.StarPlatform?3:6);i++)if(!Progression.RegisterChapterEnemy(Receipt,room,i,Receipt.Node==ChapterNode.StarPlatform&&i==0))throw new Exception("UI host double must register actual completion budget");ChapterResult=new ChapterResultSnapshot(Receipt.Node,Receipt.Difficulty,Receipt.Tier,Progression.Profile.potions,false,0,0,0,0,false,null,null,0,0);return true;}
   public bool TrySettleChapterReward(){bool beforePending=Progression.Profile.pendingFirstClearReward;int before=Progression.Profile.mechanicMaterials;bool ok=Progression.TryCompleteChapterNode(Receipt);if(ok){ChapterRewardPending=false;ChapterResult.RecordSaved(Progression.Profile.mechanicMaterials-before,true,-1,-1,0,0,Progression.ChapterCompletionExperience,!beforePending&&Progression.Profile.pendingFirstClearReward);}return ok;}
-  public bool LeaveSucceeds=true;public void ReturnToCamp(){ReturnCalls++;if(LeaveSucceeds)ChapterFinished=false;}public void SetUIBlocking(bool b){Blocked=b;}public void SetPaused(bool b){Paused=b;}
+  public void EnterDungeon(){}public bool LeaveSucceeds=true;public void ReturnToCamp(){ReturnCalls++;if(LeaveSucceeds)ChapterFinished=false;}public void SetUIBlocking(bool b){Blocked=b;}public void SetPaused(bool b){Paused=b;}
  }
  public sealed partial class GameUI {
   // This chapter navigation fixture never opens the inventory preset-sale dialog.
   bool presetSaleOpen=>false;void CancelPresetSale(){throw new InvalidOperationException("chapter-only fixture entered preset-sale cancellation");}
   enum Panel{None,Chapter,Camp,Inventory,Skills,Chests,Fashion,PotionAssignment,Bindings,SaveLocation,SaveSelection,Controls,TravelMap}
   int ordinaryDeaths;void DrawDeath(){ordinaryDeaths++;}void ReplayDeadSurface() DEAD_DISPATCH
-  bool merchantShopOpen,smithShopOpen;HubNpcKind inventoryHubNpc;
+  bool merchantShopOpen,smithShopOpen,merchantExchangeOpen;HubNpcKind inventoryHubNpc;
   Panel panel,bindingReturnPanel;SessionStub session;int campTab,rebindingSlot,blocks,cancels;
   bool opaqueFrame;bool UITransitionBlocked=false,saveSelectionFromPause,chestDetails,bindingReturnPause,saveReturnPause,controlsReturnPause;float chestRevealedAt;const float ChestDuration=1;bool ChestAnimationDone=>true;
   float width=568,height=320,TouchRatio=1;Color gold=new Color(),jade=new Color(),pale=new Color(),muted=new Color();string click;bool insideScroll;Rect viewport,content;
@@ -78,7 +78,7 @@ namespace Emberfall {
     ui.width=logicalWidth*ratio;ui.height=320*ratio;ui.TouchRatio=ratio;ui.buttons.Clear();ui.texts.Clear();int measured=GUIStyle.Measurements;ui.DrawChapterSelection();
     check(GUIStyle.Measurements>measured&&ui.content.height>=ui.viewport.height,"body uses measured scroll content");
     int footer=0,nodeButtons=0;foreach(var b in ui.buttons){check(b.rect.height>=48*ratio-.01f,"all chapter choices keep 48-unit touch height");bool nodeCard=b.text.StartsWith("林庭")||b.text.StartsWith("赤岩")||b.text.StartsWith("星台");if(nodeCard){nodeButtons++;check(!b.scroll&&b.rect.yMax+35*ratio<=ui.viewport.y+.01f,"FIXED_NODES must remain above scrolling details and show completion badges");}else if(!b.scroll){footer++;check(b.rect.y>=ui.viewport.yMax&&b.rect.x>=0&&b.rect.xMax<=ui.width&&b.rect.yMax<=ui.height,"footer stays below body and inside viewport");}}
-    check(footer==3&&nodeButtons==3,"three nodes and all fixed navigation actions remain reachable");
+    check(footer==2&&nodeButtons==3,"three nodes and all fixed navigation actions remain reachable");
     check(ui.texts.Contains("最高通关 · 普通")&&ui.texts.Contains("尚未通关"),"completion shown independently from current selected node");
     check(!ui.texts.Contains(ChapterEntryPresentation.Story(ui.session.SelectedChapterNode)),"story collapsed while goal mechanism and reward remain visible");
     check(ui.buttons.Exists(b=>b.text.StartsWith("星台")&&!b.enabled)&&ui.buttons.Exists(b=>b.text.StartsWith("英雄")&&!b.enabled),"locked node and heroic render disabled using shared core eligibility");
@@ -131,7 +131,7 @@ namespace Emberfall {
 }
 class Program{static void Main(string[] args){Console.WriteLine("PASS: "+Emberfall.GameUI.Verify(args[0])+" chapter UI/core replay assertions");}}
 '''
-core=['RunChoices','RunChoices.Rooms','RunChoices.Chapter','GameTypes','ProgressionService','ProgressionService.Reforge','ReforgeQuote','ProgressionService.Chapter','ChapterProgression','ChapterResultSnapshot','RoomTactics','CombatBalance','HubTravelRules','MasteryCoreRuntime','TierRewardRules','TierRewardBand','ProgressionGoalState']
+core=['RunChoices','RunChoices.Rooms','RunChoices.Chapter','GameTypes','ProgressionService','ProgressionService.Attachments','ProgressionService.AutomaticGrowth','ProgressionService.Reforge','ReforgeQuote','ProgressionService.Chapter','ChapterProgression','ChapterResultSnapshot','RoomTactics','CombatBalance','HubTravelRules','MasteryCoreRuntime','TierRewardRules','TierRewardBand','ProgressionGoalState']
 dispatch=member('GameUI.cs','else if (session.IsDead)');shell=shell.replace('DEAD_DISPATCH',dispatch[dispatch.index('{'):])
 close=member('GameUI.cs','private void ClosePanel()');hook='if(CloseChapterSelection())return;'
 assert hook in close,'chapter ClosePanel hook must be integrated before replay'

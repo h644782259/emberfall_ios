@@ -83,7 +83,7 @@ namespace Emberfall
   }
   private static void BuildHubNpcs(Transform parent,WorldResources r)
   {
-   for(int index=0;index<3;index++)
+   for(int index=0;index<2;index++)
    {
     Vector3 p=GameSession.HubNpcPosition(index);Transform npc=Region(parent,index==0?"Camp Merchant":index==1?"Camp Blacksmith":"Star Exchange Steward");
     Material cloth=r.Material(index==0?new Color(.58f,.35f,.16f):index==1?new Color(.32f,.37f,.44f):new Color(.22f,.48f,.53f),false,VisualSurface.Cloth);

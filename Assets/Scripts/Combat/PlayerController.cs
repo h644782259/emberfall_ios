@@ -782,10 +782,10 @@ namespace Emberfall
             }
             if (HeroClass == HeroClass.Vanguard && HasMechanic(EquipmentMechanic.ReturningBlade) && !ReturningCounterVariant)
             {
-                EnemyController bounce = NearestOtherEnemy(position, enemy, 4f);
+                EnemyController bounce = NearestOtherEnemy(position, enemy, 4f*session.Progression.MechanicRangeMultiplier(EquipmentMechanic.ReturningBlade));
                 if (bounce != null && returningBladeProc.TryTrigger(1.5f))
                 {
-                    bounce.TakeDamage(CombatAttack * 1.1f, CombatFx.Flat(bounce.transform.position - position).normalized, .12f);
+                    bounce.TakeDamage(CombatAttack * 1.1f * session.Progression.MechanicPowerMultiplier(EquipmentMechanic.ReturningBlade), CombatFx.Flat(bounce.transform.position - position).normalized, .12f);
                     AdvancedSkillVfx.Beam(this, position + Vector3.up, bounce.transform.position + Vector3.up, GameBalance.ClassColor(HeroClass), .25f, .14f);
                     // A returned blade strengthens a deliberate next heavy attack,
                     // while a kill carries the blade to a fresh target.
@@ -856,10 +856,10 @@ namespace Emberfall
                         int remaining = 2;
                         foreach (EnemyController nearby in session.Enemies.ToArray())
                             if (ValidAimTarget(nearby) && nearby != enemy && nearby.StatusEffects != null &&
-                                CombatFx.Flat(nearby.transform.position - enemy.transform.position).sqrMagnitude <= 3.5f * 3.5f &&
+                                CombatFx.Flat(nearby.transform.position - enemy.transform.position).sqrMagnitude <= Mathf.Pow(3.5f*session.Progression.MechanicRangeMultiplier(EquipmentMechanic.VenomSpread),2) &&
                                 CombatSight.Direct(enemy.transform.position, nearby.transform.position))
                             {
-                                nearby.StatusEffects.Poison(this, 4f, CombatAttack * .14f);
+                                nearby.StatusEffects.Poison(this, 4f, CombatAttack * .14f*session.Progression.MechanicPowerMultiplier(EquipmentMechanic.VenomSpread));
                                 if (--remaining == 0) break;
                             }
                         session.RecordCombatAction("毒种蔓延");
@@ -1400,7 +1400,7 @@ namespace Emberfall
                     CombatArea.Spawn(this,session,transform.position,3.7f*range,Damage(SkillDamageBudgets.OpeningImpact(HeroClass,slot,rank)*novaPower),0,0,0,1f,new Color(.51f,.92f,1f),statusSkill:0,statusRank:rank,castId:castId,visual:SkillVisualRecipe.Ice);
                     if (frostEcho)
                     {
-                        CombatArea.Spawn(this,session,transform.position,3.7f*range*BuildCatalog.FrostEchoRadiusMultiplier(wideEcho),Damage(BuildCatalog.FrostEchoCoefficient(wideEcho)*power),0,.7f,0,1f,new Color(.51f,.92f,1f),statusSkill:0,statusRank:rank,castId:castId,visual:SkillVisualRecipe.Ice,trackedMechanic:1);
+                        CombatArea.Spawn(this,session,transform.position,3.7f*range*BuildCatalog.FrostEchoRadiusMultiplier(wideEcho)*session.Progression.MechanicRangeMultiplier(EquipmentMechanic.FrostEcho),Damage(BuildCatalog.FrostEchoCoefficient(wideEcho)*power*session.Progression.MechanicPowerMultiplier(EquipmentMechanic.FrostEcho)),0,.7f,0,1f,new Color(.51f,.92f,1f),statusSkill:0,statusRank:rank,castId:castId,visual:SkillVisualRecipe.Ice,trackedMechanic:1);
                         session.RecordCombatAction("霜环回响");
                     }
                     if(rank>=2) CombatArea.Spawn(this,session,transform.position,3.7f*range,Damage(SkillDamageBudgets.OpeningImpact(HeroClass,slot,rank,1)),0,.5f,0,1f,new Color(.51f,.92f,1f),statusSkill:0,statusRank:rank,castId:castId,visual:SkillVisualRecipe.Ice);
@@ -1424,7 +1424,7 @@ namespace Emberfall
                     if (HasMechanic(EquipmentMechanic.CinderTrail))
                     {
                         // Four ticks total 40% of the base first meteor impact.
-                        CombatArea.Spawn(this,session,target,3f*range*BuildCatalog.CinderTrailRadiusMultiplier(MechanicVariant(EquipmentMechanic.CinderTrail)==1),CombatAttack*SkillDamageBudgets.MeteorTrailTick(rank,MechanicVariant(EquipmentMechanic.CinderTrail)==1),0,1.2f,1.5f,.5f,new Color(1f,.43f,.22f),castId:castId,visual:SkillVisualRecipe.Fire,trackedMechanic:0);
+                        CombatArea.Spawn(this,session,target,3f*range*session.Progression.MechanicRangeMultiplier(EquipmentMechanic.CinderTrail)*BuildCatalog.CinderTrailRadiusMultiplier(MechanicVariant(EquipmentMechanic.CinderTrail)==1),CombatAttack*SkillDamageBudgets.MeteorTrailTick(rank,MechanicVariant(EquipmentMechanic.CinderTrail)==1)*session.Progression.MechanicPowerMultiplier(EquipmentMechanic.CinderTrail),0,1.2f,1.5f,.5f,new Color(1f,.43f,.22f),castId:castId,visual:SkillVisualRecipe.Fire,trackedMechanic:0);
                         session.RecordCombatAction("余烬地带");
                     }
                 }

@@ -11,7 +11,7 @@ namespace Emberfall
    {
     if(!HasStarted||InDungeon||IsDead||Player==null)return HubNpcKind.None;
     HubNpcKind kind=HubNpcKind.None;float nearest=2.65f;
-    for(int index=0;index<3;index++){float distance=Vector3.Distance(Player.transform.position,HubNpcPosition(index));if(distance<nearest){nearest=distance;kind=(HubNpcKind)(index+1);}}
+    for(int index=0;index<2;index++){float distance=Vector3.Distance(Player.transform.position,HubNpcPosition(index));if(distance<nearest){nearest=distance;kind=(HubNpcKind)(index+1);}}
     return kind;
    }
   }
@@ -29,7 +29,7 @@ namespace Emberfall
    loadingSaveSnapshot=true;
    try {if(!ChangeZone(false))return false;}
    finally {loadingSaveSnapshot=false;}
-   Notify("已抵达"+HubTravelRules.Name(CurrentHub)+" · 商人、铁匠与兑换员在营地");return true;
+   Notify("已抵达"+HubTravelRules.Name(CurrentHub)+" · 商人、铁匠在营地");return true;
   }
  }
 }
