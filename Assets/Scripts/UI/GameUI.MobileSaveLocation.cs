@@ -64,7 +64,7 @@ namespace Emberfall
                 return;
             }
 #endif
-            if (saveReturnPause && Button(MobilePanelRect(layout.FooterButton(buttons - 1, buttons)), "返回暂停菜单", jade))
+            if (saveReturnPause && Button(MobilePanelRect(layout.FooterButton(buttons - 1, buttons)), "返回设置", jade))
             { ClosePanel(); BlockUITransition(); }
         }
 
