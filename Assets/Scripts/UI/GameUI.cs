@@ -391,7 +391,7 @@ namespace Emberfall
             if (!MobileControls.Active || string.IsNullOrEmpty(value)) return value;
             return value.Replace("WASD 移动，鼠标瞄准", "拖动左侧摇杆移动，点击技能或按住攻击")
                 .Replace("按 Shift 闪现", "点击闪现按钮")
-                .Replace("按 K ", "打开技能树").Replace("按 I ", "打开行囊")
+                .Replace("按 K ", "打开技能").Replace("按 I ", "打开行囊")
                 .Replace("按 T ", "点击传送按钮").Replace("按 H ", "点击回营按钮")
                 .Replace("按 F ", "点击药剂按钮")
                 .Replace(" · I", "").Replace(" · K", "").Replace(" · H", "").Replace(" · T", "");
@@ -1120,11 +1120,11 @@ namespace Emberfall
             float y = height - 54;
             DrawHubActions(x, y - 50);
             Rect catalog=new Rect(x-46,y,38,38);
-            if(IconButton(catalog,"codex","","图鉴 / 待领",gold)){panel=Panel.Camp;campTab=1;session.SetUIBlocking(true);}
-            Badge(catalog,Attention.Rewards);
+            if(IconButton(new Rect(width-64,18,38,38),"confirm","","目标 · 实战试炼与成长进度",gold))OpenProgressionGoals();
+
             if (IconButton(new Rect(x, y, 38, 38), "inventory", "I", "行囊 · I\n查看属性、穿戴装备与时装，使用已有补给。交易请找商人，强化请找铁匠。", jade))
                 TogglePanel(Panel.Inventory);
-            if (IconButton(new Rect(x + 46, y, 38, 38), "skills", "K", "技能树 · K\n按分支学习或进阶技能，配置十格快捷栏。\n可用技能点：" + p.skillPoints, gold, p.skillPoints > 0 ? "+" + p.skillPoints : null))
+            if (IconButton(new Rect(x + 46, y, 38, 38), "skills", "K", "技能 · K\n按分支学习或进阶技能，配置十格快捷栏。\n可用技能点：" + p.skillPoints, gold, p.skillPoints > 0 ? "+" + p.skillPoints : null))
                 TogglePanel(Panel.Skills);
             if (IconButton(new Rect(x + 92, y, 38, 38), "camp", "H", "返回营地 · H\n附近没有敌人时可以返回营地整备。", jade))
                 session.ReturnToCamp();
@@ -1414,12 +1414,15 @@ namespace Emberfall
 
         private void DrawSkills()
         {
+            if(DrawSkillSubsurface())return;
+            if(skillSection==1){DrawSkillDevelopment();return;}
             if(MobileControls.Active){DrawMobileSkills();return;}
             GameProfile p = session.Progression.Profile;
             selectedSkill = Mathf.Clamp(selectedSkill, 0, GameBalance.SkillCount - 1);
-            Rect w = Modal(1160, 660, GameBalance.ClassName(p.heroClass) + " · 技能树", "");
+            Rect w = Modal(1160, 660, GameBalance.ClassName(p.heroClass) + " · 技能", "");
             if (Button(new Rect(w.xMax - 69, w.y + 20, 44, 32), "×", jade)) ClosePanel();
             Text(new Rect(w.x + 763, w.y + 28, 296, 32), "技能点 " + p.skillPoints + "   /   角色 Lv." + p.level, 18, gold, true, false, TextAnchor.MiddleRight);
+            DrawSkillTabs(new Rect(w.x+24,w.y+72,506,30));
             Rect branchHeading = new Rect(w.x + 24, w.y + 112, 267, 24);
             Text(branchHeading, "职业分支", 15, jade, true);
             if (branchHeading.Contains(Mouse)) tooltip = "沿分支从上到下学习，需先掌握前置技能。\n滚动查看高阶技能；每升一级获得 1 技能点。";
@@ -1605,7 +1608,7 @@ namespace Emberfall
             float right = w.x + 698;
             Text(new Rect(right, w.y + 114, 332, 23), "界面与冒险", 16, jade, true);
             string[] keys = { "I", "K", "H", "T", "Esc" };
-            string[] actions = { "行囊、装备与补给", "技能树、学习与配置", "远离敌人后返回营地", "进入传送门 / 房间北门", "取消选点或蓄力 / 返回" };
+            string[] actions = { "行囊、装备与补给", "技能、学习与配置", "远离敌人后返回营地", "进入传送门 / 房间北门", "取消选点或蓄力 / 返回" };
             for (int i = 0; i < keys.Length; i++)
             {
                 float rowY = w.y + 153 + i * 43;
@@ -1701,6 +1704,7 @@ namespace Emberfall
 
         private void ClosePanel()
         {
+            if(merchantExchangeOpen&&panel==Panel.Camp){merchantExchangeOpen=false;panel=Panel.Inventory;BlockUITransition();return;}
             if(merchantShopOpen||smithShopOpen){merchantShopOpen=smithShopOpen=false;inventoryHubNpc=HubNpcKind.None;panel=Panel.None;session.SetUIBlocking(false);return;}
             if(presetSaleOpen){CancelPresetSale();return;}
             if(CloseChapterSelection())return;

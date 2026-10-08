@@ -884,6 +884,7 @@ namespace Emberfall
             get
             {
                 if (!HasMechanic(EquipmentMechanic.ReturningBlade)) return false;
+                var attachment=session.Progression.Attachment(EquipmentMechanic.ReturningBlade);if(attachment!=null)return attachment.variantUnlocked&&attachment.variant==1;
                 ItemData item = session.Progression.Equipped(ItemSlot.Weapon);
                 return item != null && item.mechanicVariantUnlocked && item.mechanicVariant == 1;
             }
@@ -891,6 +892,7 @@ namespace Emberfall
 
         internal int MechanicVariant(EquipmentMechanic mechanic)
         {
+            var attachment=session.Progression.Attachment(mechanic);if(attachment!=null)return session.Progression.AttachmentVariant(mechanic);
             ItemData item = session.Progression.Equipped(BuildCatalog.MechanicSlot(mechanic));
             return item != null && item.mechanic == mechanic ? item.mechanicVariant : 0;
         }

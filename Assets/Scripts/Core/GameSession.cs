@@ -264,10 +264,21 @@ namespace Emberfall
             UpdateTimeScale();
         }
 
+        private float nextGrowthCheck;
         private void Update()
         {
             if(PracticeActive){TickPractice();return;} // Practice owns its guarded potion input too.
             if(HasStarted)TickSideEvent();
+            if(HasStarted&&!PracticeActive&&Time.unscaledTime>=nextGrowthCheck)
+            {
+                nextGrowthCheck=Time.unscaledTime+1f;
+                int receipts=Progression.Profile.growthRewardReceipts.Count;
+                if(Progression.AdvanceAutomaticGrowth()&&Progression.Profile.growthRewardReceipts.Count>receipts)
+                {
+                    LogSystem(Progression.LastGrowthReward);
+                    if(!ModeFinished&&!Paused&&string.IsNullOrEmpty(RoomGenerationFailureDetail))Notify(Progression.LastGrowthReward);
+                }
+            }
             if (InputBlocked) return;
             if(ModeRun!=null){TickArenaRun();if(InputBlocked)return;}
             if(RoomChainRun!=null)TickRoomTactics();

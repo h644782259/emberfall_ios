@@ -58,6 +58,10 @@ def unity_references(download):
 
 
 def write_project(directory, sources, program=None, references=None, framework="net8.0", defines=""):
+    if any(Path(path).name=="ProgressionService.cs" for path in sources):
+        for name in ["ProgressionService.Attachments.cs","ProgressionService.AutomaticGrowth.cs"]:
+            part=ROOT/"Assets/Scripts/Core"/name
+            if not any(Path(path).name==name for path in sources):sources=[*sources,part]
     directory.mkdir()
     if program is not None:
         entry = directory / "Program.cs"
@@ -143,6 +147,8 @@ def main():
                         ROOT / "Tests/SkillRuntimeTests.cs"],
              'using System; internal static class Program { static void Main() { Console.WriteLine(SkillRuntimeTests.Run()); } }'),
         ]
+        checks.append(("reward-inventory-integration", [ROOT / "Assets/Scripts/Core/GameTypes.cs", ROOT / "Assets/Scripts/Core/ProgressionService.cs", ROOT / "Tests/ProgressionTests.cs", ROOT / "Tests/RewardInventoryIntegrationTests.cs"],
+            'using System; internal static class Program { static void Main(string[] args) { Console.WriteLine(RewardInventoryIntegrationTests.Run(args[0])); } }'))
         if (ROOT / "Tests/UpgradeProgressionTests.cs").exists():
             checks.append(("upgrade-progression", [ROOT / "Assets/Scripts/Core/GameTypes.cs",
                           ROOT / "Assets/Scripts/Core/ProgressionService.cs", ROOT / "Tests/ProgressionTests.cs",

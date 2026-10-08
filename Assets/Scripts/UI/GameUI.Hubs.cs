@@ -8,6 +8,8 @@ namespace Emberfall
         private string travelError;
         private HubNpcKind inventoryHubNpc;
         private bool merchantShopOpen;
+        private bool merchantExchangeOpen;
+        private bool MerchantServiceActive {get{return merchantShopOpen&&session.NearbyHubNpc==HubNpcKind.Merchant&&!session.InDungeon;}}
 
         private static string HubNpcLabel(HubNpcKind kind)
         {
@@ -42,18 +44,17 @@ namespace Emberfall
         private void DrawMerchantShop()
         {
             var layout=MobilePanelGeometry();var p=session.Progression;
-            if(DrawMobilePanelChrome(layout,"商人 · 药剂与出售","金币 "+p.Profile.gold+" · 锁定和已穿装备不可出售")){merchantShopOpen=false;return;}
+            if(DrawMobilePanelChrome(layout,"商人 · 兑换、药剂与出售","金币 "+p.Profile.gold+" · 锁定和已穿装备不可出售")){merchantShopOpen=false;return;}
             bool near=session.NearbyHubNpc==HubNpcKind.Merchant&&!session.InDungeon;
             RebuildBagItems();string sell=null;bool bulkSale=false;
             float w=layout.Body.Width-18,u=TouchRatio;
-            npcShopScroll=BeginTouchScroll("merchant-stock",MobilePanelRect(layout.Body),npcShopScroll,new Rect(0,0,w*u,Mathf.Max(layout.Body.Height,bagItems.Count*64+218)*u));
+            npcShopScroll=BeginTouchScroll("merchant-stock",MobilePanelRect(layout.Body),npcShopScroll,new Rect(0,0,w*u,Mathf.Max(layout.Body.Height,bagItems.Count*64+164)*u));
             Text(TouchRect(8,4,w-16,44),"生命药剂 × "+p.Profile.potions+" · 每瓶 "+ProgressionService.PotionPrice+" 金币",TouchFont(16),pale,true);
-            if(InventoryAction(TouchRect(8,54,w-16,48),"普通自动出售："+(p.Profile.autoSellCommon?"开":"关"),near))p.SetAutoSell(Rarity.Common,!p.Profile.autoSellCommon);
-            if(InventoryAction(TouchRect(8,108,w-16,48),"稀有自动出售："+(p.Profile.autoSellRare?"开":"关"),near))p.SetAutoSell(Rarity.Rare,!p.Profile.autoSellRare);
-            if(DangerButton(TouchRect(8,162,w-16,48),"批量出售背包低品质装备",gold,near))bulkSale=true;
+            if(NavigationButton(TouchRect(8,54,w-16,48),"机制兑换 · 星烬碎片",gold,near)){merchantExchangeOpen=true;panel=Panel.Camp;BlockUITransition();return;}
+            if(DangerButton(TouchRect(8,108,w-16,48),"批量出售背包低品质装备",gold,near))bulkSale=true;
             for(int i=0;i<bagItems.Count;i++)
             {
-                var item=bagItems[i];float y=218+i*64;bool protectedItem=item.locked||IsEquipped(item);
+                var item=bagItems[i];float y=164+i*64;bool protectedItem=item.locked||IsEquipped(item);
                 DrawIcon(TouchRect(6,y+8,36,36),UIIconAtlas.EquipmentCardIcon(item.slot),GameBalance.RarityColor(item.rarity));
                 Text(TouchRect(50,y+4,w-210,52),item.name+(item.locked?" · 已锁定":IsEquipped(item)?" · 已穿戴":""),TouchFont(14),pale,true,true);
                 if(DangerButton(TouchRect(w-148,y+6,140,48),"出售 "+p.SellValue(item)+" 金",gold,near&&!protectedItem))sell=item.id;

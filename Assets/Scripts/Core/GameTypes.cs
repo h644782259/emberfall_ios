@@ -88,12 +88,14 @@ namespace Emberfall
         public static bool ConcentratedVenomEquipped(GameProfile profile)
         {
             if(profile==null||profile.heroClass!=HeroClass.Ranger||profile.inventory==null)return false;
+            if(profile.attachments!=null){var a=profile.attachments.Find(x=>x.mechanic==EquipmentMechanic.VenomSpread);if(a!=null)return a.mounted&&a.variantUnlocked&&a.variant==1;}
             var item=profile.inventory.Find(x=>x.id==profile.relicId);
             return item!=null&&item.slot==ItemSlot.Relic&&item.mechanic==EquipmentMechanic.VenomSpread&&item.mechanicVariantUnlocked&&item.mechanicVariant==1;
         }
         public static string VenomSkillOverride(GameProfile profile,int skill,int rank)
         {
             if(profile==null||profile.heroClass!=HeroClass.Ranger||skill!=0||profile.inventory==null)return "";
+            if(profile.attachments!=null){var a=profile.attachments.Find(x=>x.mechanic==EquipmentMechanic.VenomSpread);if(a!=null)return !a.mounted?"":VenomSkillSummary(Math.Max(1,Math.Min(3,rank)),a.variantUnlocked&&a.variant==1);}
             var item=profile.inventory.Find(x=>x.id==profile.relicId);
             if(item==null||item.slot!=ItemSlot.Relic||item.mechanic!=EquipmentMechanic.VenomSpread)return "";
             return VenomSkillSummary(Math.Max(1,Math.Min(3,rank)),item.mechanicVariantUnlocked&&item.mechanicVariant==1);
@@ -219,7 +221,7 @@ namespace Emberfall
     public sealed class RewardMoment
     {
         public long Sequence; public string SlotId; public HeroClass HeroClass; public RewardMomentKind Kind;
-        public ItemData Item; public FashionData Fashion; public int GoldDelta,MaterialsDelta,ThreadsDelta;
+        public ItemData Item; public FashionData Fashion; public MechanicAttachment Attachment; public int GoldDelta,MaterialsDelta,ThreadsDelta;
     }
 
     [Serializable]
@@ -273,6 +275,8 @@ namespace Emberfall
         public EquipmentMechanic[] equipmentMechanics;
         // A zero enum entry is not evidence: each slot explicitly records whether its mechanism is known.
         public int equipmentMechanicKnownMask;
+        public EquipmentMechanic[] mountedAttachments;
+        public int[] attachmentVariants;
     }
 
     /// <summary>Fixed class-local allocations. Inventory, equipment identity and rewards live only on GameProfile.</summary>
@@ -288,6 +292,8 @@ namespace Emberfall
         public SummonerRoute summonerRoute;
         public BuildPreset[] buildPresets;
         public bool classTutorialCompleted;
+        public int growthRevision;
+        public bool automaticGrowth=true;
         public ProgressionGoalKind progressionGoal;
         public string progressionGoalItemId;
         public int progressionGoalTier,progressionGoalLevel;
@@ -295,7 +301,17 @@ namespace Emberfall
         public Rarity progressionGoalMinimumRarity;
     }
 
-    public enum ProgressionGoalKind { None, Core, Variant, Ascension, SecondPreset, Tier, Reforge, ClassTutorial }
+    public enum ProgressionGoalKind { None, Core, Variant, Ascension, SecondPreset, Tier, Reforge, ClassTutorial, CombatTrial }
+
+    [Serializable]
+    public sealed class MechanicAttachment
+    {
+        public string id, legacySourceId;
+        public EquipmentMechanic mechanic;
+        public int level=1, upgradeRank, variant;
+        public Rarity rarity=Rarity.Epic;
+        public bool mounted=true, variantUnlocked;
+    }
 
     public static class SkillStockRules
     {
@@ -322,10 +338,16 @@ namespace Emberfall
     [Serializable]
     public class GameProfile
     {
+        public int rewardInventoryRevision;
         public int skillStockVersion;
         public int[] skillStockCounts;
         public float[] skillStockRemaining,skillStockPeriods;
 
+        public int attachmentRevision;
+        public List<MechanicAttachment> attachments=new List<MechanicAttachment>();
+        public List<string> growthRewardReceipts=new List<string>();
+        public bool automaticGrowth=true;
+        public int growthRevision;
         public int classStateRevision;
         public ClassBuildState[] classStates;
         public int version = 1;
@@ -390,6 +412,7 @@ namespace Emberfall
         public string lastDungeonRewardId;
         public RewardPresentationReceipt lastModeRewardDetails,lastDungeonRewardDetails,lastChapterRewardDetails;
         public List<string> sideEventRewardReceipts = new List<string>();
+        public int quarryWorkLevel,starChartTier;
         public int currentHub;
         public int unlockedHubMask=1;
         public List<ItemData> inventory = new List<ItemData>();
@@ -419,6 +442,7 @@ namespace Emberfall
 
     public static class GameBalance
     {
+        public const float ArcanistFinaleRadius=9.5f,ArcanistPulseRadius=8f;
         public const int SkillCount = 10;
         public const int HotbarSize = 10;
         public const int HotbarPotion = -2;
@@ -460,10 +484,10 @@ namespace Emberfall
             { 7f, 16f, 14f, 0f, 12f, 28f, 36f, 21f, 0f, 46f }
         };
         private static readonly float[,] ClassSkillEnergyCosts = {
-            { 12f, 20f, 34f, 0f, 30f, 24f, 28f, 38f, 0f, 64f },
-            { 18f, 28f, 38f, 0f, 24f, 28f, 30f, 42f, 0f, 68f },
-            { 14f, 20f, 34f, 0f, 22f, 30f, 28f, 42f, 0f, 64f },
-            { 16f, 28f, 30f, 0f, 28f, 32f, 36f, 40f, 0f, 70f }
+            { 12f, 20f, 34f, 0f, 30f, 24f, 28f, 38f, 0f, 0f },
+            { 18f, 28f, 38f, 0f, 24f, 28f, 30f, 42f, 0f, 0f },
+            { 14f, 20f, 34f, 0f, 22f, 30f, 28f, 42f, 0f, 0f },
+            { 16f, 28f, 30f, 0f, 28f, 32f, 36f, 40f, 0f, 0f }
         };
         private static readonly string[,] SkillNames = {
             { "旋风斩", "裂地冲击", "剑刃风暴", "剑术精研", "圣盾反击", "破军突进", "生命战旗", "大地崩裂", "不屈意志", "终焉裁决" },
@@ -476,19 +500,19 @@ namespace Emberfall
                 "旋转斩击周围敌人。低消耗、短冷却，觉醒后牵引收束。", "向前方重击，击退并击倒敌人；可打断带青色符号的首领预警，首领打断后5秒免疫再次打断。", "连续释放剑气，切割周围的敌人。",
                 "被动：永久提高攻击与防御，学习后自动生效。", "展开护盾减轻伤害，并以圣光反击周围敌人。", "向前突进并连续斩击，撕开敌阵。",
                 "树立生命战旗，持续恢复生命；升阶获得防护与回复能量。", "沿前方逐段引爆地脉，将普通/精英敌人击飞；首领免疫浮空，仍受到伤害。", "被动：濒危时自动触发减伤防护；触发后有独立内置冷却。",
-                "巨剑裁决与多段剑阵爆发，终结大范围敌群。集中消耗战意，适合聚怪后的爆发。"
+                "巨剑裁决与多段剑阵爆发，终结大范围敌群。无需战意，冷却结束后即可释放，适合聚怪后的爆发。"
             },
             {
                 "冻结普通/精英敌人，解冻后暂时减速40%；首领保留霜痕，并可打断其带青色符号的预警。", "在瞄准地点降下陨星，造成范围爆发；主冲击可打断带青色符号的首领预警。", "在瞄准地点制造持续的奥术风暴。",
                 "被动：永久提高法术攻击与生命，学习后自动生效。", "雷霆在敌人间跳跃，逐个造成伤害并短暂眩晕。", "碎冰/均衡护盾维持霜痕；灼燃路线骑乘火焰，减伤30%、移速+20%，沿途火径持续灼烧，重叠足迹不叠伤。",
                 "回收奥术之力，持续恢复生命；升阶获得防护与回复能量。", "创造虚空漩涡，将敌人吸向中心并反复撕裂。", "被动：受伤时自动生成法力屏障并回复少量能量，具有内置冷却。",
-                "多重星环汇聚，陨星与雷霆引爆整片战场。高奥能消耗，兼顾范围伤害与控制。"
+                "多重星环汇聚，陨星与雷霆引爆整片战场。无需奥能，冷却结束后即可释放，兼顾范围伤害与控制。"
             },
             {
                 "向前方发射多支穿透箭矢。短冷却，适合清理敌群。", "在瞄准地点引爆陷阱，伤害并眩晕敌人；主爆炸可打断带青色符号的首领预警。", "向瞄准地点持续倾泻箭雨。",
                 "被动：永久提高暴击几率和移动速度，学习后自动生效。", "向瞄准方向跃进5米，0.55秒后砸地，造成范围伤害与击退；空中不能普攻，起跳仅有0.18秒保护，落地获得机动增益。", "毒蔓使敌人减速并叠加中毒，最多3层；离开毒区后毒伤仍会持续。",
                 "召唤自然之力持续恢复生命；升阶获得防护与回复能量。", "锁定选区内的一名敌人持续追射，并使其受到的伤害提高12%至20%。目标死亡后不自动转锁。", "被动：受伤时自动短暂无敌并提高移动速度，具有内置冷却。",
-                "星弓展开，巨量光羽与箭雨汇聚于目标。集中消耗专注，适合敌群密集时使用。"
+                "星弓展开，巨量光羽与箭雨汇聚于目标。无需专注，冷却结束后即可释放，适合敌群密集时使用。"
             },
             {
                 "向前方释放灵能冲击，造成扇形伤害并将敌人轰开；可打断带青色符号的首领预警。", "在目标地点生长荆棘，使敌人减速并持续中毒；首领减速效果降低。", "升级常驻灵狼；存活时命令扑击并强化3秒，死亡时重召。群契路线追加限时伙伴；普通上限4、双契装备上限2。",
@@ -606,7 +630,7 @@ namespace Emberfall
         }
         public static bool IsBindableKey(int key)
         {
-            if (key == 97 || key == 100 || key == 102 || key == 104 || key == 105 || key == 106 || key == 107 || key == 115 || key == 116 || key == 119) return false;
+            if (key == 97 || key == 100 || key == 102 || key == 103 || key == 104 || key == 105 || key == 106 || key == 107 || key == 115 || key == 116 || key == 119) return false;
             return (key >= 97 && key <= 122) || (key >= 48 && key <= 57) || (key >= 282 && key <= 293);
         }
         public static string KeyName(int key)

@@ -28,19 +28,21 @@ namespace Emberfall
             GameProfile profile = progression.Profile;
             selectedSkill = Mathf.Clamp(selectedSkill, 0, GameBalance.SkillCount - 1);
             var layout = MobilePanelGeometry();
-            if (DrawMobilePanelChrome(layout, GameBalance.ClassName(profile.heroClass) + " · 技能树",
-                "Lv." + profile.level + " · 可用技能点 " + profile.skillPoints + " · 沿分支查看技能前置")) return;
+            if (DrawMobilePanelChrome(layout, GameBalance.ClassName(profile.heroClass) + " · 技能",
+                "Lv." + profile.level + " · 可用技能点 " + profile.skillPoints + " · 上下滑动查看全部10项")) return;
 
+            DrawSkillTabs(MobilePanelRect(layout.Tabs));
+            if(skillSection==1)return;
             bool split = SkillIconPresentation.SideBySide(layout.Width) && mobileSkillDetail;
             bool showList = split || !mobileSkillDetail, showDetail = split || mobileSkillDetail;
-            var listArea = split ? layout.BodyLeft : layout.Body;
-            var detailArea = split ? layout.BodyRight : layout.Body;
+            var listArea = split ? layout.BodyLeft : layout.TabbedBody;
+            var detailArea = split ? layout.BodyRight : layout.TabbedBody;
             if(!showDetail&&!RouteSkillReturnAvailable)listArea=new MobilePanelLayout.Area(listArea.X,listArea.Y,listArea.Width,layout.Height-listArea.Y-12);
             float u = TouchRatio, listWidth = listArea.Width - 16, detailWidth = detailArea.Width - 16;
             if (showList)
             {
                 float listHeight = DrawMobileSkillTree(listWidth, false);
-                mobileSkillListScroll = BeginTouchScroll("mobile-skill-tree", MobilePanelRect(listArea), mobileSkillListScroll,
+                mobileSkillListScroll = BeginTouchScroll("mobile-skill-list", MobilePanelRect(listArea), mobileSkillListScroll,
                     new Rect(0, 0, listWidth * u, Mathf.Max(listArea.Height, listHeight) * u));
                 DrawMobileSkillTree(listWidth, true);
                 EndTouchScroll();
@@ -53,14 +55,14 @@ namespace Emberfall
                 DrawMobileSkillDescription(detailWidth, true);
                 EndTouchScroll();
             }
-            if ((showDetail||RouteSkillReturnAvailable)&&Button(MobilePanelRect(layout.FooterButton(0, showDetail ? 2 : 1)), RouteSkillReturnAvailable?"返回职业路线":!split && mobileSkillDetail ? "返回技能树" : "关闭详情", jade))
+            if ((RouteSkillReturnAvailable||showDetail) && NavigationButton(MobilePanelRect(layout.FooterButton(0, showDetail ? 2 : 1)), RouteSkillReturnAvailable?"返回职业路线":!split && mobileSkillDetail ? "返回技能列表" : "关闭详情", jade))
             { ClosePanel(); BlockUITransition(); return; }
             if (!showDetail) return;
             int rank = progression.Profile.skillRanks[selectedSkill];
             string reason = progression.SkillLockReason(selectedSkill);
             string caption = rank >= 3 ? "已完全觉醒" : (rank == 0 ? "学习初习" : "进阶" + GameBalance.SkillRankName(rank + 1)) + " · 1点";
             Rect learn = MobilePanelRect(layout.FooterButton(1, 2));
-            if (Button(learn, caption, gold, string.IsNullOrEmpty(reason)))
+            if (PrimaryButton(learn, caption, gold, string.IsNullOrEmpty(reason)))
             {
                 bool saved = progression.LearnSkill(selectedSkill) && string.IsNullOrEmpty(progression.LastError);
                 mobileSkillStatusFailed = !saved;
