@@ -1,0 +1,85 @@
+{
+  "exactMergedMainSha": "22086cebe622f793804ff803ef80fc2e0a796889",
+  "fullPassed": 305,
+  "fullTotal": 305,
+  "failedNames": [],
+  "sourceChangedDuringRun": [],
+  "previousFullPassed": 291,
+  "previousFullTotal": 305,
+  "priorFixtureFailuresNowPassed": [
+    "collection-render-lifecycle",
+    "collection-render-lifecycle-modern",
+    "collection-stage-recovery-negative",
+    "collection-collider-free",
+    "collectionpreviewpresentationproduction",
+    "mobilepinnedtargetproduction",
+    "restricted-healing-production",
+    "mobile-opportunity-input",
+    "mobile-floating-joystick",
+    "combat-opportunity-slot",
+    "mobile-basic-window-draw",
+    "mobile-passive-status",
+    "reforgeselection",
+    "returning-counter-persistence"
+  ],
+  "causeGroups": [
+    {
+      "cause": "Bounds.size missing from native-resource stand-in",
+      "checks": [
+        "collection-render-lifecycle",
+        "collection-render-lifecycle-modern",
+        "collection-stage-recovery-negative",
+        "collection-collider-free",
+        "collectionpreviewpresentationproduction"
+      ],
+      "repair": "Equivalent extents*2 property; unchanged host code; original lifecycle/render/group mutations retained plus centered-envelope mutation."
+    },
+    {
+      "cause": "Bound skill visibility/opportunity area missing from GUI stand-in",
+      "checks": [
+        "mobilepinnedtargetproduction",
+        "restricted-healing-production",
+        "mobile-opportunity-input",
+        "mobile-floating-joystick"
+      ],
+      "repair": "Extract actual BoundMobileSkill/MobileOpportunityArea/MobileSkillVisible; explicit managed PlayerPrefs boundary; retain pointer/resource/captured-intent assertions and add remap ownership."
+    },
+    {
+      "cause": "Wrapped target-name GUI API absent",
+      "checks": [
+        "combat-opportunity-slot",
+        "mobile-basic-window-draw"
+      ],
+      "repair": "Add RectOffset, GUIContent, CalcSize/CalcHeight, wrapping/clipping and GUI.Label overload boundaries; retain clock/opacity/availability/hit-area negative controls."
+    },
+    {
+      "cause": "HUD bound-skill method absent and old circular page-selector expectation",
+      "checks": [
+        "mobile-passive-status"
+      ],
+      "repair": "Use actual binding method; replace only obsolete page primitive-count assertion, retaining every skill rim/readiness/resource/page-release assertion. Independent audit adds backing/underline/arrow geometry and missing-arrow mutation."
+    },
+    {
+      "cause": "iOS graphic choice/footer buttons no longer carry old text labels",
+      "checks": [
+        "reforgeselection"
+      ],
+      "repair": "Deliver same recorded click to actual option/footer rectangles with enabled gate; all29 business check expressions unchanged."
+    },
+    {
+      "cause": "iOS extracted smith branch now calls price action wrapper",
+      "checks": [
+        "returning-counter-persistence"
+      ],
+      "repair": "Supply GUI-boundary ServiceCostAction; enabled/camp/material conditions and actual service transaction execute; all14 persistence checks and7 desktop checks unchanged."
+    }
+  ],
+  "baselineSignatureComparison": [],
+  "independentBranch": "codex/regression-assertion-audit",
+  "independentTestedSha": "a38a27de1ae9131a4c8cc8da674ca6a9abda8fe6",
+  "independentPassed": 3,
+  "independentTotal": 3,
+  "mainAssetsTree": "395c5cd8aa14255767c00f56afdb07c1ab28bd40",
+  "independentAssetsTree": "395c5cd8aa14255767c00f56afdb07c1ab28bd40",
+  "independentBranchFullSuiteExecuted": false
+}
