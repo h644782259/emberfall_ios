@@ -6,7 +6,7 @@ import tempfile,subprocess,sys,os
 root=Path(__file__).resolve().parents[1]
 setup=(root/'Tests/FilledVfxPoolProductionTests.py').read_text().split('with tempfile.TemporaryDirectory',1)[0];ns={'__file__':str(root/'Tests/FilledVfxPoolProductionTests.py')};exec(setup,ns);shell=ns['s']
 shell=shell.replace('public bool IsDead;public int CombatEpoch;', 'public bool IsDead;public int CombatEpoch;public int Hits;public void HitArea(Vector3 at,float r,CombatDamage d,float k=0,float s=0,int castId=0){Hits++;}public void HealingProtection(int rank){}')
-shell=shell.replace('public bool HasStarted,ModeFinished,InputBlocked;', 'public bool HasStarted,ModeFinished,InputBlocked,CombatEnded;')
+shell=shell.replace('public bool HasStarted,ModeFinished,InputBlocked;', 'public bool HasStarted,ModeFinished,InputBlocked,CombatEnded;public bool CombatEffectsEnded=>CombatEnded;')
 shell=shell.replace('public static Vector3 forward=>','public static Vector3 right=>new Vector3(1,0,0);public static Vector3 forward=>')
 source=(root/'Assets/Scripts/Combat/AdvancedSkillSequence.cs').read_text()
 def member(marker):

@@ -9,23 +9,14 @@ namespace Emberfall
         private HubNpcKind inventoryHubNpc;
         private bool merchantShopOpen;
         private bool merchantExchangeOpen;
-        private bool MerchantServiceActive {get{return merchantShopOpen&&session.NearbyHubNpc==HubNpcKind.Merchant&&!session.InDungeon;}}
+        private bool MerchantServiceActive {get{return merchantShopOpen&&HubServicesAvailable;}}
 
-        private static string HubNpcLabel(HubNpcKind kind)
+        private bool HubServicesAvailable {get{return session!=null&&session.HasStarted&&!session.IsDead&&!session.InDungeon&&!session.PracticeActive;}}
+
+        private void OpenHubService(HubNpcKind kind)
         {
-            return kind == HubNpcKind.Merchant ? "商人 · 药剂 / 出售" :
-                kind == HubNpcKind.Blacksmith ? "铁匠 · 部位强化" :
-                kind == HubNpcKind.Exchange ? "观星员 · 星路 / 兑换" : "营地工坊";
-        }
-
-        private static string HubNpcMobileLabel(HubNpcKind kind)
-        { return kind == HubNpcKind.Merchant ? "商人交易" : kind == HubNpcKind.Blacksmith ? "铁匠强化" : "星路 / 兑换"; }
-
-        private void OpenNearbyHubNpc()
-        {
-            if (UITransitionBlocked || session == null || session.InputBlocked) return;
-            HubNpcKind kind = session.NearbyHubNpc;
-            if (kind == HubNpcKind.None) return;
+            if(UITransitionBlocked||!HubServicesAvailable||session.InputBlocked)return;
+            if(kind!=HubNpcKind.Merchant&&kind!=HubNpcKind.Blacksmith)return;
             CancelHotbarPointer();
             if(kind==HubNpcKind.Merchant)SelectMerchantMode(0,true);
             inventoryHubNpc = kind;merchantShopOpen=kind==HubNpcKind.Merchant;smithShopOpen=kind==HubNpcKind.Blacksmith;npcShopScroll=Vector2.zero;
@@ -41,7 +32,7 @@ namespace Emberfall
         }
 
         private bool smithShopOpen;
-        private bool SmithServiceActive {get{return smithShopOpen&&session.NearbyHubNpc==HubNpcKind.Blacksmith&&!session.InDungeon;}}
+        private bool SmithServiceActive {get{return smithShopOpen&&HubServicesAvailable;}}
         private Vector2 npcShopScroll;
         private void DrawMerchantShop(){DrawMerchantService();}
 
@@ -51,7 +42,7 @@ namespace Emberfall
         {
             get
             {
-                if (session.InDungeon || session.NearbyHubNpc != inventoryHubNpc) return "行囊";
+                if (!HubServicesAvailable) return "行囊";
                 return inventoryHubNpc == HubNpcKind.Merchant ? "商人 · 行囊与补给" :
                     inventoryHubNpc == HubNpcKind.Blacksmith ? "铁匠 · 装备与强化" : "行囊";
             }
@@ -61,7 +52,7 @@ namespace Emberfall
         {
             get
             {
-                if (session.InDungeon || session.NearbyHubNpc != inventoryHubNpc) return "";
+                if (!HubServicesAvailable) return "";
                 return inventoryHubNpc == HubNpcKind.Merchant ? "下方购买药剂 · 背包右侧出售闲置装备" :
                     inventoryHubNpc == HubNpcKind.Blacksmith ? "右侧强化装备部位 · 换装继承部位等级" : "";
             }
@@ -71,7 +62,7 @@ namespace Emberfall
         {
             if (UITransitionBlocked || session == null || !session.HasStarted || session.IsDead || exitRequest.Open || saveFlow.Open) return;
             travelReturnPause = session.Paused;
-            travelError = null;
+            travelError = null;travelMapTab=0;
             CancelHotbarPointer();
             panel = Panel.TravelMap;
             session.SetUIBlocking(true);
@@ -90,58 +81,59 @@ namespace Emberfall
             return true;
         }
 
-        private void DrawHubActions(float x, float y)
-        {
-            if (Button(new Rect(x, y, 222, 40), "城镇旅行地图", jade)) OpenTravelMap();
-            HubNpcKind nearby = session.NearbyHubNpc;
-            if (nearby != HubNpcKind.None && Button(new Rect(x, y - 50, 222, 42), HubNpcLabel(nearby), gold)) OpenNearbyHubNpc();
-        }
-
+        private int travelMapTab;
         private void DrawTravelMap()
         {
-            bool mobile = MobileControls.Active;
-            float u = mobile ? TouchRatio : 1.35f;
-            float w = 520 * u, h = (travelReturnPause?306:252) * u;
-            Rect r = new Rect((width - w) * .5f, (height - h) * .5f, w, h);
-            Box(r, jade);
+            float u=MobileControls.Active?TouchRatio:1.35f;
+            float w=Mathf.Min(700,width/u-24),h=Mathf.Min(450,height/u-24);
+            Rect r=new Rect((width-w*u)*.5f,(height-h*u)*.5f,w*u,h*u);
+            blockedRects.Add(r);Box(r,jade);
+            Text(new Rect(r.x+16*u,r.y+10*u,r.width-76*u,30*u),"地图 · "+session.ZoneName,Mathf.RoundToInt(20*u),pale,true);
             Rect close=new Rect(r.xMax-52*u,r.y+6*u,44*u,44*u);
             DrawIcon(new Rect(close.center.x-9*u,close.center.y-9*u,18*u,18*u),UIIconAtlas.Utility("cancel"),jade);
-            if(QuietAction(close,"",!UITransitionBlocked,"关闭城镇旅行")){CloseTravelMap();return;}
-            Text(new Rect(r.x + 16*u, r.y + 10*u, 436*u, 28*u), "城镇旅行 · " + HubTravelRules.Name(session.CurrentHub),
-                Mathf.RoundToInt(21*u), pale, true);
-            string hint = !string.IsNullOrEmpty(travelError) ? travelError : !session.CanOpenTravelMap ?
-                "挑战中或附近有敌人时不能旅行，请先安全返回营地。" : "免费旅行 · 商人、铁匠提供相同服务 · 装备与货币保留";
-            Text(new Rect(r.x + 16*u, r.y + 40*u, 488*u, 30*u), hint, Mathf.RoundToInt(11*u),
-                !string.IsNullOrEmpty(travelError) ? gold : muted, false, true);
-            GameProfile profile = session.Progression.Profile;
-            int mask = HubTravelRules.UnlockedMask(profile.unlockedHubMask, profile.level, profile.clearedRuns);
-            // The connecting road is a travel diagram, not a claim about world distances.
-            Fill(new Rect(r.x + 60*u, r.y + 95*u, 400*u, 2*u), jade * .5f);
-            for (int hub = 0; hub < HubTravelRules.Count; hub++)
+            if(QuietAction(close,"",!UITransitionBlocked)){CloseTravelMap();return;}
+            if(PauseSidebarTab(new Rect(r.x+16*u,r.y+50*u,120*u,44*u),"当前地图",travelMapTab==0,u))travelMapTab=0;
+            if(PauseSidebarTab(new Rect(r.x+144*u,r.y+50*u,120*u,44*u),"城镇旅行",travelMapTab==1,u))travelMapTab=1;
+            Rect body=new Rect(r.x+16*u,r.y+102*u,r.width-32*u,r.height-114*u);
+            if(travelMapTab==0){DrawExpandedMap(body,u);return;}
+            string hint=!string.IsNullOrEmpty(travelError)?travelError:!session.CanOpenTravelMap?"挑战中或附近有敌人，暂不可旅行。":"免费旅行 · 保留装备与货币";
+            Text(new Rect(body.x,body.y,body.width,28*u),hint,Mathf.RoundToInt(11*u),string.IsNullOrEmpty(travelError)?muted:gold,false,true);
+            var profile=session.Progression.Profile;int mask=HubTravelRules.UnlockedMask(profile.unlockedHubMask,profile.level,profile.clearedRuns);
+            float cardWidth=(body.width-16*u)/3;
+            for(int hub=0;hub<HubTravelRules.Count;hub++)
             {
-                bool unlocked = HubTravelRules.IsUnlocked(mask, hub), current = hub == session.CurrentHub;
-                Color tint = hub == 0 ? jade : hub == 1 ? new Color(.95f,.52f,.32f) : new Color(.56f,.66f,1);
-                float x = r.x + (16 + hub * 166)*u;
-                Rect cardRect = new Rect(x, r.y + 76*u, 156*u, 164*u);
-                Fill(cardRect, card); Border(cardRect, unlocked ? tint : muted*.4f);
-                Fill(new Rect(x + 68*u, r.y + 86*u, 20*u, 20*u), current ? gold : unlocked ? tint : muted*.4f);
-                Text(new Rect(x + 6*u, r.y + 114*u, 144*u, 25*u), HubTravelRules.Name(hub), Mathf.RoundToInt(16*u), unlocked ? pale : muted, true, false, TextAnchor.MiddleCenter);
-                Text(new Rect(x + 7*u, r.y + 143*u, 142*u, 31*u), unlocked ? "商人 / 铁匠 / 兑换员" : HubTravelRules.UnlockHint(hub),
-                    Mathf.RoundToInt(11*u), muted, false, true, TextAnchor.MiddleCenter);
-                if (Button(new Rect(x + 8*u, r.y + 183*u, 140*u, 48*u), current ? "当前城镇" : unlocked ? "前往" : "尚未解锁",
-                    tint, unlocked && !current && session.CanOpenTravelMap && !UITransitionBlocked))
+                bool unlocked=HubTravelRules.IsUnlocked(mask,hub),current=hub==session.CurrentHub;
+                Rect tile=new Rect(body.x+hub*(cardWidth+8*u),body.y+32*u,cardWidth,body.height-32*u);
+                Fill(tile,card);Border(tile,current?gold:jade);
+                Text(new Rect(tile.x+6*u,tile.y+8*u,tile.width-12*u,26*u),HubTravelRules.Name(hub),Mathf.RoundToInt(14*u),unlocked?pale:muted,true,false,TextAnchor.MiddleCenter);
+                Text(new Rect(tile.x+8*u,tile.y+38*u,tile.width-16*u,36*u),unlocked?"商店 · 铁匠强化":HubTravelRules.UnlockHint(hub),Mathf.RoundToInt(11*u),muted,false,true,TextAnchor.MiddleCenter);
+                if(Button(new Rect(tile.x+6*u,tile.yMax-50*u,tile.width-12*u,44*u),current?"当前城镇":unlocked?"前往":"尚未解锁",jade,unlocked&&!current&&session.CanOpenTravelMap&&!UITransitionBlocked))
                 {
-                    if (session.TravelToHub(hub))
-                    {
-                        travelReturnPause = false;
-                        CloseTravelMap();
-                        return;
-                    }
-                    travelError = string.IsNullOrEmpty(session.Progression.LastError) ? "旅行未完成，请确认已安全返回营地后重试。" : session.Progression.LastError;
-                    BlockUITransition();
+                    if(session.TravelToHub(hub)){travelReturnPause=false;CloseTravelMap();return;}
+                    travelError=string.IsNullOrEmpty(session.Progression.LastError)?"旅行未完成，请安全返回营地后重试。":session.Progression.LastError;
                 }
             }
-            if (travelReturnPause && Button(new Rect(r.x + 16*u, r.y + 250*u, 488*u, 48*u), "返回设置", jade)) CloseTravelMap();
+        }
+
+        private void DrawExpandedMap(Rect body,float u)
+        {
+            float mapWidth=body.width-132*u,size=Mathf.Min(mapWidth,body.height);
+            Rect map=new Rect(body.x+(mapWidth-size)*.5f,body.y+(body.height-size)*.5f,size,size);
+            Fill(map,ink);DrawMinimapTerrain(map);Border(map,jade);
+            Color portal=new Color(.4f,.65f,1),camp=new Color(.9f,.9f,.85f),ordinary=new Color(.54f,.77f,.5f),aggro=new Color(1,.58f,.35f),boss=new Color(1,.32f,.3f);
+            if(!session.InDungeon){MapDot(map,new Vector3(0,0,11),portal,7*u);MapDot(map,new Vector3(0,0,-10),camp,6*u);}
+            else if(session.DungeonReturnAvailable)MapDot(map,new Vector3(0,0,-16),portal,7*u);
+            foreach(var enemy in session.Enemies)if(enemy!=null&&!enemy.IsDead)
+                MapDot(map,enemy.transform.position,enemy.IsBoss?boss:enemy.Tier==EnemyController.ThreatTier.Elite?gold:enemy.IsAggro?aggro:ordinary,enemy.IsBoss?7*u:4*u);
+            if(session.Player!=null)MapDot(map,session.Player.transform.position,jade,7*u);
+            string[] names={"你的位置","入口 / 出口","营地","普通敌人","战斗中","精英","首领"};Color[] colors={jade,portal,camp,ordinary,aggro,gold,boss};
+            float x=body.xMax-116*u;
+            Text(new Rect(x,body.y,116*u,22*u),"图例",Mathf.RoundToInt(13*u),pale,true);
+            for(int i=0;i<names.Length;i++)
+            {
+                float y=body.y+(27+i*18)*u;Fill(new Rect(x,y+5*u,8*u,8*u),colors[i]);
+                Text(new Rect(x+16*u,y,100*u,18*u),names[i],Mathf.RoundToInt(11*u),pale);
+            }
         }
     }
 }

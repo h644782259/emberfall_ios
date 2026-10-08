@@ -8,6 +8,16 @@ namespace Emberfall
         public RunMechanismEvidence MechanismEvidence {get;}=new RunMechanismEvidence();
         public RunChoices RunChoices { get; private set; } = new RunChoices();
         public bool DungeonSelectionOpen { get; private set; }
+        public bool CanChallengeNextTier {get{return HasStarted&&InDungeon&&!ChapterActive&&!IsDead&&DungeonResultsReady&&DungeonTier<MaximumDungeonTier&&!changingZone&&!ModeRewardPending&&!DungeonRewardPending;}}
+        public bool ChallengeNextTier()
+        {
+            if(!CanChallengeNextTier||Paused||pauseState.BackgroundPaused)return false;
+            int next=Mathf.Min(DungeonTier+1,MaximumDungeonTier),previous=SelectedDungeonTier;SelectedDungeonTier=next;
+            try {if(!ChangeZone(true)){SelectedDungeonTier=previous;return false;}}
+            catch(System.Exception error){if(RoomChainRun!=null)FailRoomGeneration("下一阶构建异常",error);else Notify("下一阶生成异常："+error.GetType().Name);return false;}
+            if(RoomChainRun!=null&&RoomChainRun.Failed)return false;
+            Notify("直接挑战第 "+DungeonTier+" 阶 · "+ModeName);return true;
+        }
         private readonly int[] selectedAdventureTiers={1,1,1,1,1};
         public int SelectedDungeonTier { get { return Progression==null?1:Mathf.Clamp(selectedAdventureTiers[Mathf.Clamp(SelectedArenaMode+1,0,4)],1,MaximumDungeonTier); } set { selectedAdventureTiers[Mathf.Clamp(SelectedArenaMode+1,0,4)]=value; } }
         public int MaximumDungeonTier { get { return Progression.UnlockedAdventureTier(SelectedArenaMode); } }

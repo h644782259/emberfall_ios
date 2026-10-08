@@ -21,7 +21,7 @@ namespace Emberfall{
  public static class MobileControls{public static MobileControlLayout Layout;}
  public class Progression{public string LastError="save error";}public class Session{public Progression Progression=new Progression();}
  public partial class GameUI{
-  bool saveSlotsDirty;List<int> saveSlots=new List<int>{1};Session session=new Session();float width=2000,height=1200;Color pale,muted,gold,jade;object invisibleButton;HeroClass selectedClass;
+  bool titleCreatingHero=true;void DrawAdventureHome(){}void BlockUITransition(){}bool saveSlotsDirty;List<int> saveSlots=new List<int>{1};Session session=new Session();float width=2000,height=1200;Color pale,muted,gold,jade;object invisibleButton;HeroClass selectedClass;
   enum ButtonRole{Navigation,Primary}public List<Rect> Cards=new List<Rect>(),Icons=new List<Rect>(),Buttons=new List<Rect>();public List<int> Fonts=new List<int>();public int Starts,Loads;
   void RefreshSaveSlots(){}void OpenSaveSelection(){Loads++;}void StartSelectedHero(){Starts++;}
   Rect TouchRect(MobileControlLayout.Area a)=>new Rect(a.X,a.Y,a.Width,a.Height);int TouchFont(float f)=>(int)Math.Round(f);
@@ -44,7 +44,7 @@ namespace Emberfall{
      if(i>0)Check(ui.Cards[i].x>ui.Cards[i-1].x+ui.Cards[i-1].width,"four cards stay side by side");
      var click=ui.Cards[i];GUI.X=click.x+click.width/2;GUI.Y=click.y+click.height/2;var hit=new GameUI();hit.DrawMobileTitle();Check((int)hit.selectedClass==i&&hit.Starts==0,"enlarged card hitbox selects the correct hero");
     }
-    for(int i=0;i<2;i++){var r=ui.Buttons[i];GUI.X=r.x+r.width/2;GUI.Y=r.y+r.height/2;var hit=new GameUI();hit.DrawMobileTitle();Check(i==0?hit.Loads==1&&hit.Starts==0:hit.Starts==1&&hit.Loads==0,"footer click dispatches exactly the requested action");}
+    for(int i=0;i<2;i++){var r=ui.Buttons[i];GUI.X=r.x+r.width/2;GUI.Y=r.y+r.height/2;var hit=new GameUI();hit.DrawMobileTitle();Check(i==0?!hit.titleCreatingHero&&hit.Starts==0:hit.Starts==1&&hit.Loads==0,"footer click dispatches exactly the requested action");}
     Check(ui.Fonts[0]==(int)Math.Round(25*layout.Zoom)&&ui.Fonts[6]==(int)Math.Round(15*layout.Zoom),"heading and action typography scale with panel");
     if(!ipad)Check(layout.Zoom==1&&ui.Cards[0].x==(l.Width-528)/2&&ui.Cards[0].y==(l.Height-300)/2+50&&ui.Buttons[0].height==52,"phone layout is unchanged");
     if(ipad&&l.Width>=972&&l.Height>=596)Check(layout.Zoom==1.75f,"roomy iPad uses requested 1.75x enlargement");
