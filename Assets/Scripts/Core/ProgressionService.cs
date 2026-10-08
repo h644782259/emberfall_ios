@@ -2289,7 +2289,7 @@ namespace Emberfall
 
         // New gear advances at level 10, 20, ...; stored items keep their earned stats.
         public static int EquipmentGenerationLevel(int level)
-        { level=Clamp(level,1,MaximumLevel);return level<10?1:level/10*10; }
+        { return Clamp(level,1,MaximumLevel); }
 
         private static void SetRolledStats(ItemData item)
         {

@@ -35,6 +35,7 @@ fixture=fixture.replace('public class Model{','public class Model{public Transfo
 fixture=fixture.replace('public class Bonus{','public class Bonus{public float IncomingDamageMultiplier(float f)=>1;')
 fixture=fixture.replace('public class Mastery{','public class Mastery{public float WardReduction;public void Reset(){}public float DamageTaken(float f)=>0;')
 fixture=fixture.replace('public class Progress{','public class Progress{public PlayerStats GetStats()=>new PlayerStats();')
+fixture=fixture.replace('public class Progress{public float MechanicRangeMultiplier(EquipmentMechanic m)=>1;public float MechanicPowerMultiplier(EquipmentMechanic m)=>1;','public class Progress{public float MechanicRangeMultiplier(EquipmentMechanic m)=>1;public float MechanicPowerMultiplier(EquipmentMechanic m)=>1;public PlayerStats GetStats()=>new PlayerStats();')
 fixture=fixture.replace('public class Status{','public class Status{public float DamageMultiplier=1;public void Burn(params object[] a){}public void FrostMark(float f){}public void Freeze(float f){}public void Mark(float a,float b){}public void Poison(params object[] a){}')
 fixture=fixture.replace('public Vector3 position,forward=', 'public Quaternion localRotation;public Vector3 position,forward=')
 # Keep extraction independent of old counter Main helper without compiling its dodge fixture.

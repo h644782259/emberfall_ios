@@ -57,8 +57,8 @@ def unity_references(download):
     return references
 
 
-def write_project(directory, sources, program=None, references=None, framework="net8.0", defines=""):
-    if any(Path(path).name=="ProgressionService.cs" for path in sources):
+def write_project(directory, sources, program=None, references=None, framework="net8.0", defines="", automatic_partials=True):
+    if automatic_partials and any(Path(path).name=="ProgressionService.cs" for path in sources):
         for name in ["ProgressionService.Attachments.cs","ProgressionService.AutomaticGrowth.cs","ProgressionService.Smith.cs","ProgressionService.Trading.cs"]:
             part=ROOT/"Assets/Scripts/Core"/name
             if not any(Path(path).name==name for path in sources):sources=[*sources,part]

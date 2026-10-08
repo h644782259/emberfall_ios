@@ -47,7 +47,7 @@ public static class ProgressionGoalIdentityTests
         Check(!p.ExecuteProgressionGoal(ascend.ActionIdentity,true)&&State(p)==before,"duplicate ascension token pays nothing");
         p.Profile.level=12;p.Profile.gold=99999;Check(p.SelectProgressionGoal(ProgressionGoalKind.Reforge,epic.id),"track reforge to captured level");
         var reforge=p.SelectedProgressionGoal(true);p.Profile.level=15;
-        Check(p.Profile.progressionGoalLevel==10&&p.ExecuteProgressionGoal(reforge.ActionIdentity,true)&&p.SelectedProgressionGoal(true).Done,"reforge captures executable equipment tier without moving selected target");
+        Check(p.Profile.progressionGoalLevel==12&&p.ExecuteProgressionGoal(reforge.ActionIdentity,true)&&p.SelectedProgressionGoal(true).Done,"reforge captures executable equipment tier without moving selected target");
         string persistedIdentity=p.SelectedProgressionGoal(true).Identity;
         var reload=new ProgressionService(Path.GetDirectoryName(p.SaveFilePath));Check(reload.LoadSlot(p.CurrentSlotId),"reload selected slot");
         Check(reload.SelectedProgressionGoal(true).Identity==persistedIdentity,"reload retains concrete target identity");

@@ -10,7 +10,7 @@ def member(s,key):
  return s[a:b]
 with tempfile.TemporaryDirectory(prefix='whole-plan-geometry-') as d:
  p=Path(d);(p/'NuGet.Config').write_text('<configuration><packageSources><clear/></packageSources></configuration>')
- sources=[root/('Assets/Scripts/Core/'+f+'.cs') for f in ['SkillRuntime','GameTypes','ProgressionService','CombatBalance','SkillDamageBudgets','HubTravelRules','MasteryCoreRuntime','TierRewardRules','TierRewardBand','ProgressionGoalState','ChapterProgression','ProgressionService.Chapter','ProgressionService.Reforge','ReforgeQuote','RoomTactics','CombatImpactBatch','CampPracticeRecord','HudLogicalScale']]
+ sources=[root/('Assets/Scripts/Core/'+f+'.cs') for f in ['SkillRuntime','GameTypes','ProgressionService','ProgressionService.Attachments','ProgressionService.AutomaticGrowth','CombatBalance','SkillDamageBudgets','HubTravelRules','MasteryCoreRuntime','TierRewardRules','TierRewardBand','ProgressionGoalState','ChapterProgression','ProgressionService.Chapter','ProgressionService.Reforge','ReforgeQuote','RoomTactics','CombatImpactBatch','CampPracticeRecord','HudLogicalScale']]
  sources += [root/('Assets/Scripts/UI/'+f+'.cs') for f in ['GameUI.BuildPlans','GameUI.BuildDraft','GameUI.Practice','PracticeResultPresentation','PracticeHudLayout','MobilePanelLayout','MobileControlLayout']]+[root/'Assets/Scripts/Combat/MobileSkillPolicy.cs',root/'Tests/BuildPlanPageGeometryBoundary.cs']
  progression=p/'Progression.cs';progression.write_text((root/'Tests/ProgressionTests.cs').read_text().replace('public struct Color {','public struct Color {public static Color operator *(Color c,float f)=>c;'));sources.append(progression)
  s=(root/'Tests/CampBuildDraftUIBoundary.cs').read_text()
@@ -24,7 +24,7 @@ with tempfile.TemporaryDirectory(prefix='whole-plan-geometry-') as d:
  s=s.replace('public bool PracticeActive;', 'public bool PracticeActive;public CampPracticeRecord PracticeRecord,PreviousPracticeRecord;public bool BeginPractice(CampPracticeScenario s,int seconds,ProgressionService.BuildDraft d)=>false;public bool PinPracticeBaseline()=>false;public bool StartPractice()=>false;public bool RestartPractice()=>false;public void EndPractice(string reason){}')
  s=s.replace('bool practiceChoicesOpen;int TouchFont(int size)=>(int)(size*TouchRatio);','')
  s=s.replace('private void DrawPracticeChoices(ref float y,float width,float unit,bool draw,bool enabled,ProgressionService.BuildDraft draft){}','')
- s=s.replace('enum Panel{Camp,Inventory}', 'enum Panel{Camp,Inventory,None}')
+ s=s.replace('bool MerchantServiceActive=>true;enum Panel{Camp,Inventory,Skills}', 'bool MerchantServiceActive=>true;enum Panel{Camp,Inventory,None,Skills}')
  s=s.replace('float width=1000,height=700,TouchRatio=1;', 'float width=1000,height=700;')
  s=s.replace('TouchRatio=mobile?2:1,','')
  s=s.replace('labels.Add(s);if(click==null', 'labels.Add(s);GeometryButton(r,s);if(click==null')
