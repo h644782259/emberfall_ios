@@ -27,6 +27,7 @@ namespace Emberfall
             HubNpcKind kind = session.NearbyHubNpc;
             if (kind == HubNpcKind.None) return;
             CancelHotbarPointer();
+            if(kind==HubNpcKind.Merchant)SelectMerchantMode(0,true);
             inventoryHubNpc = kind;merchantShopOpen=kind==HubNpcKind.Merchant;smithShopOpen=kind==HubNpcKind.Blacksmith;npcShopScroll=Vector2.zero;
             if (kind == HubNpcKind.Exchange) { NavigateMerchantExchange();return; }
             else
