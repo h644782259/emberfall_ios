@@ -9,7 +9,7 @@ namespace Emberfall
         private GameProfile chapterSelectionOwner;
         private string chapterEntryError;
         private bool ChapterSelectionIsCurrent()
-        {return panel==Panel.Chapter&&session.OpenChapterSelectionAllowed&&ReferenceEquals(chapterSelectionOwner,session.Progression.Profile);}
+        {return (panel==Panel.Chapter||session.DungeonSelectionOpen&&adventureChapterSelected)&&session.OpenChapterSelectionAllowed&&ReferenceEquals(chapterSelectionOwner,session.Progression.Profile);}
         private bool OpenChapterSelection()
         {
             if(UITransitionBlocked||!session.OpenChapterSelectionAllowed)return false;
@@ -84,60 +84,48 @@ namespace Emberfall
                 for(int d=0;d<3;d++)
                     Text(new Rect(card.x+d*card.width/3,card.yMax+19*u,card.width/3,16*u),ChapterEntryPresentation.DifficultyName((ChapterDifficulty)d)+(highest>=d?" ✓":" ·"),Mathf.RoundToInt(10*u),highest>=d?jade:muted);
             }
-            Rect body=ChapterRect(new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y+88,layout.Body.Width,layout.Body.Height-88),u);float contentWidth=layout.Body.Width-18;
-            float textWidth=(contentWidth-16)*u;
-            string story=ChapterEntryPresentation.Story(node);
-            string preview=ChapterDefinition.Get(node).Mechanic;
-            float storyH=chapterStoryExpanded?Style(Mathf.RoundToInt(14*u),false,true).CalcHeight(new GUIContent(story),textWidth)/u+12:0;
-            float previewH=Style(Mathf.RoundToInt(13*u),false,true).CalcHeight(new GUIContent(preview),textWidth)/u+12;
-            float errorH=string.IsNullOrEmpty(chapterEntryError)?0:Style(Mathf.RoundToInt(13*u),false,true).CalcHeight(new GUIContent(chapterEntryError),textWidth)/u+12;
-            bool tactics=RunChoices.ChapterTacticsAvailable(profile,node);
-            float tacticHeight=0;
-            if(tactics)for(int i=0;i<3;i++)tacticHeight+=Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(RunChoices.Description(RunChoices.ChapterTactic(profile,mobile,i))),textWidth)/u+66;
-            if(tactics)tacticHeight+=60;
-            int chestMode=node==ChapterNode.ForestCourt?0:node==ChapterNode.Redrock?1:2;
-            int chestTier=Mathf.Min(100,session.SelectedChapterTier+(int)difficulty*5);
-            float rewardsHeight=DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,false);
-            float total=48+rewardsHeight+tacticHeight+errorH+32+48+12+48+12+previewH+60+storyH;
-            chapterScroll=BeginTouchScroll("chapter-entry",body,chapterScroll,new Rect(0,0,contentWidth*u,Mathf.Max(body.height/u,total)*u));
-            float y=0,w=(contentWidth-16)/3;
-            if(errorH>0){Text(new Rect(8*u,y*u,textWidth,(errorH-12)*u),chapterEntryError,Mathf.RoundToInt(13*u),gold,false,true);y+=errorH;}
-            string summary="当前 · "+ChapterEntryPresentation.DifficultyName(difficulty)+" · 第 "+session.SelectedChapterTier+" 阶";
-            Text(new Rect(8*u,y*u,textWidth,28*u),summary,Mathf.RoundToInt(13*u),pale,true);y+=32;
-            for(int i=0;i<3;i++)
-            {
-                var choice=(ChapterDifficulty)i;bool allowed=ChapterProgression.CanEnter(profile,node,choice);
-                string label=ChapterEntryPresentation.DifficultyName(choice)+(choice==difficulty?" ✓":allowed?"":" · 未解锁");
-                if(Button(new Rect(i*(w+8)*u,y*u,w*u,48*u),label,choice==difficulty?gold:jade,allowed))
-                {SelectChapterDifficulty(choice);EndTouchScroll();return;}
-            }
-            y+=60;
-            Text(new Rect(8*u,y*u,104*u,48*u),"阶数 "+session.SelectedChapterTier,Mathf.RoundToInt(16*u),pale,true,false,TextAnchor.MiddleLeft);
-            if(Button(new Rect(112*u,y*u,48*u,48*u),"−",jade,session.SelectedChapterTier>1)){ChangeChapterTier(-1);EndTouchScroll();return;}
-            if(Button(new Rect(168*u,y*u,48*u,48*u),"+",jade,session.SelectedChapterTier<session.Progression.UnlockedChapterTier(session.SelectedChapterNode))){ChangeChapterTier(1);EndTouchScroll();return;}
-            y+=60;Text(new Rect(8*u,y*u,textWidth,previewH*u),preview,Mathf.RoundToInt(13*u),muted,false,true);y+=previewH;
-            entryRewardViewport=body;entryRewardContentOrigin=new Vector2(body.x-chapterScroll.x,body.y+y*u-chapterScroll.y);GUI.BeginGroup(new Rect(0,y*u,contentWidth*u,rewardsHeight*u));DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,true);GUI.EndGroup();y+=rewardsHeight;
-            DrawRewardToken(new Rect(8*u,y*u,textWidth,36*u),1,ChapterEntryPresentation.RewardMaterials(profile,node,difficulty,session.SelectedChapterTier),u);y+=48;
-            if(tactics)
-            {
-                if(Button(new Rect(0,y*u,contentWidth*u,48*u),session.SelectedChapterTactic<0?"本节点战术 · 不携带 ✓":"本节点战术 · 不携带",jade))
-                {session.SelectedChapterTactic=-1;EndTouchScroll();return;}
-                y+=60;
-                for(int i=0;i<3;i++)
-                {
-                    var tactic=RunChoices.ChapterTactic(profile,mobile,i);
-                    if(Button(new Rect(0,y*u,contentWidth*u,48*u),RunChoices.Name(tactic)+(session.SelectedChapterTactic==i?" ✓":""),session.SelectedChapterTactic==i?gold:jade))
-                    {session.SelectedChapterTactic=i;EndTouchScroll();return;}
-                    y+=54;string description=RunChoices.Description(tactic);
-                    float dh=Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(description),textWidth)/u;
-                    Text(new Rect(8*u,y*u,textWidth,dh*u),description,Mathf.RoundToInt(12*u),muted,false,true);y+=dh+12;
-                }
-            }
-            if(Button(new Rect(0,y*u,contentWidth*u,48*u),chapterStoryExpanded?"收起故事线索":"展开故事线索",jade)){chapterStoryExpanded=!chapterStoryExpanded;EndTouchScroll();return;}
-            y+=60;if(chapterStoryExpanded)Text(new Rect(8*u,y*u,textWidth,(storyH-12)*u),story,Mathf.RoundToInt(14*u),pale,false,true);EndTouchScroll();
+            Rect body=ChapterRect(new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y+88,layout.Body.Width,layout.Body.Height-88),u);
+            DrawChapterEntryDetails(body,u);
             if(Button(ChapterRect(layout.FooterButton(0,2),u),"返回副本选择",jade)){CloseChapterSelection();session.EnterDungeon();return;}
             if(Button(ChapterRect(layout.FooterButton(1,2),u),"进入 "+ChapterDefinition.Get(node).Name,gold,ChapterProgression.CanEnter(profile,node,difficulty)))
             {ConfirmSelectedChapter();return;}
+        }
+        private void DrawChapterEntryDetails(Rect body,float u)
+        {
+            var profile=session.Progression.Profile;var node=session.SelectedChapterNode;
+            int level=AdventureRewardRules.DungeonLevel(session.SelectedChapterTier),mode=(int)node;
+            float w=body.width/u-18;
+            string mechanic="装备洗练石 × "+ProgressionService.ChapterRefinementStones(node,session.SelectedChapterTier)+(node==ChapterNode.Redrock?" · 主要产地":"")+"\n"+ChapterDefinition.Get(node).Mechanic+"\n"+ChapterDefinition.DifficultyMechanic(node,session.SelectedChapterDifficulty);
+            float descriptionHeight=Style(Mathf.RoundToInt(14*u),false,true).CalcHeight(new GUIContent(mechanic),(w-24)*u)/u+20;
+            float rewardsHeight=DrawEntryRewardPreviews(w,u,mode,session.SelectedChapterTier,true,false);
+            float total=132+descriptionHeight+rewardsHeight;
+            chapterScroll=BeginTouchScroll("chapter-entry",body,chapterScroll,new Rect(0,0,w*u,Mathf.Max(body.height,total*u)));
+            DrawChapterSymbol(new Rect(12*u,14*u,28*u,28*u),node,gold);
+            Text(new Rect(50*u,8*u,(w-58)*u,30*u),ChapterDefinition.Get(node).Name,Mathf.RoundToInt(20*u),pale,true);
+            Text(new Rect(12*u,50*u,(w-24)*u,30*u),"Lv"+level+" 挑战 · 每10级自动提升",Mathf.RoundToInt(14*u),gold,true);
+            Text(new Rect(12*u,84*u,(w-24)*u,descriptionHeight*u),mechanic,Mathf.RoundToInt(14*u),muted,false,true);
+            float y=84+descriptionHeight;
+            entryRewardViewport=body;entryRewardContentOrigin=new Vector2(body.x-chapterScroll.x,body.y+y*u-chapterScroll.y);
+            GUI.BeginGroup(new Rect(0,y*u,w*u,rewardsHeight*u));DrawEntryRewardPreviews(w,u,mode,session.SelectedChapterTier,true,true);GUI.EndGroup();
+            if(!string.IsNullOrEmpty(chapterEntryError))Text(new Rect(8*u,(y+rewardsHeight)*u,(w-16)*u,48*u),"暂时无法进入，请稍后重试。",Mathf.RoundToInt(13*u),gold,false,true);
+            EndTouchScroll();
+        }
+        private void DrawInlineChapterEntry(Rect area,float u)
+        {
+            if(!ReferenceEquals(chapterSelectionOwner,session.Progression.Profile))
+            {
+                chapterSelectionOwner=session.Progression.Profile;chapterEntryError=null;chapterScroll=Vector2.zero;
+                if(!ChapterProgression.IsUnlocked(chapterSelectionOwner,session.SelectedChapterNode))session.SelectedChapterNode=ChapterNode.ForestCourt;
+                if(!ChapterProgression.CanEnter(chapterSelectionOwner,session.SelectedChapterNode,session.SelectedChapterDifficulty))session.SelectedChapterDifficulty=ChapterDifficulty.Normal;
+                session.SelectedChapterTier=Mathf.Clamp(session.SelectedChapterTier,1,session.Progression.UnlockedChapterTier(session.SelectedChapterNode));
+            }
+            float cell=(area.width-16*u)/3;
+            for(int i=0;i<3;i++)
+            {
+                var node=(ChapterNode)i;bool unlocked=ChapterProgression.IsUnlocked(chapterSelectionOwner,node);
+                if(Button(new Rect(area.x+i*(cell+8*u),area.y,cell,58*u),ChapterDefinition.Get(node).Name+"\n"+ChapterProgression.UnlockLevel(node)+"级开启",node==session.SelectedChapterNode?gold:jade,unlocked))SelectChapterNode(node);
+            }
+            DrawChapterEntryDetails(new Rect(area.x,area.y+70*u,area.width,Mathf.Max(48*u,area.height-70*u)),u);
         }
         private MobilePanelLayout ChapterPanelGeometry()
         {return MobileControls.Active?MobilePanelGeometry():new MobilePanelLayout(Mathf.Min(960,width),Mathf.Min(660,height));}

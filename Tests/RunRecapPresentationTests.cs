@@ -26,12 +26,12 @@ public static class RunRecapPresentationTests
             Check(failed.Tip.Contains(detail)&&!failed.Tip.Contains("烬地有")&&!failed.Tip.Contains("霜环回响有"),"generation diagnostics survive ineffective mechanic evidence");
         }
         var empty=new RunRecapPresentation(Snapshot());
-        Check(empty.Metrics.Length==0 && empty.ExtraActions.Length==0 && empty.Mechanics.Length==0 && empty.Blessings.Length==0,"hide empty sections");
+        Check(empty.Metrics.Length==5 && empty.ExtraActions.Length==0 && empty.Mechanics.Length==0 && empty.Blessings.Length==0,"hide empty sections");
         Check(!empty.HasDamage && !empty.HasProgress,"do not fabricate hit/reward rows");
         Check(!string.IsNullOrEmpty(empty.Tip)&&!empty.Tip.Contains("\n"),"one concise defeat tip");
         var actions=new List<KeyValuePair<string,int>>
         {
-            new KeyValuePair<string,int>("普攻回能",12),new KeyValuePair<string,int>("职业能力",3),
+            new KeyValuePair<string,int>("伤害总计",12345),new KeyValuePair<string,int>("单次最大伤害",500),new KeyValuePair<string,int>("最大连击",100),new KeyValuePair<string,int>("承受伤害",80),new KeyValuePair<string,int>("闪避成功次数",3),new KeyValuePair<string,int>("普攻回能",12),new KeyValuePair<string,int>("职业能力",3),
             new KeyValuePair<string,int>("打断",2),new KeyValuePair<string,int>("完美闪避",1),
             new KeyValuePair<string,int>("碎冰连招",4),new KeyValuePair<string,int>("失败计数",0),
             new KeyValuePair<string,int>("坏记录",-4),new KeyValuePair<string,int>("换装",3)
@@ -40,8 +40,8 @@ public static class RunRecapPresentationTests
         var snapshot=Snapshot(false,7,"星蚀巨像",412,actions,mechanics,new[]{"闪避震荡","目标疗愈"},50,true);
         actions.Clear();mechanics.Clear();
         var data=new RunRecapPresentation(snapshot);
-        Check(data.Metrics.Length==4 && data.Metrics[0].Key=="完美闪避" && data.Metrics[0].Value==1,"recorded metrics prioritized, not invented");
-        Check(data.ExtraActions.Length==1 && data.ExtraActions[0]=="普攻回能 12","extra positive action retained as concise chip");
+        Check(data.Metrics.Length==5 && data.Metrics[0].Key=="伤害总计" && data.Metrics[0].Value==12345,"recorded metrics prioritized, not invented");
+        Check(data.ExtraActions.Length==0,"extra positive action retained as concise chip");
         Check(data.Mechanics.Length==1 && data.Blessings.Length==2,"copy snapshot and clean empty/duplicate chips");
         Check(data.HasDamage && data.Snapshot.LastDamageAmount==412 && data.HasProgress,"actual loss and last hit preserved");
         Check(Math.Abs(data.ExchangeProgress-7f/12)<.0001f,"actual exchange progress");

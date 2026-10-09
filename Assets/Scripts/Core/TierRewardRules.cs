@@ -12,6 +12,7 @@ namespace Emberfall
         public static int OrdinaryMechanicChance(int tier) { return 12 + 2 * Band(ClampTier(tier)); }
         public static Rarity DropRarity(bool boss, int tier, int roll)
         {
+            if(tier>0)return boss||roll>=70?Rarity.Rare:Rarity.Common;
             int band = Band(ClampTier(tier)); roll = Math.Max(0, Math.Min(99, roll));
             if (boss)
             {
@@ -38,6 +39,7 @@ namespace Emberfall
 
         public static int EquipmentCount(int mode){Validate(mode);return mode==3?2:1;}
         public static int EquipmentCount(int mode,int tier){return EquipmentCount(mode)+TierRewardBand.Of(tier)/2;}
+        public static int EnemyEquipmentChance(bool boss,bool elite){return boss?100:elite?35:8;}
         public static int PotionChance(int tier){return 12+3*TierRewardBand.Of(tier);}
         public static int LegendaryChance(int tier){return 1+TierRewardBand.Of(tier)/2;}
         private static void Validate(int mode){if(mode < -1 || mode > 3)throw new ArgumentOutOfRangeException(nameof(mode));}
