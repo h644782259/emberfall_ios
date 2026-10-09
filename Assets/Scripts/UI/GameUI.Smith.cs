@@ -129,24 +129,41 @@ namespace Emberfall
             }
             y+=208;
         }
+        private string SmithVariantDescription(EquipmentMechanic mechanic,int variant)
+        {
+            string description=BuildCatalog.MechanicDescription(mechanic);
+            int split=description.IndexOf("变体B：",System.StringComparison.Ordinal);
+            if(split>=0)description=variant==0?description.Substring(0,split):description.Substring(split);
+            return description.Replace("变体A：","").Replace("变体B：","").Trim();
+        }
         private void DrawVariantChoice(float u)
         {
             if(smithVariantMechanic==EquipmentMechanic.None)return;
             var p=session.Progression;var gem=p.Attachment(smithVariantMechanic);
             if(gem==null){smithVariantMechanic=EquipmentMechanic.None;return;}
             Fill(new Rect(0,0,width,height),new Color(0,0,0,.6f));blockedRects.Add(new Rect(0,0,width,height));
-            float w=Mathf.Min(400*u,width-24*u),h=Mathf.Min(300*u,height-24*u);
+            float w=Mathf.Min(680*u,width-24*u),column=(w-44*u)/2;
+            string[] descriptions={SmithVariantDescription(gem.mechanic,0),SmithVariantDescription(gem.mechanic,1)};
+            int font=Mathf.RoundToInt(13*u);
+            float textHeight=Mathf.Max(Style(font,false,true).CalcHeight(new GUIContent(descriptions[0]),column-24*u),Style(font,false,true).CalcHeight(new GUIContent(descriptions[1]),column-24*u));
+            float h=Mathf.Min(Mathf.Max(280*u,textHeight+174*u),height-24*u);
+            while(textHeight>h-174*u&&font>Mathf.RoundToInt(11*u))
+            {font--;textHeight=Mathf.Max(Style(font,false,true).CalcHeight(new GUIContent(descriptions[0]),column-24*u),Style(font,false,true).CalcHeight(new GUIContent(descriptions[1]),column-24*u));}
             Rect box=new Rect((width-w)/2,(height-h)/2,w,h);Fill(box,card);Border(box,jade);
-            Text(new Rect(box.x+14*u,box.y+12*u,w-70*u,28*u),smithVariantChoice==0?"机制形态 A":"机制形态 B",Mathf.RoundToInt(17*u),gold,true);
+            Text(new Rect(box.x+14*u,box.y+12*u,w-70*u,28*u),"机制形态对比",Mathf.RoundToInt(17*u),gold,true);
             if(PopupCloseButton(new Rect(box.xMax-48*u,box.y+6*u,44*u,36*u))){smithVariantMechanic=EquipmentMechanic.None;return;}
-            string description=BuildCatalog.MechanicDescription(gem.mechanic);
-            int split=description.IndexOf("变体B：",System.StringComparison.Ordinal);
-            if(split>=0)description=smithVariantChoice==0?description.Substring(0,split).Replace("变体A：",""):description.Substring(split).Replace("变体B：","");
-            Text(new Rect(box.x+16*u,box.y+56*u,w-32*u,h-130*u),description,Mathf.RoundToInt(13*u),pale,false,true);
-            bool canSwitch=SmithServiceActive&&(gem.variantUnlocked||p.Profile.mechanicMaterials>=ProgressionService.VariantCost);
-            string action=gem.variantUnlocked?"选择此形态":"解锁并选择 · "+ProgressionService.VariantCost+" 碎片";
+            for(int variant=0;variant<2;variant++)
+            {
+                Rect option=new Rect(box.x+16*u+variant*(column+12*u),box.y+52*u,column,h-120*u);
+                Fill(option,new Color(.035f,.065f,.085f));Border(option,smithVariantChoice==variant?jade:muted,smithVariantChoice==variant?2*u:u);
+                Text(new Rect(option.x+12*u,option.y+8*u,column-24*u,28*u),(variant==0?"形态 A":"形态 B")+(gem.variant==variant?" · 当前":""),Mathf.RoundToInt(14*u),gem.variant==variant?gold:pale,true);
+                Text(new Rect(option.x+12*u,option.y+42*u,column-24*u,option.height-50*u),descriptions[variant],font,pale,false,true);
+                if(QuietAction(option,"",true))smithVariantChoice=variant;
+            }
+            bool canSwitch=smithVariantChoice!=gem.variant&&SmithServiceActive&&(gem.variantUnlocked||p.Profile.mechanicMaterials>=ProgressionService.VariantCost);
+            string action=smithVariantChoice==gem.variant?"当前形态":gem.variantUnlocked?"选择形态 "+(smithVariantChoice==0?"A":"B"):"解锁并选择 · "+ProgressionService.VariantCost+" 碎片";
             if(PrimaryButton(new Rect(box.x+16*u,box.yMax-56*u,w-32*u,40*u),action,jade,canSwitch))
-            {if(p.ToggleAttachmentVariant(gem.mechanic,SmithServiceActive)){Feedback(true,"挂件形态已切换");smithVariantMechanic=EquipmentMechanic.None;}else Feedback(false,p.LastError);}
+            {if(p.ToggleAttachmentVariant(gem.mechanic,SmithServiceActive)){Feedback(true,"宝石形态已切换");smithVariantMechanic=EquipmentMechanic.None;}else Feedback(false,p.LastError);}
         }
         private void DrawSocketPicker(float u)
         {
@@ -250,17 +267,22 @@ namespace Emberfall
                     if(BuildCatalog.HasMechanicVariant(mounted.mechanic))
                     {
                         GoalParagraph(ref y,width,u,"机制形态",13,muted,false,draw);
+                        bool stackedVariants=width<420;
+                        float variantWidth=stackedVariants?width-16:width/2-16;
+                        float variantTextHeight=Mathf.Max(Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(SmithVariantDescription(mounted.mechanic,0)),(variantWidth-20)*u),Style(Mathf.RoundToInt(12*u),false,true).CalcHeight(new GUIContent(SmithVariantDescription(mounted.mechanic,1)),(variantWidth-20)*u))/u;
+                        float variantHeight=64+variantTextHeight;
                         if(draw)for(int variant=0;variant<2;variant++)
                         {
-                            Rect option=new Rect((8+variant*(width/2))*u,y*u,(width/2-16)*u,60*u);
+                            Rect option=new Rect((stackedVariants?8:8+variant*(width/2))*u,(y+(stackedVariants?variant*(variantHeight+8):0))*u,variantWidth*u,variantHeight*u);
                             bool selected=mounted.variant==variant;
                             Fill(option,card);Border(option,selected?jade:muted,selected?2:1);
                             DrawIcon(new Rect(option.x+10*u,option.y+12*u,36*u,36*u),UIIconAtlas.Utility(variant==0?"core":"attack"),selected?jade:pale);
-                            Text(new Rect(option.x+50*u,option.y,option.width-54*u,option.height),variant==0?"形态 A":"形态 B",Mathf.RoundToInt(12*u),pale,true,false,TextAnchor.MiddleLeft);
+                            Text(new Rect(option.x+50*u,option.y,option.width-54*u,56*u),variant==0?"形态 A":"形态 B",Mathf.RoundToInt(12*u),pale,true,false,TextAnchor.MiddleLeft);
                             DrawIcon(new Rect(option.xMax-18*u,option.y,18*u,18*u),UIIconAtlas.Utility(selected?"confirm":mounted.variantUnlocked?"help":"lock"),selected?jade:gold);
-                            if(QuietAction(option,"",!selected&&SmithServiceActive)){smithVariantMechanic=mounted.mechanic;smithVariantChoice=variant;}
+                            Text(new Rect(option.x+10*u,option.y+56*u,option.width-20*u,variantTextHeight*u),SmithVariantDescription(mounted.mechanic,variant),Mathf.RoundToInt(12*u),pale,false,true);
+                            if(QuietAction(option,"",true)){smithVariantMechanic=mounted.mechanic;smithVariantChoice=variant;}
                         }
-                        y+=68;
+                        y+=(variantHeight+8)*(stackedVariants?2:1);
                     }
                 }
 

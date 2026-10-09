@@ -33,7 +33,7 @@ namespace Emberfall
         public static Vector3 GroundPoint(Vector3 origin,Vector3 desired) { return BoundaryPoint(CombatSightKind.GroundPlacement,origin,desired); }
         public static Vector3 BoundaryPoint(CombatSightKind kind,Vector3 origin,Vector3 desired)
         {
-            origin=CombatFx.Flat(origin);desired=CombatFx.Flat(desired);
+            desired.y=WorldTraversal.SurfaceHeight(desired,.04f);
             if(!Finite(origin))return Vector3.zero;
             if(!Finite(desired))return origin;
             if(!Reach(kind,origin,origin))return origin;

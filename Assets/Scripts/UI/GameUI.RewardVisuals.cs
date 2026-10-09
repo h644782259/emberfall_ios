@@ -95,11 +95,13 @@ namespace Emberfall
         private void DrawChestCommittedReward(Rect area,ChestReward reward,Color accent)
         {
             float unit=MobileControls.Active?TouchRatio:1;
+            float padding=16*unit;
+            area=new Rect(area.x+padding,area.y+padding,Mathf.Max(1,area.width-2*padding),Mathf.Max(1,area.height-2*padding));
             if(reward!=null&&reward.equipmentIds!=null&&reward.equipmentIds.Length>0){
-                float size=Mathf.Min(56*unit,(area.width-8*unit)/reward.equipmentIds.Length);
+                float size=Mathf.Min(56*unit,(area.width-Mathf.Max(0,reward.equipmentIds.Length-1)*8*unit)/reward.equipmentIds.Length);
                 for(int i=0;i<reward.equipmentIds.Length;i++){
                     var item=session.Progression.Profile.inventory.Find(v=>v.id==reward.equipmentIds[i]);
-                    if(item!=null){Rect icon=new Rect(area.x+i*(size+2*unit),area.y,size,size);DrawInventoryIcon(icon,item,unit);InspectRewardItem(icon,ActualEquipmentPreview(item));}
+                    if(item!=null){Rect icon=new Rect(area.x+i*(size+8*unit),area.y,size,size);DrawInventoryIcon(icon,item,unit);InspectRewardItem(icon,ActualEquipmentPreview(item));}
                 }
                 area=new Rect(area.x,area.y+size+8*unit,area.width,Mathf.Max(1,area.height-size-8*unit));
             }

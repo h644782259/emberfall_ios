@@ -116,7 +116,7 @@ namespace Emberfall
             if(Button(new Rect(112*u,y*u,48*u,48*u),"−",jade,session.SelectedChapterTier>1)){ChangeChapterTier(-1);EndTouchScroll();return;}
             if(Button(new Rect(168*u,y*u,48*u,48*u),"+",jade,session.SelectedChapterTier<session.Progression.UnlockedChapterTier(session.SelectedChapterNode))){ChangeChapterTier(1);EndTouchScroll();return;}
             y+=60;Text(new Rect(8*u,y*u,textWidth,previewH*u),preview,Mathf.RoundToInt(13*u),muted,false,true);y+=previewH;
-            entryRewardViewport=body;GUI.BeginGroup(new Rect(0,y*u,contentWidth*u,rewardsHeight*u));DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,true);GUI.EndGroup();y+=rewardsHeight;
+            entryRewardViewport=body;entryRewardContentOrigin=new Vector2(body.x-chapterScroll.x,body.y+y*u-chapterScroll.y);GUI.BeginGroup(new Rect(0,y*u,contentWidth*u,rewardsHeight*u));DrawEntryRewardPreviews(contentWidth,u,chestMode,chestTier,true,true);GUI.EndGroup();y+=rewardsHeight;
             DrawRewardToken(new Rect(8*u,y*u,textWidth,36*u),1,ChapterEntryPresentation.RewardMaterials(profile,node,difficulty,session.SelectedChapterTier),u);y+=48;
             if(tactics)
             {
