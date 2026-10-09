@@ -108,8 +108,8 @@ namespace Emberfall
             if(revealed)
             {
                 if(complete&&CanTrialChestReward(reward)&&Button(new Rect(w.xMax-396,w.yMax-58,180,42),"收下并查看时装",jade)){AcceptChestForTrial();return;}
-                if(Button(new Rect(w.xMax-208,w.yMax-58,180,42),complete?"收下":"跳过动画",jade,!chestDetails,null,true))
-                {if(!complete)chestRevealedAt=Time.unscaledTime-ChestDuration;else FinishChestReveal();BlockUITransition();}
+                if(complete&&Button(new Rect(w.xMax-208,w.yMax-58,180,42),"收下",jade,!chestDetails,null,true))
+                {FinishChestReveal();BlockUITransition();}
             }
             else
             {
