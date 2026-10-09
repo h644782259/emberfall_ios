@@ -48,7 +48,10 @@ namespace Emberfall
             else
             {
                 DrawIcon(new Rect(hit.center.x-11*u,hit.y+5*u,22*u,22*u),icon,enabled?Color.white:muted);
-                Text(new Rect(hit.x,hit.y+27*u,hit.width,17*u),caption,Mathf.RoundToInt(11*u),ink,false,false,TextAnchor.MiddleCenter);
+                Rect captionRect=new Rect(hit.x+4*u,hit.y+27*u,hit.width-8*u,Mathf.Max(1,hit.height-33*u));
+                int captionFont=Mathf.RoundToInt(11*u);
+                while(captionFont>1&&Style(captionFont).CalcSize(new GUIContent(caption)).y>captionRect.height)captionFont--;
+                Text(captionRect,caption,captionFont,ink,false,false,TextAnchor.MiddleCenter);
             }
             // The visible action caption already identifies this button.
             GUI.enabled=enabled;bool clicked=GUI.Button(hit,GUIContent.none,invisibleButton);GUI.enabled=prior;
@@ -134,8 +137,8 @@ namespace Emberfall
                 {inventoryFilter=index-1;scroll=Vector2.zero;RebuildBagItems();ResolveSelectedItem();CancelMobileScroll();}
             }
             viewport.width-=InventoryGridGeometry.FilterRailWidth*u;
-            float available=viewport.width/u-18;var geometry=new InventoryGridGeometry(available);
-            float contentHeight=Mathf.Max(viewport.height/u,((bagItems.Count+geometry.Columns-1)/geometry.Columns)*InventoryGridGeometry.RowHeight+4);
+            float available=viewport.width/u-18;var geometry=new InventoryGridGeometry(available,MobileControls.Active?60:44);
+            float contentHeight=Mathf.Max(viewport.height/u,((bagItems.Count+geometry.Columns-1)/geometry.Columns)*geometry.Stride+4);
             bool previous=GUI.enabled;GUI.enabled=previous&&!inventoryComparisonOpen&&inventoryPopupDismissed!=Time.frameCount;
             Vector2 before=scroll;
             scroll=BeginTouchScroll("inventory-icon-grid",viewport,scroll,new Rect(0,0,available*u,contentHeight*u));

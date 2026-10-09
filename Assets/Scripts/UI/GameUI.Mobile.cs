@@ -219,9 +219,9 @@ namespace Emberfall
         private void DrawMobileBattleNotice()
         {
             var area=MobileControls.Layout.Notice;
-            Rect r=TouchRect(area);
-            Box(r,gold,false);
-            Text(TouchRect(area.X+7,area.Y+6,area.Width-14,area.Height-12),PlatformText(session.Notification),TouchFont(12),pale,false,true);
+            Rect bounds=TouchRect(area);
+            float y=bounds.y;
+            DrawMobileObjectiveText(bounds,ref y,session.Notification,12,pale);
         }
         private void OpenMobileNoticeFromPause()
         {

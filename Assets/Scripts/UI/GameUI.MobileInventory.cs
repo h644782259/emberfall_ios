@@ -60,7 +60,7 @@ namespace Emberfall
             if(mobileInventoryNpcRequest!=HubNpcKind.None)
             {
                 bool smith=mobileInventoryNpcRequest==HubNpcKind.Blacksmith;
-                mobileInventoryTab=smith?1:2;mobileInventoryDetail=smith&&!string.IsNullOrEmpty(selectedItem);
+                mobileInventoryTab=smith?0:2;mobileInventoryDetail=smith&&!string.IsNullOrEmpty(selectedItem);
                 mobileInventoryStatus=mobileSupplyStatus=null;
                 mobileInventoryListScroll=mobileInventoryDetailScroll=mobileSupplyScroll=Vector2.zero;
                 mobileInventoryNpcRequest=HubNpcKind.None;
@@ -68,21 +68,21 @@ namespace Emberfall
             EnsureMobileBagItems();
             ItemData picked = ResolveSelectedItem();
             var layout = MobilePanelGeometry();
-            if(DrawMobilePanelChrome(layout,HubInventoryTitle,"",showNotice:false))return;
+            const float statusWidth=260;
+            if(DrawMobilePanelChrome(layout,HubInventoryTitle,"",showNotice:false,headerRightReserve:statusWidth))return;
             {
-                float y=layout.Header.Y+31;
-                Text(TouchRect(layout.Header.X,y,40,20),"Lv."+profile.level,TouchFont(12),pale,true);
-                DrawPrice(TouchRect(layout.Header.X+46,y,90,20),profile.gold,false,TouchRatio);
-                DrawIcon(TouchRect(layout.Header.X+144,y+1,18,18),UIIconAtlas.Utility("bag"),jade);
-                Text(TouchRect(layout.Header.X+166,y,90,20),profile.inventory.Count+"/"+ProgressionService.InventoryCapacity,TouchFont(12),pale,true);
-                if(!string.IsNullOrEmpty(session.Notification))
-                    Text(TouchRect(layout.Header.X+264,y,Mathf.Max(0,layout.Header.Width-264),20),PlatformText(session.Notification),TouchFont(12),gold,false,false,TextAnchor.MiddleLeft);
+                float x=layout.Close.X-statusWidth-8,y=layout.Header.Y+4;
+                Text(TouchRect(x,y,46,28),"Lv."+profile.level,TouchFont(13),pale,true,false,TextAnchor.MiddleLeft);
+                DrawPrice(TouchRect(x+50,y,108,28),profile.gold,false,TouchRatio);
+                DrawIcon(TouchRect(x+164,y+4,20,20),UIIconAtlas.Utility("bag"),jade);
+                Text(TouchRect(x+190,y,70,28),profile.inventory.Count+"/"+ProgressionService.InventoryCapacity,TouchFont(13),pale,true,false,TextAnchor.MiddleLeft);
             }
-            float leftWidth=Mathf.Clamp(layout.Body.Width*.28f,156,232);
+            float leftWidth=Mathf.Clamp(layout.Body.Width*.30f,200,260);
             var wear=new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y,leftWidth,layout.Height-layout.Body.Y-12);
             var bag=new MobilePanelLayout.Area(wear.XMax+12,layout.Body.Y,layout.Body.Width-leftWidth-12,wear.Height);
             DrawCurrentWear(MobilePanelRect(wear),TouchRatio);
             if(inventoryFashionOpen){mobileInventoryTab=3;inventoryFashionOpen=false;inventoryComparisonOpen=false;}
+            if(mobileInventoryTab!=2&&mobileInventoryTab!=3)mobileInventoryTab=0;
             Rect equipmentTab=MobilePanelRect(new MobilePanelLayout.Area(bag.X,bag.Y,52,44));
             Rect supplyTab=MobilePanelRect(new MobilePanelLayout.Area(bag.X+58,bag.Y,52,44));
             if(QuietAction(equipmentTab,"装备",true,null,mobileInventoryTab==0))SelectInventoryTab(0);

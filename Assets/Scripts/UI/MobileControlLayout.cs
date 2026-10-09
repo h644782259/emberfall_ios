@@ -36,7 +36,7 @@ namespace Emberfall
             Joystick=Centered(90,Height-86,128);
             float moveTop=Math.Max(164,Height-172);
             MoveZone=new Area(12,moveTop,175,Height-12-moveTop);
-            Attack=Centered(Width-98,Height-55,76);
+            Attack=Centered(Width-125,Height-55,76);
             Dodge=Centered(Width-30,Height-30,48);
             Jump=Centered(Width-30,Height-99,48);Cancel=Jump;
             float bottomLift=Width<700?36:0;
@@ -49,7 +49,7 @@ namespace Emberfall
             DungeonEntrance=new Area(Width*.5f-58,60,116,44);
             float shift=positionPreset<0?-Math.Min(8,Math.Max(0,Height-320)):positionPreset>0?0:0;
             // Equal-size skills follow a 30-degree arc with one shared chord length.
-            const float radius=132,diameter=48;
+            const float radius=132;float diameter=ipad?48:52;
             float chord=2*radius*(float)Math.Sin(Math.PI/12);
             for(int i=0;i<4;i++)
             {
@@ -75,6 +75,20 @@ namespace Emberfall
                 Smith=Centered(Width-258.8f,38,52.8f);Shop=Centered(Width-314,38,52.8f);
                 DungeonEntrance=new Area(Width*.5f-58,76,116,44);
                 Potion=Centered(Width*.5f-151,Height-33,63.36f);
+            }
+            // Align the lowest iPad skill with the bottom edge of the energy strip.
+            if(ipad)
+            {
+                float lift=Height-18-(Skills[0].Y+Skills[0].Height);
+                for(int i=0;i<4;i++){Area skill=Skills[i];skill.Y+=lift;Skills[i]=skill;}
+            }
+            else
+            {
+                // Keep the enlarged ultimate inside the safe area and clear of the arc.
+                for(int i=0;i<4;i++){Area skill=Skills[i];skill.X-=12;Skills[i]=skill;}
+                SkillPage=Centered(Width-34,Height-158,44);
+                // The ultimate uses the same upper-right placement as iPad.
+                Skills[4]=Centered(SkillPage.X+SkillPage.Width*.5f,SkillPage.Y-10-31.2f,62.4f);
             }
             int[] opportunityIdentities={0,1,2,4,5,6,7,9};
             for(int index=0;index<opportunityIdentities.Length;index++)
