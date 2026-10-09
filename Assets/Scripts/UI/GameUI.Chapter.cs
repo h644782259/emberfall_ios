@@ -123,7 +123,7 @@ namespace Emberfall
             for(int i=0;i<3;i++)
             {
                 var node=(ChapterNode)i;bool unlocked=ChapterProgression.IsUnlocked(chapterSelectionOwner,node);
-                if(Button(new Rect(area.x+i*(cell+8*u),area.y,cell,58*u),ChapterDefinition.Get(node).Name+"\n"+ChapterProgression.UnlockLevel(node)+"级开启",node==session.SelectedChapterNode?gold:jade,unlocked))SelectChapterNode(node);
+                if(Button(new Rect(area.x+i*(cell+8*u),area.y,cell,58*u),ChapterDefinition.Get(node).Name+(unlocked?"":"\n"+ChapterProgression.UnlockLevel(node)+"级开启"),node==session.SelectedChapterNode?gold:jade,unlocked))SelectChapterNode(node);
             }
             DrawChapterEntryDetails(new Rect(area.x,area.y+70*u,area.width,Mathf.Max(48*u,area.height-70*u)),u);
         }

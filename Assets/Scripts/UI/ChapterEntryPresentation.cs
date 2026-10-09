@@ -42,7 +42,7 @@ namespace Emberfall
 
                 "完成奖励 "+(total+firstDifficulty)+" 碎片（重复 "+repeat+(total>repeat?" + 节点首次1":"")+(firstDifficulty>0?" + 本难度首次4":"")+"）；困难/英雄每节点各一次，全章额外最多24；不发旧副本宝箱。\n"+
                 "旧档按合法逐档完成记录一次补领；缺失或非法记录不推断，实际通关后领取。\n"+
-                (!profile.firstClearRewardClaimed?(profile.pendingFirstClearReward?"共享一次首通核心已待领取；本次不重复。\n":(node==ChapterNode.StarPlatform?"星台通关完成整章，可领取共享一次首通核心。\n":"首通核心需完成整章：通关星台；本节点不授予资格。\n")):"")+TierEffect(node)+MasteryProgress(profile,node,difficulty);
+                (!profile.firstClearRewardClaimed?(profile.pendingFirstClearReward?"共享一次首通宝石已待领取；本次不重复。\n":(node==ChapterNode.StarPlatform?"星台通关完成整章，可领取共享一次首通宝石。\n":"首通宝石需完成整章：通关星台；本节点不授予资格。\n")):"")+TierEffect(node)+MasteryProgress(profile,node,difficulty);
         }
         private static string MechanismReport(ChapterResultSnapshot result)
         {
@@ -64,7 +64,7 @@ namespace Emberfall
             if(result.RewardDetailsUnavailable)return text+"奖励已保存 · 旧回执缺少明细，无法恢复准确数额与本次解锁结果；不会重复发放。"+MechanismReport(result);
             text+="奖励已保存 · +"+result.Materials+" 碎片\n击杀经验 +"+result.KillExperience+" · 通关经验 +"+result.CompletionExperience;
             if(result.FirstCompletion)text+="\n"+ChapterDefinition.Get(result.Node).Outcome;
-            if(result.FirstCoreAvailable)text+="\n首通核心已可领取（共享一次）";
+            if(result.FirstCoreAvailable)text+="\n首通宝石已可领取（共享一次）";
             if(result.UnlockedNode>=0)text+="\n新节点："+ChapterDefinition.Get((ChapterNode)result.UnlockedNode).Name;
             if(result.UnlockedDifficulty>=0)text+="\n本节点新难度："+DifficultyName((ChapterDifficulty)result.UnlockedDifficulty);
             text+=result.SharedAfter>result.SharedBefore?"\n共享最高阶 "+result.SharedBefore+" → "+result.SharedAfter:"\n共享最高阶未变化（"+result.SharedAfter+"）";
