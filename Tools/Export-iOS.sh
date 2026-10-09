@@ -85,7 +85,7 @@ if ! "$unity_path" "${args[@]}"; then
 fi
 [[ -f "$staging/Unity-iPhone.xcodeproj/project.pbxproj" ]] || { echo "Unity returned without a complete Xcode project. Inspect $log_file" >&2; exit 1; }
 python3 - "$staging" "$output" <<'PYPUBLISH'
-import os, shutil, sys, uuid
+import errno, os, shutil, sys, time, uuid
 from pathlib import Path
 staging, output=map(Path,sys.argv[1:])
 project=staging/'Unity-iPhone.xcodeproj'
@@ -104,7 +104,18 @@ try:
 except BaseException:
     if backup.exists(): os.replace(backup,output)
     raise
-if backup.exists(): shutil.rmtree(backup)
+if backup.exists():
+    # Finder/Xcode may recreate metadata briefly in the renamed directory.
+    for attempt in range(5):
+        try:
+            shutil.rmtree(backup)
+            break
+        except FileNotFoundError:
+            break
+        except OSError as error:
+            if error.errno != errno.ENOTEMPTY or attempt == 4:
+                raise
+            time.sleep(0.2)
 PYPUBLISH
 echo "Fixed Xcode project exported: $output/Emberfall.xcodeproj"
 echo 'Open Emberfall.xcodeproj, select the Emberfall scheme, your developer team and connected device, then Run.'
