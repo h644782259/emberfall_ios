@@ -37,4 +37,4 @@ Unity 详细日志：
 - `Logs/ios-export-simulator-latest.log`
 - `Logs/ios-export-device-latest.log`
 
-终端出现错误后停止执行，可解决错误后重新运行。授权异常可先退出 Unity、重启 Unity Hub 并确认许可证正常。脚本被强制结束后，确认没有导出进程在运行，再删除 `Logs/xcode-export.lock`；系统临时目录中可能保留 `emberfall-player-settings.*` 设置备份。
+运行时每 15 秒显示最近一条 Unity 日志。若持续显示 Licensing / LicenseClient，表示授权服务尚未就绪，并非正在编译。终端出现错误后停止执行，可解决错误后重新运行。授权异常可先退出 Unity、重启 Unity Hub 并确认许可证正常。脚本被强制结束后，确认没有导出进程在运行，再删除 `Logs/xcode-export.lock`；系统临时目录中可能保留 `emberfall-player-settings.*` 设置备份。

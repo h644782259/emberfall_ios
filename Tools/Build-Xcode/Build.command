@@ -13,9 +13,11 @@ mkdir -p "$repo/Logs"
 lock="$repo/Logs/xcode-export.lock"
 mkdir "$lock" 2>/dev/null || { echo "Another export is running. If it was interrupted, remove $lock after confirming Unity has stopped." >&2; exit 1; }
 snapshot=""
+monitor_pid=""
 cleanup() {
   status=$?
   trap - EXIT
+  if [[ -n "$monitor_pid" ]]; then kill "$monitor_pid" 2>/dev/null || true; fi
   if [[ -n "$snapshot" && -f "$snapshot" ]]; then
     cp "$snapshot" "$repo/ProjectSettings/ProjectSettings.asset"
     rm -f "$snapshot"
@@ -30,10 +32,30 @@ snapshot="$(mktemp "${TMPDIR:-/tmp}/emberfall-player-settings.XXXXXX")"
 cp "$repo/ProjectSettings/ProjectSettings.asset" "$snapshot"
 echo 'Close Unity and Xcode before exporting; do not edit Player Settings during this operation.'
 echo 'Exports current local source, including uncommitted changes. No Git pull or push is performed.'
+run_export() {
+  local sdk="$1"
+  local log="$repo/Logs/ios-export-$sdk-latest.log"
+  echo "开始导出：${sdk}；详细日志：$log"
+  (
+    while true; do
+      sleep 15
+      echo "[$sdk] Unity 仍在运行；最近日志："
+      if [[ -f "$log" ]]; then tail -n 1 "$log" | cut -c 1-240; fi
+      echo '若持续出现 Licensing / LicenseClient，请退出 Unity 后重启 Unity Hub，并确认许可证正常。'
+    done
+  ) &
+  monitor_pid=$!
+  local result=0
+  bash "$repo/Tools/Export-iOS.sh" --sdk "$sdk" || result=$?
+  kill "$monitor_pid" 2>/dev/null || true
+  wait "$monitor_pid" 2>/dev/null || true
+  monitor_pid=""
+  return "$result"
+}
 if [[ "$mode" == all || "$mode" == simulator ]]; then
-  bash "$repo/Tools/Export-iOS.sh" --sdk simulator
+  run_export simulator
 fi
 if [[ "$mode" == all || "$mode" == device ]]; then
-  bash "$repo/Tools/Export-iOS.sh" --sdk device
+  run_export device
 fi
 echo 'Export complete. Xcode compilation, signing and installation are separate steps.'
