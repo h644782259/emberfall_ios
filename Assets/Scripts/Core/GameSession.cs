@@ -88,7 +88,7 @@ namespace Emberfall
             Debug.Log("Emberfall " + Application.version + " · " + Application.platform);
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = pauseState.TargetFrameRate(Application.isMobilePlatform, false);
             QualitySettings.vSyncCount = 1;
             QualitySettings.antiAliasing = MobileControls.Active ? 2 : 4;
             QualitySettings.anisotropicFiltering = AnisotropicFiltering.Enable;
@@ -268,6 +268,8 @@ namespace Emberfall
         private float nextGrowthCheck;
         private void Update()
         {
+            UpdateMobileFrameRate();
+            if (BackgroundPaused) return;
             if(PracticeActive){TickPractice();return;} // Practice owns its guarded potion input too.
             if(HasStarted)TickSideEvent();
             if(HasStarted&&!PracticeActive&&Time.unscaledTime>=nextGrowthCheck)
@@ -329,7 +331,17 @@ namespace Emberfall
             else if (!string.IsNullOrEmpty(Progression.LastError)) Notify(Progression.LastError);
             return changed;
         }
-        private void UpdateTimeScale() { Time.timeScale = pauseState.CanAdvance(HasStarted, Paused, uiBlocking || RunChoices.AwaitingChoice || RoomBranchChoiceOpen || DungeonSelectionOpen || ModeFinished, IsDead) ? 1 : 0; }
+        private void UpdateMobileFrameRate()
+        {
+            if (!Application.isMobilePlatform) return;
+            int target = pauseState.TargetFrameRate(true, !InputBlocked);
+            if (Application.targetFrameRate != target) Application.targetFrameRate = target;
+        }
+        private void UpdateTimeScale()
+        {
+            Time.timeScale = pauseState.CanAdvance(HasStarted, Paused, uiBlocking || RunChoices.AwaitingChoice || RoomBranchChoiceOpen || DungeonSelectionOpen || ModeFinished, IsDead) ? 1 : 0;
+            UpdateMobileFrameRate();
+        }
 
         public bool IsNearDungeonEntrance {get{return NearPortal();}}
         private bool NearPortal() { return Player != null && PortalInteractionPolicy.IsNear((Player.transform.position-new Vector3(0,0,11)).sqrMagnitude); }
