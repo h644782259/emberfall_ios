@@ -279,6 +279,7 @@ namespace Emberfall
             GUI.enabled = !session.BackgroundPaused && !LifecycleTouchBlocked && MerchantServiceLayout.StablePanelEvent(UITransitionBlocked,true,Event.current.type==EventType.Repaint||Event.current.type==EventType.Layout);
             blockedRects.Clear();
             tooltip = null;
+            BeginEntryRewardPopup();
             if(exitRequest.Open)
             {
                 ClearRewardMoment();DrawExitConfirmation();GUI.matrix=oldMatrix;GUI.color=oldColor;GUI.contentColor=oldContentColor;GUI.enabled=oldEnabled;return;
@@ -337,6 +338,7 @@ namespace Emberfall
                 DrawIcon(new Rect(Mouse.x + 11, Mouse.y + 11, 36, 36), HotbarIcon(session.Progression.Profile, hotbarPointerSkill), Color.white);
             }
             DrawTooltip();
+            DrawEntryRewardPopup();
             DrawExitConfirmation();
             GUI.matrix = oldMatrix;
             GUI.color = oldColor;
@@ -1765,7 +1767,7 @@ namespace Emberfall
 
         private void DrawNotification()
         {
-            if(panel==Panel.Chapter||session.ChapterFinished)return;
+            if(panel==Panel.Chapter||session.ChapterFinished||session.RunChoices.AwaitingChoice)return;
             if (string.IsNullOrEmpty(session.Notification)) return;
             if(MobileControls.Active && (MobilePanelOwnsNotification || session.Paused || panel==Panel.Controls || panel==Panel.SaveSelection || panel==Panel.TravelMap || panel==Panel.Summary || session.IsDead || session.ModeFinished)) return;
             if(MobileControls.Active)
