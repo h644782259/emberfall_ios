@@ -19,7 +19,7 @@ namespace Emberfall
             if(kind!=HubNpcKind.Merchant&&kind!=HubNpcKind.Blacksmith)return;
             CancelHotbarPointer();
             if(kind==HubNpcKind.Blacksmith)smithPreviewMechanic=EquipmentMechanic.None;
-            if(kind==HubNpcKind.Merchant){bool first=session.Progression.Profile.pendingFirstClearReward&&!session.Progression.Profile.firstClearRewardClaimed;if(first)merchantGemRarity=Rarity.Epic;SelectMerchantMode(first?1:0,true);}
+            if(kind==HubNpcKind.Merchant){bool first=session.Progression.Profile.pendingFirstClearReward&&!session.Progression.Profile.firstClearRewardClaimed;merchantGemRarity=Rarity.Common;SelectMerchantMode(first?1:0,true);}
             inventoryHubNpc = kind;merchantShopOpen=kind==HubNpcKind.Merchant;smithShopOpen=kind==HubNpcKind.Blacksmith;npcShopScroll=Vector2.zero;
             if (kind == HubNpcKind.Exchange) { NavigateMerchantExchange();return; }
             else
