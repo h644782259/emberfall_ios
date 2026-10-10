@@ -11,14 +11,14 @@ namespace Emberfall
             return "观星员的线索 · "+definition.StoryIntro+"\n目标 · "+definition.Mechanic+"\n完成后 · "+definition.Outcome+"\n下一线索 · "+definition.NextClue;
         }
         public static string TierEffect(ChapterNode node)
-        {return node==ChapterNode.StarPlatform?"星台通关推进共享最高阶，解锁下一阶。":"此节点推进故事与本节点难度，不推进共享最高阶。";}
+        {return "每种难度分别记录阶数；通关当前阶后解锁下一阶，阶数持续提升。";}
         public static string MasteryProgress(GameProfile profile,ChapterNode node,ChapterDifficulty difficulty)
         {
             if(profile==null||difficulty==ChapterDifficulty.Normal||(profile.chapterCompletedMask&(1<<(int)node))==0)return "";
             int mask=profile.chapterMasteryMask,required=node==ChapterNode.ForestCourt?1:node==ChapterNode.Redrock?2:12;
             string goal=node==ChapterNode.ForestCourt?"首房至少2敌仍存活时完成双封印":node==ChapterNode.Redrock?"首房其余5敌仍存活时击败断供目标，再成功撤离":
                 "真实打断首领 "+((mask&4)!=0?"✓":"○")+" / 亲自破锚制造暴露 "+((mask&8)!=0?"✓":"○")+"（可分局）";
-            bool earned=(mask&required)==required;int tier=101;
+            bool earned=(mask&required)==required;int tier=int.MaxValue;
             for(int i=0;i<4;i++)if((required&(1<<i))!=0)tier=System.Math.Min(tier,profile.chapterMasteryTiers!=null&&profile.chapterMasteryTiers.Length>i?profile.chapterMasteryTiers[i]:0);
             string badge=node==ChapterNode.ForestCourt?"双印行者":node==ChapterNode.Redrock?"断供猎手":"星台破局者";
             return "\n可选精通 · "+goal+"。本次节点成功保存才记录；无战斗加成，不影响普通通关。"+
@@ -67,7 +67,7 @@ namespace Emberfall
             if(result.FirstCoreAvailable)text+="\n首通宝石已可领取（共享一次）";
             if(result.UnlockedNode>=0)text+="\n新节点："+ChapterDefinition.Get((ChapterNode)result.UnlockedNode).Name;
             if(result.UnlockedDifficulty>=0)text+="\n本节点新难度："+DifficultyName((ChapterDifficulty)result.UnlockedDifficulty);
-            text+=result.SharedAfter>result.SharedBefore?"\n共享最高阶 "+result.SharedBefore+" → "+result.SharedAfter:"\n共享最高阶未变化（"+result.SharedAfter+"）";
+            text+="\n可挑战本难度第 "+(result.Tier==int.MaxValue?int.MaxValue:result.Tier+1)+" 阶";
             if(result.FirstCompletion)text+="\n下一线索 · "+ChapterDefinition.Get(result.Node).NextClue;
             return text+MechanismReport(result);
         }
