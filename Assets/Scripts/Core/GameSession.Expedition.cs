@@ -18,6 +18,21 @@ namespace Emberfall
             if(RoomChainRun!=null&&RoomChainRun.Failed)return false;
             Notify("挑战 Lv"+AdventureRewardRules.DungeonLevel(DungeonTier)+" · "+ModeName);return true;
         }
+        public bool CanRepeatCurrentDungeon {get{return HasStarted&&InDungeon&&!IsDead&&DungeonResultsReady&&!changingZone&&!ModeRewardPending&&!ChapterRewardPending;}}
+        public bool RepeatCurrentDungeon()
+        {
+            if(!CanRepeatCurrentDungeon||Paused||pauseState.BackgroundPaused)return false;
+            if(ChapterActive)return RestartChapterAttempt();
+            int previousMode=SelectedArenaMode,previousTier=SelectedDungeonTier;
+            int mode=RoomChainRun!=null?3:ModeRun!=null?(int)ModeRun.Mode:-1;
+            SelectedArenaMode=mode;SelectedDungeonTier=DungeonTier;
+            try
+            {
+                if(!ChangeZone(true)){SelectedArenaMode=previousMode;SelectedDungeonTier=previousTier;return false;}
+                return RoomChainRun==null||!RoomChainRun.Failed;
+            }
+            catch(System.Exception error){if(RoomChainRun!=null)FailRoomGeneration("再次挑战构建异常",error);else Notify("副本生成异常："+error.GetType().Name);return false;}
+        }
         private readonly int[] selectedAdventureTiers={1,1,1,1,1};
         private void ResetAdventureEntryTiers()
         {
@@ -294,7 +309,7 @@ namespace Emberfall
             RefreshSideEventVisibility();
             RefreshDungeonReturnPortal();
             if(SideEventAvailable&&!sideEventOfferShown)
-            {sideEventOfferShown=true;Notify("可选晶核 · 唤醒2敌，全灭得1材料+补给；北门开启后可随时放弃");}
+            {sideEventOfferShown=true;Notify("可选晶核 · 唤醒2敌，全灭得1材料+补给");}
             if(HasStarted&&SideEventRewardPending&&Time.unscaledTime>=nextSideRewardRetry)
             {nextSideRewardRetry=Time.unscaledTime+2;TrySettleSideEventRewards();}
         }
@@ -333,7 +348,7 @@ namespace Emberfall
             foreach(var enemy in sideEventEnemies)SideEventEnemyMarker.Attach(enemy,this);
             sideEventStarted = true;
             if (sideCrystal != null) { Destroy(sideCrystal); sideCrystal = null; }
-            Notify("晶核支线2敌 · 全灭得1材料+补给 · 北门已开可放弃"); return true;
+            Notify("晶核支线2敌 · 全灭得1材料+补给"); return true;
         }
 
 
