@@ -78,7 +78,7 @@ log_file="$project_root/Logs/ios-export-$sdk-latest.log"
 args=(-batchmode -quit -buildTarget iOS -projectPath "$project_root" -executeMethod Emberfall.Editor.IOSBuild.Export -logFile "$log_file" -emberfallIosOutput "$staging" -emberfallIosBundleId "$bundle_id" -emberfallIosSdk "$sdk")
 if [[ -n "$team_id" ]]; then args+=(-emberfallIosTeamId "$team_id"); fi
 echo 'Close this project in Unity and Xcode before exporting.'
-if ! "$unity_path" "${args[@]}"; then
+if ! python3 "$project_root/Tools/Build-Xcode/UnityExportRunner.py" "$log_file" "$unity_path" "${args[@]}"; then
   tail -n 60 "$log_file" >&2 || true
   echo "Unity export failed. The fixed project was not replaced. Log: $log_file" >&2
   exit 1
