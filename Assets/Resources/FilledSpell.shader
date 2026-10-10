@@ -62,7 +62,7 @@ Shader "Emberfall/Filled Spell Volume"
                     float strand=pow(saturate(.5+.5*sin(i.local.y*38+grain*12-time*19)),10);
                     core=float3(.94,.93,1);outer=_Color.rgb*.4;pattern=max(grain,strand);heat=saturate(.35+strand*.65+rim*.3);
                 } else if(_Element<4.5&&_Element>3.5) { // Poison: mottled bubbles with yellow-green edges.
-                    core=float3(.85,1,.24);outer=float3(.08,.18,.035);pattern=smoothstep(.2,.75,grain);heat=saturate(pattern*.7+rim*.35);
+                    core=float3(.85,1,.24);outer=lerp(float3(.08,.18,.035),_Color.rgb*.16,.55);pattern=smoothstep(.2,.75,grain);heat=saturate(pattern*.7+rim*.35);
                 } else if(_Element<5.5&&_Element>4.5) { // Summoning: opposing currents and violet seams.
                     core=float3(.72,1,.94);outer=lerp(float3(.18,.035,.38),_Color.rgb,.2);
                     pattern=.5+.5*sin(i.local.y*18+grain*9-time*5);heat=saturate(pattern*.55+rim*.6);
@@ -80,6 +80,9 @@ Shader "Emberfall/Filled Spell Volume"
                     // silhouette, with steady guard ribs and a soft rising healing band.
                     float ribs=.65+.35*abs(sin(i.uv.x*6.283185));
                     alpha=_Color.a*_Opacity*ribs;
+                    float traveling=pow(saturate(1-abs(frac(i.uv.y-_EnvelopeAge*.35)-.5)*2),10);
+                    heat=saturate(.18+rim*.5+traveling*.55);
+                    light=.4+.6*side;
                     if(_EnvelopeMode>1.5 && _EnvelopeMode<2.5)
                         alpha*=.65+.35*saturate((_EnvelopeAge-i.uv.y*.18)*18+1);
                     if(_EnvelopeMode>2.5 && _EnvelopeMode<3.5)
@@ -105,9 +108,9 @@ Shader "Emberfall/Filled Spell Volume"
                 }
                 // White-hot release, colored midtones and a narrow travelling light edge.
                 // Reuses the existing pass; no extra lights, bloom requirement or draw calls.
-                float ribbon=pow(saturate(1-abs(frac(i.uv.y*2.0-_Progress*1.8+_Seed)-.5)*2),12);
+                float ribbon=pow(saturate(1-abs(frac(i.uv.y*2.0-_Progress*1.8+_Seed)-.5)*2),16);
                 float edgeLight=pow(rim,2)*.42+ribbon*.32;
-                if(_EnvelopeMode<.5)tint+=core*(edgeLight+_ImpactLight*.48);
+                if(_EnvelopeMode<.5)tint+=core*(edgeLight+_ImpactLight*(_Sculpted>.5?.22:.48));
                 return fixed4(tint,alpha);
             }
             ENDCG

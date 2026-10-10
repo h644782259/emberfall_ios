@@ -119,7 +119,16 @@ namespace Emberfall
         }
         private void RefreshBoundary()
         {
-            if(!respectCover||line==null)return;
+            if(line==null)return;
+            if(!respectCover)
+            {
+                if(!WorldTerrain.Enabled)return;
+                line.useWorldSpace=true;
+                float size=transform.localScale.x;
+                for(int i=0;i<boundary.Length;i++)
+                {float a=i*Mathf.PI*2/boundary.Length;boundary[i]=WorldTerrain.Ground(transform.position+new Vector3(Mathf.Sin(a)*size,0,Mathf.Cos(a)*size),.065f);}
+                line.SetPositions(boundary);return;
+            }
             if(boundaryRevision==WorldTraversal.Revision&&(boundaryCenter-transform.position).sqrMagnitude<.000001f)return;
             boundaryRevision=WorldTraversal.Revision;boundaryCenter=transform.position;line.useWorldSpace=true;
             CombatSight.FillAreaBoundary(boundary,transform.position,radius);line.SetPositions(boundary);
@@ -288,13 +297,14 @@ namespace Emberfall
         {
             Shader detail=Resources.Load<Shader>("FilledSpell");
             Material surface = new Material(detail!=null?detail:Shader.Find("Standard")) { color = tint };
-            if(detail!=null){surface.SetFloat("_Element",arrow?0:5);surface.SetFloat("_Seed",at.x*.17f+at.z*.23f);}
+            if(detail!=null){surface.SetFloat("_Sculpted",1);surface.SetFloat("_Element",arrow?0:5);surface.SetFloat("_Seed",at.x*.17f+at.z*.23f);}
             ProceduralVisuals.ApplySurface(surface,arrow ? VisualSurface.Metal : VisualSurface.Crystal);
             GameObject obj = new GameObject("Projectile simulation root");
             GameObject body = ProceduralVisuals.Create(arrow ? "Spectral Arrow" : "Arcane Bolt",arrow ? PrimitiveType.Capsule : PrimitiveType.Sphere,surface);
             Mesh authored=AuthoredProjectileMeshes.Load(identity);
             if(authored!=null)body.GetComponent<MeshFilter>().sharedMesh=authored;
             body.transform.SetParent(obj.transform,false);
+            body.transform.localScale=identity=="HostileBolt"?new Vector3(1.15f,1.4f,1.9f):arrow?new Vector3(1.35f,1.1f,1.35f):new Vector3(.95f,1.35f,.95f);
             obj.transform.position = new Vector3(at.x, 1f, at.z);
             Vector3 normalized = CombatFx.Flat(forward).normalized;
             if (normalized.sqrMagnitude < .1f) normalized = Vector3.forward;
@@ -308,9 +318,9 @@ namespace Emberfall
             TrailRenderer trail = body.AddComponent<TrailRenderer>();projectile.visualTrail=trail;trail.emitting=false;
             projectile.trailMaterial = CombatFx.NewGlow();
             trail.sharedMaterial = projectile.trailMaterial;
-            trail.time = EffectPreferences.ReducedEffects ? .08f : arrow ? .22f : .24f;
+            trail.time = EffectPreferences.ReducedEffects ? .08f : arrow ? .18f : .16f;
             trail.numCapVertices = 4; trail.numCornerVertices = 4;
-            trail.startWidth = arrow ? .11f : .22f;
+            trail.startWidth = arrow ? .14f : .16f;
             trail.endWidth = 0;
             var gradient=new Gradient();
             gradient.SetKeys(new[]{new GradientColorKey(Color.Lerp(tint,Color.white,.9f),0),new GradientColorKey(tint,.35f),new GradientColorKey(tint*.55f,1)},new[]{new GradientAlphaKey(.95f,0),new GradientAlphaKey(.55f,.4f),new GradientAlphaKey(0,1)});
@@ -534,14 +544,15 @@ namespace Emberfall
                 area.trapCore=AuthoredTrapVisual.Create(obj.transform,tint,size);
             if (fallingMeteor)
             {
-                area.orbMaterial = new Material(Shader.Find("Standard")) { color = new Color(.64f,.19f,.075f) };
+                area.orbMaterial = new Material(Shader.Find("Standard")) { color = new Color(.32f,.12f,.055f) };
                 ProceduralVisuals.ApplySurface(area.orbMaterial,VisualSurface.Crystal);
-                area.orbMaterial.SetColor("_EmissionColor",new Color(.85f,.21f,.035f));
+                area.orbMaterial.EnableKeyword("_EMISSION");
+                area.orbMaterial.SetColor("_EmissionColor",new Color(.9f,.24f,.035f));
                 area.fallingOrb = ProceduralVisuals.Create("Falling Meteor",PrimitiveType.Sphere,area.orbMaterial);
                 area.fallingOrb.GetComponent<MeshFilter>().sharedMesh=AuthoredProjectileMeshes.Load("MeteorRock")??ProceduralVisuals.WeatheredRock;
                 area.fallingOrb.transform.SetParent(obj.transform, false);
                 area.fallingOrb.transform.localPosition = Vector3.up * 9f;
-                area.fallingOrb.transform.localScale = Vector3.one * 1.1f;
+                area.fallingOrb.transform.localScale = Vector3.one * 1.3f;
 
             }
         }
@@ -598,6 +609,7 @@ namespace Emberfall
                                 poisonVisual ? ElementalCombatVfx.Element.Poison : ElementalCombatVfx.Element.Lightning);
                         if(visualRecipe==SkillVisualRecipe.Ice)ElementalCombatVfx.Area(transform,radius,ElementalCombatVfx.Element.Ice);
                         if(poisonVisual){ElementalCombatVfx.Burst(owner,transform.position,radius,ElementalCombatVfx.Element.Poison);FilledSkillVfx.PoisonVines(owner,transform.position,radius,color);}
+                        if(visualRecipe==SkillVisualRecipe.Neutral&&statusSkill==1)FilledSkillVfx.TrapRelease(owner,transform.position,radius,color);
                         if (fireVisual) FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Fire, new Color(1f,.43f,.12f),CombatVisualPriority.ActionBody,elementalist:owner.HeroClass==HeroClass.Arcanist);
                         else if (visualRecipe == SkillVisualRecipe.Ice)
                             FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Ice, new Color(.2f,.75f,1f),CombatVisualPriority.ActionBody,elementalist:owner.HeroClass==HeroClass.Arcanist);

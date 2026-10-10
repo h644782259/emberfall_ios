@@ -92,6 +92,13 @@ namespace Emberfall
                 // The ultimate uses the same upper-right placement as iPad.
                 Skills[4]=Centered(SkillPage.X+SkillPage.Width*.5f,SkillPage.Y-10-31.2f,62.4f);
             }
+            // Keep the complete combat cluster clear of right and bottom edges.
+            const float edgeInset=18, bottomInset=12;
+            Attack=new Area(Attack.X-edgeInset,Attack.Y-bottomInset,Attack.Width,Attack.Height);
+            Dodge=new Area(Dodge.X-edgeInset,Dodge.Y-bottomInset,Dodge.Width,Dodge.Height);
+            Jump=new Area(Jump.X-edgeInset,Jump.Y-bottomInset,Jump.Width,Jump.Height);Cancel=Jump;
+            SkillPage=new Area(SkillPage.X-edgeInset,SkillPage.Y-bottomInset,SkillPage.Width,SkillPage.Height);
+            for(int i=0;i<Skills.Length;i++){var skill=Skills[i];Skills[i]=new Area(skill.X-edgeInset,skill.Y-bottomInset,skill.Width,skill.Height);}
             int[] opportunityIdentities={0,1,2,4,5,6,7,9};
             for(int index=0;index<opportunityIdentities.Length;index++)
             {
@@ -102,10 +109,10 @@ namespace Emberfall
             ComboOpportunity=new Area(Attack.X+Attack.Width/2,Attack.Y+Attack.Height+1,Attack.Width/2,13);
             float commandLift=Width<700?22:0;
             FocusCommand=new Area(204,Height-170-commandLift,48,48);RecallCommand=new Area(204,Height-120-commandLift,48,48);
-            float phoneHealthWidth=Math.Min(160,Math.Max(110,Attack.X-8-(Width*.5f-80)-50));
-            PlayerStatus=new Area(Width*.5f-(ipad?112:80),Height-(ipad?72:68),ipad?234:phoneHealthWidth+50,ipad?23:18);
+            float phoneHealthWidth=Math.Min(160,Math.Max(80,Math.Min(Attack.X-58,Skills[0].X-8)-(Width*.5f-80)));
+            PlayerStatus=new Area(Width*.5f-(ipad?112:80),Height-(ipad?58:54),ipad?234:phoneHealthWidth+50,ipad?36:27);
             PlayerHealth=new Area(PlayerStatus.X,PlayerStatus.Y,ipad?184:phoneHealthWidth,ipad?16:12);
-            PlayerEnergy=new Area(PlayerStatus.X,PlayerStatus.Y+(ipad?20:15),ipad?184:phoneHealthWidth,16);Map=new Area(12,12,ipad?158.4f:88,ipad?122.4f:68);
+            PlayerEnergy=new Area(PlayerStatus.X,PlayerStatus.Y+(ipad?20:15),ipad?184:phoneHealthWidth,ipad?16:12);Map=new Area(12,12,ipad?158.4f:88,ipad?122.4f:68);
             // Reserve the bottom XP rail even on devices with no bottom safe-area inset.
             Potion=new Area(Potion.X,Math.Min(Potion.Y,Height-20-Potion.Height),Potion.Width,Potion.Height);
             AdventureStatus=new Area(12,ipad?140.4f:86,188,76);

@@ -69,14 +69,12 @@ namespace Emberfall
             { if(session.ConfirmBlessing(selectedBlessing))selectedBlessing=-1; }
         }
 
-        private void DrawCampWorkshop()
+        // Dedicated utility surfaces remain reachable from their own entries.
+        private void DrawHubUtility()
         {
             if(merchantExchangeOpen){DrawAttachmentWorkshop();return;}
             if(DrawClassSwitchSurface()||DrawReforgeSurface()||DrawProgressionGoalSurface()||DrawBuildPlanSurface())return;
-            float u=MobileControls.Active?TouchRatio:1;
-            Rect w=Modal(Mathf.Min(width-24,780*u),Mathf.Min(height-24,300*u),"营地工坊","职业能力与精通已并入技能；兑换请与商人对话，试炼请打开右上目标。");
-            if(PopupCloseButton(new Rect(w.xMax-64*u,w.y+20*u,40*u,32*u)))ClosePanel();
-            Text(new Rect(w.x+24*u,w.y+116*u,w.width-48*u,100*u),"技能：等级成长、职业精通与技能模式。\n目标：实战试炼、进度、奖励和下一步指引。\n商人：宝石兑换、药剂与交易。",Mathf.RoundToInt(16*u),pale,false,true);
+            ClosePanel();
         }
 
         private void DrawComboCounter()
@@ -85,10 +83,18 @@ namespace Emberfall
             if(count<=0||panel!=Panel.None||session.Paused||session.IsDead)return;
             float u=MobileControls.Active?TouchRatio:1;
             Rect r=new Rect(width-244*u,Mathf.Clamp(height*.46f,30*u,height-90*u),208*u,54*u);
+            if(MobileControls.Active)
+            {
+                var layout=MobileControls.Layout;
+                // Keep combo feedback in the open field left of the upper skill column.
+                // A viewport anchor stays below navigation even on compact phones.
+                float centerX=Mathf.Min(layout.Width*.74f,layout.Skills[4].X-96);
+                r=new Rect((centerX-80)*u,(layout.Height*.4f-27)*u,160*u,54*u);
+            }
             var previous=GUI.matrix;
             GUIUtility.RotateAroundPivot(-7,r.center);
             var style=new GUIStyle(Style(Mathf.RoundToInt(30*u),true,false));
-            style.fontStyle=FontStyle.BoldAndItalic;style.alignment=TextAnchor.MiddleRight;
+            style.fontStyle=FontStyle.BoldAndItalic;style.alignment=MobileControls.Active?TextAnchor.MiddleCenter:TextAnchor.MiddleRight;
             style.padding=new RectOffset(0,Mathf.RoundToInt(8*u),0,0);
             string combo="连击 x"+count;
             while(style.fontSize>Mathf.RoundToInt(12*u)&&style.CalcSize(new GUIContent(combo)).x>r.width-16*u)style.fontSize--;
@@ -153,8 +159,6 @@ namespace Emberfall
             if(session.NearDungeonReturn){Rect exit=new Rect((width-240)*.5f,height-225,240,48);blockedRects.Add(exit);if(Button(exit,"传送点 [E]",gold))OpenDungeonExit();}
             else if(session.NearChapterExit){Rect next=new Rect((width-300)*.5f,height-225,300,48);blockedRects.Add(next);if(Button(next,"沿星路前进 [T]",gold))session.EnterNextChapterRoom();}
             else if(session.NearRoomExit){Rect next=new Rect((width-300)*.5f,height-225,300,48);blockedRects.Add(next);if(Button(next,"进入下一间 [T]",gold))session.EnterNextRoom();}
-            if(session.IsInCamp)
-            { Rect r=new Rect(16,AdventureSelectionLayout.WorkshopY(height,session.SystemMessages.Count,systemHistory),212,36);blockedRects.Add(r);if(Button(r,"营地工坊",jade)) {panel=Panel.Camp;session.SetUIBlocking(true);} }
             if(session.SideEventAvailable)
             { Rect r=new Rect((width-410)*.5f,height-260,410,48);blockedRects.Add(r);
               if(Button(r,"开启晶核挑战 [E] · 2名守卫",gold,true,"额外一名遗迹守卫与一名魔灵；全部击败才获得1碎片和补给。"))session.StartSideEvent(); }
@@ -191,7 +195,7 @@ namespace Emberfall
         {
             if(Button(new Rect(r.x,r.y,127,35),"飘字 "+EffectPreferences.CombatTextScale.ToString("0.00")+"×",jade))
                 EffectPreferences.CombatTextScale=EffectPreferences.CombatTextScale>=1.79f?1f:Mathf.Min(1.8f,EffectPreferences.CombatTextScale+.25f);
-            if(Button(new Rect(r.x+408,r.y,127,35),"字号 "+Mathf.RoundToInt(EffectPreferences.InterfaceTextScale*100)+"%",jade))EffectPreferences.CycleInterfaceTextScale();
+            if(Button(new Rect(r.x+408,r.y,127,35),"字号 "+EffectPreferences.InterfaceTextSizeName,jade))EffectPreferences.CycleInterfaceTextScale();
             if(Button(new Rect(r.x+136,r.y,127,35),EffectPreferences.CameraShake?"震动：开":"震动：关",jade))EffectPreferences.CameraShake=!EffectPreferences.CameraShake;
             if(Button(new Rect(r.x+272,r.y,127,35),EffectPreferences.ReducedEffects?"低动态效果":"完整效果",jade))EffectPreferences.EffectsScale=EffectPreferences.ReducedEffects?1f:.3f;
         }

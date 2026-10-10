@@ -170,11 +170,13 @@ namespace Emberfall
         {
             var fx=Create(hero,at+Vector3.up*.82f,forward,FilledVfxKind.Crescent,radius,color,.34f,priority:priority);if(fx==null)return;
             if(priority==CombatVisualPriority.Finale)fx.RegisterFinale(castId);
-            if(identityBlade!=null)fx.Add(identityBlade,Vector3.zero,new Vector3(fx.size,fx.size*.7f,fx.size),Quaternion.Euler(-12,0,0),0,15,swingSide,fx.size*1.1f,"Identity blade slice",true);
+            fx.sculpted=true;
+            if(identityBlade!=null)fx.Add(identityBlade,Vector3.zero,new Vector3(fx.size,fx.size*1.05f,fx.size),Quaternion.Euler(-12,0,0),0,15,swingSide,fx.size*1.1f,"Identity blade slice",true);
             else {
-            fx.Add(crescent,Vector3.zero,new Vector3(fx.size,fx.size*.7f,fx.size),Quaternion.Euler(-12,0,0),0,0,swingSide);
+            fx.Add(crescent,Vector3.zero,new Vector3(fx.size,fx.size*1.05f,fx.size),Quaternion.Euler(-12,0,0),0,0,swingSide);
             fx.Add(crescent,new Vector3(0,.08f,-.1f),Vector3.one*fx.size*.88f,Quaternion.Euler(8,-16*swingSide,0),.02f,0,swingSide);
             }
+            fx.Add(crescent,new Vector3(0,-.1f,.03f),new Vector3(fx.size*.82f,fx.size*.5f,fx.size*.82f),Quaternion.Euler(12,-18*swingSide,0),.025f,15,swingSide,fx.size,"Blade underside",true);
             for(int i=0;i<4;i++)fx.Add(crystal,new Vector3((i-1.5f)*.25f,.1f,.8f)*fx.size,new Vector3(.09f,.4f,.12f)*fx.size,Quaternion.Euler(85,i*33,0),.02f+i*.018f,4,i);
         }
         public static void Impact(PlayerController hero,Vector3 at,float radius,FilledVfxKind type,Color color,CombatVisualPriority priority=CombatVisualPriority.ActionBody,int castId=0,bool elementalist=false)
@@ -184,6 +186,7 @@ namespace Emberfall
             if(type==FilledVfxKind.Fire||type==FilledVfxKind.Ice)ElementalCombatVfx.Burst(hero,at,radius,type==FilledVfxKind.Fire?ElementalCombatVfx.Element.Fire:ElementalCombatVfx.Element.Ice);
             if(priority==CombatVisualPriority.Finale)fx.RegisterFinale(castId);
             float unit=Mathf.Min(1.6f,fx.size*.55f);
+            fx.sculpted=type==FilledVfxKind.Sword||type==FilledVfxKind.Summon||type==FilledVfxKind.Arcane;
             if(elementalist&&(type==FilledVfxKind.Ice||type==FilledVfxKind.Fire||type==FilledVfxKind.Lightning))
             {fx.sculpted=true;fx.ElementalistImpact(type,unit);return;}
             // Allocate landing base, identity silhouette and contact flash BEFORE repeated ornaments.
@@ -191,12 +194,12 @@ namespace Emberfall
             fx.Add(rupture,Vector3.up*.07f,new Vector3(fx.size*.58f,.8f,fx.size*.58f),Quaternion.identity,0,5,0,fx.size*.7f,"Landing base",true);
             Mesh main=type==FilledVfxKind.Sword?sword:type==FilledVfxKind.Lightning?(identityFork??lightning):type==FilledVfxKind.Arcane?arcane:type==FilledVfxKind.Ice?(icePrimary??crystal):type==FilledVfxKind.Fire?(firePrimary??flame):(identityContract??crescent);
             int motion=type==FilledVfxKind.Sword?8:type==FilledVfxKind.Lightning?(identityFork!=null?17:9):type==FilledVfxKind.Arcane?10:type==FilledVfxKind.Ice?(icePrimary!=null?13:1):type==FilledVfxKind.Fire?(firePrimary!=null?14:2):(identityContract!=null?16:3);
-            Vector3 dimensions=type==FilledVfxKind.Sword?new Vector3(.95f,3.2f,.95f)*unit:type==FilledVfxKind.Lightning?new Vector3(1.3f,2.2f,1.3f)*unit:Vector3.one*unit*1.65f;
+            Vector3 dimensions=type==FilledVfxKind.Sword?new Vector3(1.15f,4f,1.15f)*unit:type==FilledVfxKind.Lightning?new Vector3(1.3f,2.2f,1.3f)*unit:Vector3.one*unit*1.65f;
             fx.Add(main,Vector3.zero,dimensions,Quaternion.identity,0,motion,0,
                 type==FilledVfxKind.Sword?unit*.55f:type==FilledVfxKind.Lightning?unit*.85f:type==FilledVfxKind.Summon?unit*1.8f+fx.size*.3f:unit*2f,"Primary "+type,true);
             if(type==FilledVfxKind.Fire||type==FilledVfxKind.Ice||type==FilledVfxKind.Lightning||type==FilledVfxKind.Arcane||type==FilledVfxKind.Summon)
             {
-                Vector3 body=type==FilledVfxKind.Fire?new Vector3(1.6f,1.9f,1.6f):type==FilledVfxKind.Ice?new Vector3(1.3f,.85f,1.3f):type==FilledVfxKind.Lightning?new Vector3(.7f,2.3f,.7f):new Vector3(1.5f,1.2f,1.5f);
+                Vector3 body=type==FilledVfxKind.Fire?new Vector3(1.6f,1.9f,1.6f):type==FilledVfxKind.Ice?new Vector3(1.3f,.85f,1.3f):type==FilledVfxKind.Lightning?new Vector3(.7f,2.3f,.7f):new Vector3(.65f,1.3f,.65f);
                 fx.Add(energyCore,Vector3.up*.08f,body*unit,Quaternion.identity,0,18,2,unit*1.3f,"Luminous elemental body",true);
             }
             fx.Add(rupture,Vector3.up*.11f,new Vector3(fx.size*.3f,.65f,fx.size*.3f),Quaternion.Euler(0,65,0),0,5,1,fx.size*.38f,"Contact flash",true);
@@ -211,7 +214,7 @@ namespace Emberfall
                 else if(type==FilledVfxKind.Fire)
                     fx.Add(flame,radial*r*.55f,new Vector3(.95f,1.6f+(i%3)*.3f,.95f)*unit,Quaternion.Euler(radial.z*17,i*51,-radial.x*17),i*.012f,2,angle,unit*1.8f);
                 else if(type==FilledVfxKind.Summon)
-                    fx.Add(crescent,radial*fx.size*.25f+Vector3.up*.65f,Vector3.one*fx.size*.4f,Quaternion.Euler(90,angle*Mathf.Rad2Deg,0),i*.024f,3,angle,fx.size*.9f);
+                    fx.Add(crescent,radial*fx.size*.23f+Vector3.up*.25f,new Vector3(.62f,1.2f,.62f)*fx.size,Quaternion.Euler(62,angle*Mathf.Rad2Deg,18),i*.024f,25,angle,fx.size*1.1f);
                 else
                     fx.Add(type==FilledVfxKind.Sword?rupture:type==FilledVfxKind.Arcane?arcaneShard:main,radial*r+Vector3.up*.16f,Vector3.one*unit*.35f,Quaternion.Euler(0,i*51,0),(type==FilledVfxKind.Arcane?.34f:.08f)+i*.018f,type==FilledVfxKind.Sword?5:type==FilledVfxKind.Arcane?3:motion,angle,unit*.6f+(type==FilledVfxKind.Arcane?fx.size*.3f:0));
             }
@@ -244,6 +247,18 @@ namespace Emberfall
                     new Vector3(.12f,.38f,.16f)*unit,Quaternion.Euler(35,i*67,20),.18f+i*.025f,3,angle,unit*.6f+size*.3f,"Elemental fragments");
             }
         }
+        internal static void TrapRelease(PlayerController hero,Vector3 at,float radius,Color color)
+        {
+            var fx=Create(hero,at,Vector3.forward,FilledVfxKind.Thrust,radius,color,.55f,priority:CombatVisualPriority.RealContact);if(fx==null)return;
+            fx.sculpted=true;
+            fx.Add(rupture,Vector3.up*.045f,new Vector3(radius*.75f,.3f,radius*.75f),Quaternion.identity,0,5,0,radius,"Trap pressure crown",true);
+            for(int i=0;i<6;i++)
+            {
+                float angle=i*Mathf.PI/3;
+                fx.Add(crystal,new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius*.45f,
+                    new Vector3(.18f,.45f,.18f),Quaternion.Euler(25,i*60,18),i*.012f,24,i,radius*.2f,"Trap release splinter",true);
+            }
+        }
         internal static ArrowBatchHandle BeginArrowBatch(PlayerController hero,Vector3 at,float radius,Color color,bool final=false,CombatVisualPriority priority=CombatVisualPriority.ActionBody,int castId=0)
         {
             var fx=Create(hero,at,Vector3.forward,FilledVfxKind.ArrowRain,radius,color,12,priority:final?CombatVisualPriority.Finale:priority);
@@ -269,10 +284,10 @@ namespace Emberfall
                 for(int i=0;i<count;i++)Animate(pieces[i]);
                 return;
             }
-            ClearPieces();kind=FilledVfxKind.ArrowRain;transform.position=at;age=0;life=final?1.05f:.65f;size=nextSize;
+            ClearPieces();sculpted=true;kind=FilledVfxKind.ArrowRain;transform.position=at;age=0;life=final?1.05f:.65f;size=nextSize;
             if(final){RegisterFinale(finaleCast);if(lease!=null)lease.Promote(CombatVisualPriority.Finale);}
             Add(rupture,Vector3.up*.08f,Vector3.one*(final?size*.65f:.3f),Quaternion.identity,0,5,0,final?size:.4f,"Arrow landing contact",true);
-            Add(arrow,Vector3.zero,new Vector3(final?2.4f:.8f,final?5.2f:1.1f,final?2.4f:.8f),Quaternion.identity,0,11,0,.3f,"Primary falling arrow",true);
+            Add(arrow,Vector3.zero,new Vector3(final?2.4f:1f,final?5.2f:1.8f,final?2.4f:1f),Quaternion.identity,0,11,0,.3f,"Primary falling arrow",true);
             Add(rupture,Vector3.up*.1f,Vector3.one*.22f,Quaternion.identity,0,4,0,final?3.5f:2.3f,"Arrow impact fragments");
             bool ultimate=finaleCast>0;
             if(ultimate&&final)
@@ -283,14 +298,16 @@ namespace Emberfall
             for(int i=0;i<maximum;i++)
             {
                 float a=i*2.39996f,r=size*(ultimate?(.25f+(i%4)*.18f):(.15f+(i%3)*.2f));var offset=new Vector3(Mathf.Cos(a)*r,.02f,Mathf.Sin(a)*r);
-                Add(arrow,offset,new Vector3(ultimate?.95f:.7f,ultimate?1.6f:.55f+(i%2)*.2f,ultimate?.95f:.7f),Quaternion.Euler(0,i*47,0),ultimate?(i%3)*.035f:0,ultimate?11:12,0,.25f,"Short embedded arrow");
+                Add(arrow,offset,new Vector3(ultimate?1.1f:.85f,ultimate?2.1f:.9f+(i%2)*.25f,ultimate?1.1f:.85f),Quaternion.Euler(0,i*47,0),ultimate?(i%3)*.035f:0,ultimate?11:12,0,.25f,"Short embedded arrow");
             }
             arrowGeometryReady=true;arrowGeometryFinal=final;arrowGeometryReduced=EffectPreferences.ReducedEffects;arrowGeometryRevision=WorldTraversal.Revision;
         }
         internal static void PoisonVines(PlayerController hero,Vector3 at,float radius,Color color)
         {
             var fx=Create(hero,at,Vector3.forward,FilledVfxKind.Vine,radius,color,1.05f,priority:CombatVisualPriority.SustainedBackground);if(fx==null)return;
-            for(int i=0;i<3;i++)fx.Add(vine,Vector3.zero,new Vector3(radius*.5f,1,radius*.5f),Quaternion.Euler(0,i*120,0),0,0,0,radius,"Poison branch vine",true);
+            fx.sculpted=true;
+            for(int i=0;i<3;i++)fx.Add(vine,Vector3.zero,new Vector3(radius*.5f,1.4f+i*.15f,radius*.5f),Quaternion.Euler(0,i*120,0),i*.035f,24,i,radius,"Poison branch vine",true);
+            for(int i=0;i<3;i++)fx.Add(crystal,new Vector3(Mathf.Cos(i*2.094f),0,Mathf.Sin(i*2.094f))*radius*.28f,new Vector3(.16f,.6f,.16f),Quaternion.Euler(15,i*120,25),.07f+i*.03f,24,i,radius*.3f,"Venom thorn tip",true);
         }
         public static void Charge(Transform parent,PlayerController hero,Vector3 at,float radius,Color color,float duration,int identity=0,bool protectionEnvelope=false,int protectionStyle=0)
         {
@@ -322,13 +339,26 @@ namespace Emberfall
         {
             EnsureAssets();Mesh mesh=identity==2?identityFork:identity==3?identityContract:identity==4?identityProtection:identityBlade;if(mesh==null)return false;
             var fx=Create(hero,at,forward,identity==2?FilledVfxKind.Lightning:FilledVfxKind.Summon,radius,color,.6f,priority:priority);if(fx==null)return true;
-            float unit=Mathf.Min(1.6f,radius);fx.Add(mesh,Vector3.up*.07f,Vector3.one*unit,Quaternion.identity,0,identity==2?17:identity==3?16:19,0,unit,"Identity actual event",true);return true;
+            fx.sculpted=true;float unit=Mathf.Min(1.6f,radius);fx.Add(mesh,Vector3.up*.07f,new Vector3(1.1f,identity==2?1.6f:1.1f,1.1f)*unit,Quaternion.identity,0,identity==2?23:identity==3?16:19,0,unit,"Identity actual event",true);
+            if(identity==3)
+            {
+                // Raised facets give the contract a readable body above its ground sigil.
+                fx.Add(arcaneShard,Vector3.up*.08f,new Vector3(.3f,1.8f,.3f)*unit,Quaternion.identity,0,24,0,unit*.45f,"Contract raised core",true);
+                for(int i=0;i<3;i++)
+                {
+                    float angle=i*Mathf.PI*2/3;
+                    fx.Add(crystal,new Vector3(Mathf.Cos(angle),.05f,Mathf.Sin(angle))*unit*.28f,new Vector3(.14f,.95f,.14f)*unit,
+                        Quaternion.identity,.025f+i*.015f,24,i,unit*.3f,"Contract raised shard",true);
+                }
+            }
+            return true;
         }
         public static void Thrust(PlayerController hero,Vector3 start,Vector3 end,Color color,float lifetime,float width,CombatVisualPriority priority=CombatVisualPriority.ActionBody)
         {
             if(!Finite(end.x)||!Finite(end.y)||!Finite(end.z)||!Finite(width)||width<=0)return;
             Vector3 delta=end-start;if(delta.sqrMagnitude<.001f)return;
             var fx=Create(hero,start,Vector3.forward,FilledVfxKind.Thrust,1,color,Mathf.Min(lifetime,.7f),priority:priority);if(fx==null)return;
+            fx.sculpted=true;
             fx.Add(flame,Vector3.zero,new Vector3(Mathf.Clamp(width*3,.22f,1.5f),Mathf.Min(24,delta.magnitude),Mathf.Clamp(width*3,.22f,1.5f)),Quaternion.FromToRotation(Vector3.up,delta),0,7,0);
             fx.Add(crystal,delta*.84f,new Vector3(width*1.4f,Mathf.Min(3,delta.magnitude*.3f),width*1.4f),Quaternion.FromToRotation(Vector3.up,delta),0,7,1);
         }
@@ -337,6 +367,7 @@ namespace Emberfall
             var fx=Create(hero,at,Vector3.forward,FilledVfxKind.Fire,.4f,new Color(1,.56f,.16f),.32f,
                 priority:CombatVisualPriority.RealContact);
             if(fx==null)return;
+            fx.sculpted=true;
             fx.Add(rupture,Vector3.up*.1f,new Vector3(.35f,.2f,.35f),Quaternion.identity,0,5,0,.4f,"Burn real contact",true);
             fx.Add(flame,Vector3.zero,new Vector3(.22f,.6f,.22f),Quaternion.identity,0,2,0,.25f,"Burn contact ember",true);
         }
@@ -410,6 +441,11 @@ namespace Emberfall
                 case 23: // A full branching strike on contact, followed by a short re-strike.
                     scale.y*=local<.1f?1:local<.2f?.7f:local<.28f?.95f:1-Mathf.Clamp01((local-.28f)/.6f)*.7f;
                     scale.x*=1-Mathf.Clamp01(local/.8f)*.35f;scale.z*=1-Mathf.Clamp01(local/.8f)*.35f;break;
+                case 24: // Roots emerge vertically without expanding their certified footprint.
+                    scale.y*=local<.18f?Mathf.Lerp(.2f,1,local/.18f):1-Mathf.Clamp01((local-.65f)/.4f)*.6f;break;
+                case 25: // Opening contract petals separate above the real summon point.
+                    at+=new Vector3(Mathf.Cos(p.Phase),0,Mathf.Sin(p.Phase))*t*size*.18f*p.TravelScale;
+                    at.y+=Mathf.Sin(t*Mathf.PI)*.8f;scale*=1-t*.65f;rotation*=Quaternion.Euler(t*35,0,t*18);break;
                 case 18: scale.y*=.65f+.35f*Mathf.Min(1,local/.18f);break;
                 case 19: scale.y*=.82f+.18f*Mathf.Min(1,local/.1f);break;
                 case 13: scale.y*=local<.09f?Mathf.Lerp(.45f,1,local/.09f):local<.42f?1:Mathf.Lerp(1,.62f,Mathf.Clamp01((local-.42f)/.5f));break;
@@ -434,7 +470,7 @@ namespace Emberfall
             // Placement reserved the complete motion footprint once. Do not toggle a whole
             // primary silhouette each frame when a growing bounds circle grazes a wall.
             Color color=tint;if(p.Motion==17)color.a*=local<.07f?1:local<.14f?.48f:local<.22f?.82f:.55f;if(p.Secondary)color.a*=.55f*Mathf.Clamp01((.62f-local)/.2f);color.a*=(kind==FilledVfxKind.Charge?.35f:.9f)*Mathf.Lerp(.55f,1,EffectPreferences.EffectsScale);
-            if(sculpted&&p.Motion==18)color.a*=.4f;
+            if(sculpted&&p.Motion==18)color.a*=.3f;
             if(p.Motion==23)color.a*=local<.09f?1:local<.18f?.3f:local<.27f?.95f:.5f;
             float opacity=f.Opacity;
             if(p.Motion==20)

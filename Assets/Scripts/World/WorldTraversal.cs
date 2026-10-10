@@ -24,6 +24,7 @@ namespace Emberfall
         private const float GridOrigin = -23.1f;
         public static void Reset(ZoneKind zone)
         {
+            WorldTerrain.Configure(zone,-1);
             obstacles.Clear(); grids.Clear(); river = null; arena = zone == ZoneKind.Dungeon ? 18 : 22; revision++;
         }
         public static void AddCircle(Vector3 center, float radius)
@@ -191,6 +192,7 @@ namespace Emberfall
                 },
                 travelled => IsWalkable(origin + direction * travelled, radius));
             landing = origin + direction * safeDistance;
+            landing.y=WorldTerrain.Height(landing);
             return safeDistance >= .35f;
         }
 
@@ -198,7 +200,7 @@ namespace Emberfall
         public static Vector3 ResolveSkillLanding(Vector3 from, Vector3 direction, float distance, float radius, float bound)
         {
             Vector3 landing;
-            if(from.y>.05f)
+            if(from.y>WorldTerrain.Height(from)+.05f)
             {return TryResolvePlatformJump(from,direction,distance,radius,out landing)?landing:from;}
             TryResolveBlink(from,direction,distance,radius,bound,out landing);
             return landing;
@@ -225,7 +227,7 @@ namespace Emberfall
         }
         public static float SurfaceHeight(Vector3 point,float radius=.45f)
         {
-            float height=0;
+            float height=WorldTerrain.Height(point);
             foreach(var o in obstacles)if(ContainsTop(o,point,radius))height=Mathf.Max(height,o.Height);
             return height;
         }
@@ -259,11 +261,11 @@ namespace Emberfall
             if(!CanStand(from,radius)||direction.sqrMagnitude<.01f)return false;
             // Try the intended distance first; shorter safe points allow landing on
             // a narrow box without requiring pixel-perfect movement input.
-            for(int pass=0;pass<(from.y<=.05f?2:1);pass++)
+            for(int pass=0;pass<(from.y<=WorldTerrain.Height(from)+.05f?2:1);pass++)
             for(float d=distance;d>=.05f;d-=.05f)
             {
                 var to=CombatFx.Flat(from)+direction*d;to.y=SurfaceHeight(to,radius);
-                if(from.y<=.05f&&(pass==0?to.y<=0:to.y>0))continue;
+                if(from.y<=WorldTerrain.Height(from)+.05f&&(pass==0?to.y<=WorldTerrain.Height(to):to.y>WorldTerrain.Height(to)))continue;
                 if(!CanStand(to,radius))continue;
                 int samples=Mathf.Max(24,Mathf.CeilToInt(d/.08f));bool clear=true;
                 for(int i=0;i<=samples;i++)
@@ -274,7 +276,7 @@ namespace Emberfall
         }
         private static float StandingHeight(Vector3 point,float radius,float ceiling)
         {
-            float height=0;
+            float height=WorldTerrain.Height(point);
             foreach(var o in obstacles)
             {
                 if(o.Height<=0||o.Height>ceiling+.035f)continue;
@@ -291,7 +293,7 @@ namespace Emberfall
         public static Vector3 MovePlayer(Vector3 from,Vector3 delta,float deltaTime,ref float fallSpeed,float radius=.45f)
         {
             if(!Finite(deltaTime)||deltaTime<=0)return from;
-            if(from.y<=.001f){fallSpeed=0;return Move(from,delta,radius);}
+            if(from.y<=WorldTerrain.Height(from)+.035f){fallSpeed=0;return Move(from,delta,radius);}
             delta=CombatFx.Flat(delta);
             int steps=Mathf.Max(1,Mathf.Max(Mathf.CeilToInt(delta.magnitude/.08f),Mathf.CeilToInt(deltaTime/.02f)));
             float dt=deltaTime/steps;
@@ -352,7 +354,7 @@ namespace Emberfall
         }
         public static Vector3 Move(Vector3 from, Vector3 delta, float radius = .45f)
         {
-            if(from.y>.05f&&CanStand(from,radius))return MoveOnPlatform(from,delta,radius);
+            if(from.y>WorldTerrain.Height(from)+.05f&&CanStand(from,radius))return MoveOnPlatform(from,delta,radius);
             from = CombatFx.Flat(from); delta = CombatFx.Flat(delta);
             if (!IsWalkable(from, radius)) from = NearestWalkable(from, radius);
             int steps = Mathf.Max(1, Mathf.CeilToInt(delta.magnitude / .16f));
@@ -366,6 +368,7 @@ namespace Emberfall
                 Vector3 alongZ = from + new Vector3(0, 0, step.z);
                 if (IsWalkable(alongZ, radius)) from = alongZ;
             }
+            from.y=WorldTerrain.Height(from);
             return from;
         }
         // Search outward in distance order; never fall back to an obstructed origin.
@@ -391,13 +394,13 @@ namespace Emberfall
         public static Vector3 NearestWalkable(Vector3 point, float radius = .45f)
         {
             point = Vector3.ClampMagnitude(CombatFx.Flat(point), arena - radius - .02f);
-            if (IsWalkable(point, radius)) return point;
+            if (IsWalkable(point, radius)) {point.y=WorldTerrain.Height(point);return point;}
             for (float distance = .2f; distance <= arena * 2; distance += .25f)
                 for (int i = 0; i < 32; i++)
                 {
                     float angle = i * Mathf.PI / 16;
                     Vector3 probe = point + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * distance;
-                    if (IsWalkable(probe, radius)) return probe;
+                    if (IsWalkable(probe, radius)) {probe.y=WorldTerrain.Height(probe);return probe;}
                 }
             return Vector3.zero;
         }
@@ -520,5 +523,32 @@ namespace Emberfall
                 items[i] = tail; return result;
             }
         }
+    }
+}
+
+namespace Emberfall
+{
+    // Smooth compact hills. The brook, crossing, camp, travel road and courtyard
+    // keep their authored datum. Rendering and traversal sample this same field.
+    public static class WorldTerrain
+    {
+        public static bool ReliefEnabled=true;
+        public static bool Enabled { get; private set; }
+        public static void Configure(ZoneKind zone,int hub)
+        {
+            Enabled=ReliefEnabled&&zone==ZoneKind.Wilderness&&hub==0;
+        }
+        static float Hill(float x,float z,float cx,float cz,float radius,float height)
+        {
+            float q=Mathf.Clamp01(1-((x-cx)*(x-cx)+(z-cz)*(z-cz))/(radius*radius));
+            return height*q*q*q;
+        }
+        public static float Height(Vector3 p)
+        {
+            if(!Enabled)return 0;
+            return Hill(p.x,p.z,-13,-11,7,1.25f)+Hill(p.x,p.z,16,1,5.5f,.85f)+Hill(p.x,p.z,-17,13,5,1.05f);
+        }
+        public static Vector3 Ground(Vector3 p,float clearance=0)
+        {p.y=WorldTraversal.SurfaceHeight(p,.04f)+clearance;return p;}
     }
 }
