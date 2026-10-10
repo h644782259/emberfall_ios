@@ -84,11 +84,12 @@ namespace Emberfall
                 for(int d=0;d<3;d++)
                 {
                     int completed=ChapterProgression.CompletedTier(profile,choice,(ChapterDifficulty)d);
-                    Text(new Rect(card.x+d*card.width/3,card.yMax+19*u,card.width/3,16*u),ChapterEntryPresentation.DifficultyName((ChapterDifficulty)d)+(completed>0?" "+completed+"阶":" ·"),Mathf.RoundToInt(10*u),completed>0?jade:muted);
+                    Text(new Rect(card.x+d*card.width/3,card.yMax+19*u,card.width/3,16*u),ChapterEntryPresentation.DifficultyName((ChapterDifficulty)d)+(completed>0?(d==2?" "+completed+"阶":" · 已通关"):" ·"),Mathf.RoundToInt(10*u),completed>0?jade:muted);
                 }
             }
-            Rect body=ChapterRect(new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y+88,layout.Body.Width,layout.Body.Height-88),u);
+            Rect body=ChapterRect(new MobilePanelLayout.Area(layout.Body.X,layout.Body.Y+88,layout.Body.Width,layout.Body.Height-144),u);
             DrawChapterEntryDetails(body,u);
+            DrawChapterEntryControls(ChapterRect(new MobilePanelLayout.Area(layout.Footer.X,layout.Footer.Y-56,340,48),u),u);
             if(Button(ChapterRect(layout.FooterButton(0,2),u),"返回副本选择",jade)){CloseChapterSelection();session.EnterDungeon();return;}
             if(Button(ChapterRect(layout.FooterButton(1,2),u),"进入 "+ChapterDefinition.Get(node).Name,gold,ChapterProgression.CanEnter(profile,node,difficulty)))
             {ConfirmSelectedChapter();return;}
@@ -102,28 +103,34 @@ namespace Emberfall
             float descriptionHeight=Style(Mathf.RoundToInt(14*u),false,true).CalcHeight(new GUIContent(mechanic),(w-24)*u)/u+20;
             float rewardsHeight=DrawEntryRewardPreviews(w,u,mode,session.SelectedChapterTier,true,false);
             float imageHeight=Mathf.Clamp(w*.5f,96,MobileControls.Active?160:216),descriptionY=56+imageHeight;
-            float total=descriptionY+descriptionHeight+rewardsHeight+148;
+            float total=descriptionY+descriptionHeight+rewardsHeight+48;
             chapterScroll=BeginTouchScroll("chapter-entry",body,chapterScroll,new Rect(0,0,w*u,Mathf.Max(body.height,total*u)));
             DrawChapterSymbol(new Rect(12*u,14*u,28*u,28*u),node,gold);
             Text(new Rect(50*u,8*u,(w-58)*u,30*u),ChapterDefinition.Get(node).Name,Mathf.RoundToInt(20*u),pale,true);
             DrawDungeonEntryArtwork(new Rect(12*u,44*u,(w-24)*u,imageHeight*u),5+(int)node);
             Text(new Rect(12*u,descriptionY*u,(w-24)*u,descriptionHeight*u),mechanic,Mathf.RoundToInt(14*u),muted,false,true);
             float y=descriptionY+descriptionHeight;
-            for(int d=0;d<3;d++)
-            {
-                var choice=(ChapterDifficulty)d;float tabWidth=(w-32)/3;
-                if(Button(new Rect((12+d*(tabWidth+4))*u,y*u,tabWidth*u,40*u),ChapterEntryPresentation.DifficultyName(choice),choice==session.SelectedChapterDifficulty?gold:jade,ChapterProgression.CanEnter(profile,node,choice)))SelectChapterDifficulty(choice);
-            }
-            y+=48;
-            int tier=session.SelectedChapterTier,maximum=session.Progression.UnlockedChapterTier(node,session.SelectedChapterDifficulty);
-            if(Button(new Rect(12*u,y*u,44*u,44*u),"−",jade,tier>1))ChangeChapterTier(-1);
-            Text(new Rect(64*u,y*u,(w-128)*u,44*u),"第 "+tier+" 阶 · 已解锁至 "+maximum+" 阶",Mathf.RoundToInt(13*u),pale,true,false,TextAnchor.MiddleCenter);
-            if(Button(new Rect((w-56)*u,y*u,44*u,44*u),"+",jade,tier<maximum))ChangeChapterTier(1);
-            y+=52;
             entryRewardViewport=body;entryRewardContentOrigin=new Vector2(body.x-chapterScroll.x,body.y+y*u-chapterScroll.y);
             GUI.BeginGroup(new Rect(0,y*u,w*u,rewardsHeight*u));DrawEntryRewardPreviews(w,u,mode,session.SelectedChapterTier,true,true);GUI.EndGroup();
             if(!string.IsNullOrEmpty(chapterEntryError))Text(new Rect(8*u,(y+rewardsHeight)*u,(w-16)*u,48*u),"暂时无法进入，请稍后重试。",Mathf.RoundToInt(13*u),gold,false,true);
             EndTouchScroll();
+        }
+        private void DrawChapterEntryControls(Rect area,float u)
+        {
+            var node=session.SelectedChapterNode;var difficulty=session.SelectedChapterDifficulty;
+            for(int d=0;d<3;d++)
+            {
+                var choice=(ChapterDifficulty)d;bool selected=choice==difficulty;
+                Rect tab=new Rect(area.x+d*56*u,area.y,52*u,area.height);
+                if(DrawButton(tab,ChapterEntryPresentation.DifficultyName(choice),selected?ButtonRole.SelectedTab:ButtonRole.Tab,ChapterProgression.CanEnter(session.Progression.Profile,node,choice),null,Mathf.RoundToInt(13*u)))SelectChapterDifficulty(choice);
+                if(selected){Border(tab,gold,2*u);Fill(new Rect(tab.x+6*u,tab.yMax-5*u,tab.width-12*u,3*u),gold);}
+            }
+            if(session.SelectedChapterDifficulty!=ChapterDifficulty.Heroic)return;
+            int tier=session.SelectedChapterTier,maximum=session.Progression.UnlockedChapterTier(node,session.SelectedChapterDifficulty);
+            float x=area.x+172*u;
+            if(Button(new Rect(x,area.y,44*u,area.height),"−",jade,tier>1))ChangeChapterTier(-1);
+            Text(new Rect(x+44*u,area.y,80*u,area.height),"第 "+tier+" 阶",Mathf.RoundToInt(13*u),gold,true,false,TextAnchor.MiddleCenter);
+            if(Button(new Rect(x+124*u,area.y,44*u,area.height),"+",jade,tier<maximum))ChangeChapterTier(1);
         }
         private void DrawInlineChapterEntry(Rect area,float u)
         {

@@ -11,7 +11,7 @@ namespace Emberfall
             return "观星员的线索 · "+definition.StoryIntro+"\n目标 · "+definition.Mechanic+"\n完成后 · "+definition.Outcome+"\n下一线索 · "+definition.NextClue;
         }
         public static string TierEffect(ChapterNode node)
-        {return "每种难度分别记录阶数；通关当前阶后解锁下一阶，阶数持续提升。";}
+        {return "普通与困难可重复挑战；英雄通关当前阶后解锁下一阶，阶数持续提升。";}
         public static string MasteryProgress(GameProfile profile,ChapterNode node,ChapterDifficulty difficulty)
         {
             if(profile==null||difficulty==ChapterDifficulty.Normal||(profile.chapterCompletedMask&(1<<(int)node))==0)return "";
@@ -54,7 +54,7 @@ namespace Emberfall
         public static string Result(ChapterResultSnapshot result)
         {
             if(result==null)return "章节记录暂不可用";
-            string text=ChapterDefinition.Get(result.Node).Name+" · "+DifficultyName(result.Difficulty)+" · 第 "+result.Tier+" 阶\n"+
+            string text=ChapterDefinition.Get(result.Node).Name+" · "+DifficultyName(result.Difficulty)+(result.Difficulty==ChapterDifficulty.Heroic?" · 第 "+result.Tier+" 阶":"")+"\n"+
                 "携带药剂 "+result.EntryPotions+"\n\n";
             if(result.Failed)return text+"止步房间 "+(result.Room+1)+" / "+ChapterDefinition.RoomCount(result.Node)+"\n"+
                 (result.Node==ChapterNode.ForestCourt?"封印 "+result.Seals+"/2 · 一 "+result.FirstSealSeconds.ToString("0.0")+"s · 二 "+result.SecondSealSeconds.ToString("0.0")+"s\n":"")+
@@ -67,7 +67,7 @@ namespace Emberfall
             if(result.FirstCoreAvailable)text+="\n首通宝石已可领取（共享一次）";
             if(result.UnlockedNode>=0)text+="\n新节点："+ChapterDefinition.Get((ChapterNode)result.UnlockedNode).Name;
             if(result.UnlockedDifficulty>=0)text+="\n本节点新难度："+DifficultyName((ChapterDifficulty)result.UnlockedDifficulty);
-            text+="\n可挑战本难度第 "+(result.Tier==int.MaxValue?int.MaxValue:result.Tier+1)+" 阶";
+            if(result.Difficulty==ChapterDifficulty.Heroic)text+="\n可挑战本难度第 "+(result.Tier==int.MaxValue?int.MaxValue:result.Tier+1)+" 阶";
             if(result.FirstCompletion)text+="\n下一线索 · "+ChapterDefinition.Get(result.Node).NextClue;
             return text+MechanismReport(result);
         }

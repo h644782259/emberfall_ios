@@ -8,10 +8,11 @@ namespace Emberfall
         public RunMechanismEvidence MechanismEvidence {get;}=new RunMechanismEvidence();
         public RunChoices RunChoices { get; private set; } = new RunChoices();
         public bool DungeonSelectionOpen { get; private set; }
-        public bool CanChallengeNextTier {get{return HasStarted&&InDungeon&&!ChapterActive&&!IsDead&&DungeonResultsReady&&DungeonTier<MaximumDungeonTier&&!changingZone&&!ModeRewardPending&&!DungeonRewardPending;}}
+        public bool CanChallengeNextTier {get{return HasStarted&&InDungeon&&!IsDead&&DungeonResultsReady&&!changingZone&&!ModeRewardPending&&!DungeonRewardPending&&(ChapterActive?CanAdvanceChapterTier:DungeonTier<MaximumDungeonTier);}}
         public bool ChallengeNextTier()
         {
             if(!CanChallengeNextTier||Paused||pauseState.BackgroundPaused)return false;
+            if(ChapterActive)return RestartChapterAttempt(chapterRetryTier+1);
             int next=Mathf.Min(DungeonTier+1,MaximumDungeonTier),previous=SelectedDungeonTier;SelectedDungeonTier=next;
             try {if(!ChangeZone(true)){SelectedDungeonTier=previous;return false;}}
             catch(System.Exception error){if(RoomChainRun!=null)FailRoomGeneration("下一阶构建异常",error);else Notify("下一阶生成异常："+error.GetType().Name);return false;}
