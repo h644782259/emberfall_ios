@@ -26,7 +26,7 @@ namespace Emberfall
         private bool arrowGeometryReady,arrowGeometryFinal,arrowGeometryReduced;
         private int arrowGeometryRevision;
         private GameSession session;
-        private bool pooled,disposing;
+        private bool pooled,disposing,sculpted;
         private ulong rentGeneration;
         // A retained reference must identify the rental, not just the pooled component.
         internal readonly struct ArrowBatchHandle : System.IDisposable
@@ -161,7 +161,7 @@ namespace Emberfall
             var root=fx.gameObject;checked{fx.rentGeneration++;}fx.pooled=false;root.name="Filled "+type+" effect";root.transform.SetParent(parent,false);root.transform.localScale=Vector3.one;root.transform.position=at;
             root.transform.rotation=Quaternion.LookRotation(forward.sqrMagnitude>.0001f?forward.normalized:Vector3.forward);
             fx.owner=hero;fx.session=GameSession.Instance;fx.epoch=hero.CombatEpoch;fx.kind=type;fx.size=Mathf.Clamp(radius,.15f,8);
-            fx.tint=color;fx.life=Mathf.Clamp(duration,.12f,12);fx.age=0;fx.terminalAge=0;fx.finaleCast=0;fx.confirmedFinale=false;
+            fx.sculpted=false;fx.tint=color;fx.life=Mathf.Clamp(duration,.12f,12);fx.age=0;fx.terminalAge=0;fx.finaleCast=0;fx.confirmedFinale=false;
             ulong generation=fx.rentGeneration;
             fx.lease=CombatVisualLease.Attach(root,priority,()=>{if(fx.rentGeneration==generation)fx.Retire();});if(fx.lease==null)return null;
             root.SetActive(true);fx.Register();return fx;
@@ -177,13 +177,15 @@ namespace Emberfall
             }
             for(int i=0;i<4;i++)fx.Add(crystal,new Vector3((i-1.5f)*.25f,.1f,.8f)*fx.size,new Vector3(.09f,.4f,.12f)*fx.size,Quaternion.Euler(85,i*33,0),.02f+i*.018f,4,i);
         }
-        public static void Impact(PlayerController hero,Vector3 at,float radius,FilledVfxKind type,Color color,CombatVisualPriority priority=CombatVisualPriority.ActionBody,int castId=0)
+        public static void Impact(PlayerController hero,Vector3 at,float radius,FilledVfxKind type,Color color,CombatVisualPriority priority=CombatVisualPriority.ActionBody,int castId=0,bool elementalist=false)
         {
             if(type!=FilledVfxKind.Ice&&type!=FilledVfxKind.Fire&&type!=FilledVfxKind.Summon&&type!=FilledVfxKind.Sword&&type!=FilledVfxKind.Lightning&&type!=FilledVfxKind.Arcane)return;
             var fx=Create(hero,at,Vector3.forward,type,radius,color,type==FilledVfxKind.Fire?.8f:1.05f,priority:priority);if(fx==null)return;
             if(type==FilledVfxKind.Fire||type==FilledVfxKind.Ice)ElementalCombatVfx.Burst(hero,at,radius,type==FilledVfxKind.Fire?ElementalCombatVfx.Element.Fire:ElementalCombatVfx.Element.Ice);
             if(priority==CombatVisualPriority.Finale)fx.RegisterFinale(castId);
             float unit=Mathf.Min(1.6f,fx.size*.55f);
+            if(elementalist&&(type==FilledVfxKind.Ice||type==FilledVfxKind.Fire||type==FilledVfxKind.Lightning))
+            {fx.sculpted=true;fx.ElementalistImpact(type,unit);return;}
             // Allocate landing base, identity silhouette and contact flash BEFORE repeated ornaments.
             // Add's actual budget is still the last authority: mobile 10, reduced 7.
             fx.Add(rupture,Vector3.up*.07f,new Vector3(fx.size*.58f,.8f,fx.size*.58f),Quaternion.identity,0,5,0,fx.size*.7f,"Landing base",true);
@@ -212,6 +214,34 @@ namespace Emberfall
                     fx.Add(crescent,radial*fx.size*.25f+Vector3.up*.65f,Vector3.one*fx.size*.4f,Quaternion.Euler(90,angle*Mathf.Rad2Deg,0),i*.024f,3,angle,fx.size*.9f);
                 else
                     fx.Add(type==FilledVfxKind.Sword?rupture:type==FilledVfxKind.Arcane?arcaneShard:main,radial*r+Vector3.up*.16f,Vector3.one*unit*.35f,Quaternion.Euler(0,i*51,0),(type==FilledVfxKind.Arcane?.34f:.08f)+i*.018f,type==FilledVfxKind.Sword?5:type==FilledVfxKind.Arcane?3:motion,angle,unit*.6f+(type==FilledVfxKind.Arcane?fx.size*.3f:0));
+            }
+        }
+        // Solid silhouettes precede secondary pieces even on the seven-piece reduced tier.
+        // All erupting bodies are clipped at construction; animation only contracts XZ.
+        private void ElementalistImpact(FilledVfxKind type,float unit)
+        {
+            Add(rupture,Vector3.up*.045f,new Vector3(size*.72f,.32f,size*.72f),Quaternion.identity,0,5,0,size*.8f,"Elemental landing fracture",true);
+            Mesh body=type==FilledVfxKind.Ice?(icePrimary??crystal):type==FilledVfxKind.Fire?(firePrimary??flame):(identityFork??lightning);
+            int motion=type==FilledVfxKind.Ice?21:type==FilledVfxKind.Fire?22:23;
+            Vector3 dimensions=type==FilledVfxKind.Ice?new Vector3(1.45f,2.1f,1.45f):type==FilledVfxKind.Fire?new Vector3(1.35f,2.4f,1.35f):new Vector3(1.4f,3.1f,1.4f);
+            Add(body,Vector3.zero,dimensions*unit,Quaternion.Euler(0,23,0),0,motion,0,unit*2,"Sculpted elemental primary",true);
+            // Narrow interior light leaves the outer silhouette and shaded sides exposed.
+            Add(energyCore,Vector3.up*.08f,new Vector3(.38f,1.4f,.38f)*unit,Quaternion.identity,0,18,1,unit*.4f,"Elemental inner light",true);
+            for(int i=0;i<4;i++)
+            {
+                float angle=(i*90+35)*Mathf.Deg2Rad;
+                Vector3 radial=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                Vector3 at=radial*size*(type==FilledVfxKind.Ice?.48f:.3f);
+                Vector3 scale=type==FilledVfxKind.Ice?new Vector3(.48f,1.8f+(i%2)*.5f,.52f):type==FilledVfxKind.Fire?new Vector3(.7f,1.65f+(i%2)*.5f,.7f):new Vector3(.52f,1.5f,.52f);
+                Quaternion tilt=Quaternion.Euler(radial.z*(type==FilledVfxKind.Ice?24:18),i*90,-radial.x*(type==FilledVfxKind.Ice?24:18));
+                Add(type==FilledVfxKind.Ice?crystal:type==FilledVfxKind.Fire?flame:lightning,at,scale*unit,tilt,.035f+i*.025f,motion,i+1,unit*1.6f,"Elemental crown",true);
+            }
+            // Extra quality tiers add fragments, not another luminous shell over the body.
+            for(int i=0;i<3;i++)
+            {
+                float angle=i*2.399963f;
+                Add(type==FilledVfxKind.Ice?crystal:arcaneShard,new Vector3(Mathf.Cos(angle),.3f,Mathf.Sin(angle))*size*.38f,
+                    new Vector3(.12f,.38f,.16f)*unit,Quaternion.Euler(35,i*67,20),.18f+i*.025f,3,angle,unit*.6f+size*.3f,"Elemental fragments");
             }
         }
         internal static ArrowBatchHandle BeginArrowBatch(PlayerController hero,Vector3 at,float radius,Color color,bool final=false,CombatVisualPriority priority=CombatVisualPriority.ActionBody,int castId=0)
@@ -371,6 +401,15 @@ namespace Emberfall
                 case 17: scale.y*=1-Mathf.Clamp01(local/.45f)*.25f;break;
                 // Persistent body protection must not grow through head ornaments at birth.
                 case 20: break;
+                case 21: // Ice erupts, holds its facets, then fractures back into the floor.
+                    scale.y*=local<.13f?Mathf.Lerp(.18f,1,local/.13f):local<.48f?1:Mathf.Lerp(1,.12f,Mathf.Clamp01((local-.48f)/.5f));
+                    scale.x*=1-Mathf.Clamp01((local-.5f)/.5f)*.28f;scale.z=scale.x;break;
+                case 22: // Staggered tongues rise, fold inward and cool separately.
+                    scale.y*=local<.12f?Mathf.Lerp(.28f,1,local/.12f):1-Mathf.Clamp01((local-.2f)/.56f)*.62f;
+                    scale.x*=1-Mathf.Clamp01(local/.8f)*.38f;scale.z*=1-Mathf.Clamp01(local/.8f)*.38f;break;
+                case 23: // A full branching strike on contact, followed by a short re-strike.
+                    scale.y*=local<.1f?1:local<.2f?.7f:local<.28f?.95f:1-Mathf.Clamp01((local-.28f)/.6f)*.7f;
+                    scale.x*=1-Mathf.Clamp01(local/.8f)*.35f;scale.z*=1-Mathf.Clamp01(local/.8f)*.35f;break;
                 case 18: scale.y*=.65f+.35f*Mathf.Min(1,local/.18f);break;
                 case 19: scale.y*=.82f+.18f*Mathf.Min(1,local/.1f);break;
                 case 13: scale.y*=local<.09f?Mathf.Lerp(.45f,1,local/.09f):local<.42f?1:Mathf.Lerp(1,.62f,Mathf.Clamp01((local-.42f)/.5f));break;
@@ -395,6 +434,8 @@ namespace Emberfall
             // Placement reserved the complete motion footprint once. Do not toggle a whole
             // primary silhouette each frame when a growing bounds circle grazes a wall.
             Color color=tint;if(p.Motion==17)color.a*=local<.07f?1:local<.14f?.48f:local<.22f?.82f:.55f;if(p.Secondary)color.a*=.55f*Mathf.Clamp01((.62f-local)/.2f);color.a*=(kind==FilledVfxKind.Charge?.35f:.9f)*Mathf.Lerp(.55f,1,EffectPreferences.EffectsScale);
+            if(sculpted&&p.Motion==18)color.a*=.4f;
+            if(p.Motion==23)color.a*=local<.09f?1:local<.18f?.3f:local<.27f?.95f:.5f;
             float opacity=f.Opacity;
             if(p.Motion==20)
             {
@@ -404,6 +445,7 @@ namespace Emberfall
                 color=tint;color.a*=intensity*Mathf.Lerp(.55f,1,EffectPreferences.EffectsScale);
                 opacity=p.Phase<2.5f?1:Mathf.Clamp01(1-local/.32f);
             }
+            block.SetFloat("_Sculpted",sculpted&&p.Motion!=18?1:0);
             block.SetFloat("_Element",kind==FilledVfxKind.Fire?1:kind==FilledVfxKind.Ice?2:kind==FilledVfxKind.Lightning?3:kind==FilledVfxKind.Vine?4:kind==FilledVfxKind.Summon||kind==FilledVfxKind.Arcane?5:0);
             block.SetFloat("_Seed",p.Phase*.37f+p.Delay*3);
             block.SetFloat("_ImpactLight",p.Secondary||p.Motion==20?0:Mathf.Clamp01(1-local/.16f)*EffectPreferences.EffectsScale);

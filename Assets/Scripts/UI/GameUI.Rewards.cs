@@ -131,7 +131,8 @@ namespace Emberfall
 
             if(revealed)
             {
-                if(complete&&Button(new Rect(w.xMax-208,w.yMax-58,180,42),"收下",jade,!chestDetails,null,true))
+                if(session.InDungeon&&session.DungeonCleared)DrawSettlementNavigation(new Rect(w.x+28,w.yMax-58,w.width-56,42),1);
+                else if(complete&&Button(new Rect(w.xMax-208,w.yMax-58,180,42),"收下",jade,!chestDetails,null,true))
                 {FinishChestReveal();BlockUITransition();}
             }
             else

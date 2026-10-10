@@ -598,11 +598,11 @@ namespace Emberfall
                                 poisonVisual ? ElementalCombatVfx.Element.Poison : ElementalCombatVfx.Element.Lightning);
                         if(visualRecipe==SkillVisualRecipe.Ice)ElementalCombatVfx.Area(transform,radius,ElementalCombatVfx.Element.Ice);
                         if(poisonVisual){ElementalCombatVfx.Burst(owner,transform.position,radius,ElementalCombatVfx.Element.Poison);FilledSkillVfx.PoisonVines(owner,transform.position,radius,color);}
-                        if (fireVisual) FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Fire, new Color(1f,.43f,.12f),CombatVisualPriority.ActionBody);
+                        if (fireVisual) FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Fire, new Color(1f,.43f,.12f),CombatVisualPriority.ActionBody,elementalist:owner.HeroClass==HeroClass.Arcanist);
                         else if (visualRecipe == SkillVisualRecipe.Ice)
-                            FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Ice, new Color(.2f,.75f,1f),CombatVisualPriority.ActionBody);
+                            FilledSkillVfx.Impact(owner, transform.position, radius, FilledVfxKind.Ice, new Color(.2f,.75f,1f),CombatVisualPriority.ActionBody,elementalist:owner.HeroClass==HeroClass.Arcanist);
                         else if (visualRecipe == SkillVisualRecipe.Spirit || visualRecipe == SkillVisualRecipe.Arcane || visualRecipe == SkillVisualRecipe.Lightning || visualRecipe == SkillVisualRecipe.Steel)
-                            FilledSkillVfx.Impact(owner, transform.position, radius, SkillVisualRecipes.Filled(visualRecipe), color,CombatVisualPriority.ActionBody);
+                            FilledSkillVfx.Impact(owner, transform.position, radius, SkillVisualRecipes.Filled(visualRecipe), color,CombatVisualPriority.ActionBody,elementalist:owner.HeroClass==HeroClass.Arcanist);
                     }
                     if (tick == 0)
                     { DestructibleProp.StrikeArea(owner,transform.position,radius,damage,castId); if(visualRecipe!=SkillVisualRecipe.ArrowRain)CombatFx.Ring(transform.position,radius,color,.42f,.15f); }

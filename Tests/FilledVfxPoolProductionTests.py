@@ -9,6 +9,9 @@ s=s.replace('public float Opacity;public void SetPropertyBlock(MaterialPropertyB
 s=s.replace('public Vector3[] vertices;','public Vector3[] vertices,normals;').replace('public enum PrimitiveType{Sphere}','public enum PrimitiveType{Sphere,Capsule,Cube,Cylinder}')
 s=s.replace('public static class Resources{public static T Load<T>(string name)where T:new()=>new T();}',r'''public class TextAsset{public byte[] bytes;}
 public static class Resources{public static string Root,Bad;public static string BadName="Crystal";public static T Load<T>(string name)where T:new(){if(typeof(T)==typeof(TextAsset)){if(name=="BlenderSpellBases/"+BadName&&Bad=="missing")return default(T);var path=Path.Combine(Root,name+".bytes");if(!File.Exists(path))return default(T);return (T)(object)new TextAsset{bytes=name=="BlenderSpellBases/"+BadName&&Bad=="malformed"?new byte[]{1,2,3}:File.ReadAllBytes(path)};}return new T();}}''')
+# Particle burst is an independent presentation boundary, not part of pool ownership.
+s=s.replace('public static class Mathf\n    {', 'public static class Mathf\n    { public const float Deg2Rad=PI/180f;')
+s+='namespace Emberfall { internal static class ElementalCombatVfx { internal enum Element {Fire,Ice} internal static void Burst(PlayerController hero,UnityEngine.Vector3 at,float radius,Element element){} } }'
 with tempfile.TemporaryDirectory(prefix='filled-vfx-pool-') as d:
  p=Path(d);(p/'Stubs.cs').write_text(s)
  for f in ['Assets/Scripts/Core/FilledVfxRecipes.cs','Assets/Scripts/Core/FilledVfxPlacement.cs','Assets/Scripts/Core/CombatVisualBudget.cs','Assets/Scripts/Combat/CombatVisualLease.cs','Assets/Scripts/Combat/AnchoredImpactMesh.cs','Assets/Scripts/Combat/FilledSkillVfx.cs','Assets/Scripts/Combat/AuthoredActorMeshes.cs','Assets/Scripts/Combat/AuthoredSpellBases.cs','Tests/FilledVfxPoolProductionTests.cs']:(p/Path(f).name).write_text((root/f).read_text())

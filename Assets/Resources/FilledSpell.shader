@@ -8,6 +8,7 @@ Shader "Emberfall/Filled Spell Volume"
         _Style ("Dissolve", Range(0,1)) = 0
         _Element ("Element family", Float) = 0
         _Seed ("Variation", Float) = 0
+        _Sculpted ("Sculpted elemental body", Float) = 0
         _ImpactLight ("Impact pulse", Range(0,1)) = 0
         _EnvelopeMode ("State envelope", Float) = 0
         _EnvelopeAge ("State age", Float) = 0
@@ -28,7 +29,7 @@ Shader "Emberfall/Filled Spell Volume"
             #include "UnityCG.cginc"
             struct appdata { float4 vertex:POSITION; float3 normal:NORMAL; float2 uv:TEXCOORD0; };
             struct v2f { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; float3 normal:TEXCOORD1; float3 local:TEXCOORD2; float3 view:TEXCOORD3; };
-            fixed4 _Color; float _Opacity, _Progress, _Style, _EnvelopeMode, _EnvelopeAge, _Element, _Seed, _ImpactLight;
+            fixed4 _Color; float _Opacity, _Progress, _Style, _EnvelopeMode, _EnvelopeAge, _Element, _Seed, _ImpactLight, _Sculpted;
             v2f vert(appdata v)
             {v2f o;o.pos=UnityObjectToClipPos(v.vertex);o.uv=v.uv;o.normal=UnityObjectToWorldNormal(v.normal);o.local=v.vertex.xyz;o.view=WorldSpaceViewDir(v.vertex);return o;}
             float hash(float3 p) { p=frac(p*.3183099+float3(.13,.37,.71));p*=17;return frac(p.x*p.y*p.z*(p.x+p.y+p.z)); }
@@ -46,6 +47,8 @@ Shader "Emberfall/Filled Spell Volume"
                 float grain=noise(flow)*.65+noise(flow*2.13+7)*.35;
                 float fine=noise(i.local*23+_Seed);
                 float light=.62+.38*abs(dot(normal,normalize(float3(.35,.8,.4))));
+                float side=saturate(dot(normal,normalize(float3(-.45,.8,-.55)))*.5+.5);
+                if(_Sculpted>.5)light=.28+.72*side;
                 float heat=saturate(grain*.85+rim*.4+(1-saturate(i.uv.y))*.25);
                 float3 core=lerp(_Color.rgb,1,.84),outer=_Color.rgb*.32;
                 float pattern=grain;
@@ -82,6 +85,8 @@ Shader "Emberfall/Filled Spell Volume"
                     if(_EnvelopeMode>2.5 && _EnvelopeMode<3.5)
                         alpha*=.55+.45*pow(.5+.5*sin(i.uv.y*6.283185-_EnvelopeAge*4),3);
                 }
+                if(_Sculpted>.5 && _Element>1.5 && _Element<2.5)
+                    alpha=_Color.a*_Opacity*saturate(1-dissolve); // Stable ice facets, no noisy holes.
                 clip(alpha-.025);
                 float3 tint=lerp(outer,core,smoothstep(.1,.9,heat))*light;
                 float3 accent=(_Element>.5&&_Element<1.5)?float3(1,.22,.025):
@@ -90,6 +95,14 @@ Shader "Emberfall/Filled Spell Volume"
                     (_Element>4.5)?float3(.4,.2,1):_Color.rgb;
                 tint=lerp(tint,accent*1.15,bands*.18*(1-heat));
                 tint+=core*(rim*.32+highlights*.5)*(1-_Progress*.35);
+                if(_Sculpted>.5)
+                {
+                    // Dark backs, saturated midtones and a narrow rim reveal the real mesh thickness.
+                    float3 bodyTint=lerp(_Color.rgb*.2,_Color.rgb*.95,side);
+                    float edge=pow(rim,4);
+                    tint=lerp(bodyTint,tint,_Element>1.5&&_Element<2.5?.28:.58);
+                    tint+=core*edge*.28;
+                }
                 // White-hot release, colored midtones and a narrow travelling light edge.
                 // Reuses the existing pass; no extra lights, bloom requirement or draw calls.
                 float ribbon=pow(saturate(1-abs(frac(i.uv.y*2.0-_Progress*1.8+_Seed)-.5)*2),12);

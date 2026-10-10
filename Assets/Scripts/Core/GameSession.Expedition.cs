@@ -8,6 +8,14 @@ namespace Emberfall
         public RunMechanismEvidence MechanismEvidence {get;}=new RunMechanismEvidence();
         public RunChoices RunChoices { get; private set; } = new RunChoices();
         public bool DungeonSelectionOpen { get; private set; }
+        // UI preflight permits a saved chest receipt; the actual navigation methods
+        // still require its successful acknowledgement through DungeonResultsReady.
+        public bool CanContinueDungeonAfterAcknowledgement(bool nextTier)
+        {
+            if(!HasStarted||!InDungeon||IsDead||!DungeonCleared||changingZone||Progression==null||
+                ModeRewardPending||DungeonRewardPending||ChapterRewardPending||Progression.Profile.pendingFashionChest)return false;
+            return !nextTier||(ChapterActive?CanAdvanceChapterTier:DungeonTier<MaximumDungeonTier);
+        }
         public bool CanChallengeNextTier {get{return HasStarted&&InDungeon&&!IsDead&&DungeonResultsReady&&!changingZone&&!ModeRewardPending&&!DungeonRewardPending&&(ChapterActive?CanAdvanceChapterTier:DungeonTier<MaximumDungeonTier);}}
         public bool ChallengeNextTier()
         {

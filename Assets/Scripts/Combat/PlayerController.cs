@@ -1089,7 +1089,7 @@ namespace Emberfall
                 if(rank==3) skillRuntime.RestoreEnergy(SkillDamageBudgets.BasicEnergyOnHit);
             }
             if(HeroClass==HeroClass.Vanguard)AdvancedSkillVfx.Protection(this,transform.position,radius,tint,passiveTime,rank,()=>passiveTime>0,passive:true);
-            else FilledSkillVfx.Impact(this,transform.position,radius,HeroClass==HeroClass.Arcanist?FilledVfxKind.Lightning:FilledVfxKind.Summon,tint,CombatVisualPriority.RealContact);
+            else FilledSkillVfx.Impact(this,transform.position,radius,HeroClass==HeroClass.Arcanist?FilledVfxKind.Lightning:FilledVfxKind.Summon,tint,CombatVisualPriority.RealContact,elementalist:HeroClass==HeroClass.Arcanist);
             session.SpawnMechanismText(transform.position+Vector3.up*2.7f,GameBalance.SkillName(HeroClass,8),tint);
         }
 
@@ -1437,7 +1437,7 @@ namespace Emberfall
                     guardTime=6f+(rank-1)*2f;guardRank=rank;guardCastId=castId;HoldCastReceipt(ref guardCastReceipt,castId);
                     guardReduction=0;guardRadius=2.8f*range;guardPulseTimer=0;burnStrideTime=guardTime;
                     if(Specialization==ElementalistSpecialization.Burn)FlameRide.Spawn(this,session,guardTime,CombatAttack,castId);
-                    else FilledSkillVfx.Impact(this,transform.position,guardRadius,FilledVfxKind.Ice,color);
+                    else FilledSkillVfx.Impact(this,transform.position,guardRadius,FilledVfxKind.Ice,color,elementalist:true);
 
                 }
                 else if(slot==6&&HeroClass==HeroClass.Arcanist)

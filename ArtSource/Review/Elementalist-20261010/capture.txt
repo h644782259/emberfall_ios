@@ -1,0 +1,1 @@
+Actual Unity 6000.6.4f1 Camera.Render; graphics=Metal; normal gameplay camera projection; direct production Impact replay, 24 sampled ages per element, previous and sculpted path; isolated saves. This is effect rendering evidence, not full skill interaction or device performance acceptance.

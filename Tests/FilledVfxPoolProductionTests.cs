@@ -28,5 +28,16 @@ class FilledVfxPoolProductionTests
  var secondHero=Hero();var reused=Cast(secondHero,FilledVfxKind.Fire);Check(reused==first&&Field(reused,"owner")==secondHero,"cross-owner reuse is fresh");secondHero.CombatEpoch++;Tick(reused,.01f);Clean(reused);
  // Fill and preempt priority leases; rejected rentals must also return cleanly.
  Application.isMobilePlatform=true;EffectPreferences.ReducedEffects=true;for(int n=0;n<12;n++)Cast(secondHero,FilledVfxKind.Fire,CombatVisualPriority.Finale);Check(CombatVisualLease.Active==12,"pool does not bypass global cap");for(int n=0;n<25;n++)Cast(secondHero,FilledVfxKind.Ice,CombatVisualPriority.Decoration);Check(CombatVisualLease.Active==12,"rejected rentals preserve global cap");foreach(var o in GameObject.All.Where(o=>o.activeInHierarchy).ToArray()){var fx=o.GetComponent<FilledSkillVfx>();if(fx!=null)fx.Retire();}Check(CombatVisualLease.Active==0,"all priority slots released");int cached=(int)typeof(FilledSkillVfx).GetField("idle",S).GetValue(null).GetType().GetProperty("Count").GetValue(typeof(FilledSkillVfx).GetField("idle",S).GetValue(null));Check(cached<=8,"inactive retention bounded to eight roots");
- typeof(FilledSkillVfx).GetMethod("ResetAssets",S).Invoke(null,null);Check(shared.Destroyed,"cache reset owns shared mesh destruction");Check(GameObject.All.Where(o=>o.GetComponent<FilledSkillVfx>()!=null).All(o=>o.Destroyed),"subsystem reset destroys pooled and active roots");Reset();Console.WriteLine("PASS "+checks+" actual loaded pooled VFX ownership/reset/cap/warm-loop assertions; managed, not engine allocation/FPS.");}
+ typeof(FilledSkillVfx).GetMethod("ResetAssets",S).Invoke(null,null);Check(shared.Destroyed,"cache reset owns shared mesh destruction");Check(GameObject.All.Where(o=>o.GetComponent<FilledSkillVfx>()!=null).All(o=>o.Destroyed),"subsystem reset destroys pooled and active roots");Reset();h=Hero();CombatSight.Wall=float.PositiveInfinity;
+ foreach(var kind in new[]{FilledVfxKind.Ice,FilledVfxKind.Fire,FilledVfxKind.Lightning})foreach(bool reduced in new[]{false,true}){
+ EffectPreferences.ReducedEffects=reduced;FilledSkillVfx.Impact(h,Vector3.zero,3,kind,new Color(.5f,.8f,1),elementalist:true);
+ var sculpted=GameObject.All.Select(o=>o.GetComponent<FilledSkillVfx>()).Last(f=>f!=null&&f.gameObject.activeSelf);
+ Check((bool)Field(sculpted,"sculpted"),"elementalist opt-in retained");
+ Check((int)Field(sculpted,"count")<=(reduced?7:14),"sculpted part cap");
+ Check(Children(sculpted).Any(o=>o.name.Contains("Sculpted elemental primary")),"primary survives reduced tier");
+ GameSession.Instance.InputBlocked=true;Tick(sculpted,.2f);Check((float)Field(sculpted,"age")==0,"sculpted effect freezes with menu");GameSession.Instance.InputBlocked=false;
+ Tick(sculpted,.3f);Tick(sculpted,1.1f);Clean(sculpted);
+ var legacy=Cast(h,kind);Check(!(bool)Field(legacy,"sculpted"),"pooled sculpted state cannot leak into other classes");legacy.Retire();
+ }
+ Reset();Console.WriteLine("PASS "+checks+" actual loaded pooled VFX ownership/reset/cap/warm-loop assertions; managed, not engine allocation/FPS.");}
 }

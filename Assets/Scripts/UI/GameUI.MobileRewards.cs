@@ -55,6 +55,8 @@ namespace Emberfall
             else if (DrawMobileChestChoices(layout)) return;
 
             if(!revealed&&!string.IsNullOrEmpty(progression.LastError)&&Button(MobilePanelRect(layout.FooterButton(0,1)),"商人 · 整理容量 / 资源",jade)){OpenChestRecoveryService();return;}
+            if(revealed&&session.InDungeon&&session.DungeonCleared)
+            {DrawSettlementNavigation(MobilePanelRect(layout.FooterButton(0,1)),TouchRatio);return;}
             if (revealed && complete && Button(MobilePanelRect(layout.FooterButton(0,1)),"收下",gold))
             {
                 {
