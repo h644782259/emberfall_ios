@@ -15,9 +15,9 @@ namespace Emberfall
 
         private void OpenHubService(HubNpcKind kind)
         {
-            if(UITransitionBlocked||!HubServicesAvailable||session.InputBlocked)return;
+            if(UITransitionBlocked||!HubServicesAvailable||!CanSwitchFunction)return;
             if(kind!=HubNpcKind.Merchant&&kind!=HubNpcKind.Blacksmith)return;
-            CancelHotbarPointer();
+            PrepareFunctionSwitch();
             if(kind==HubNpcKind.Blacksmith)smithPreviewMechanic=EquipmentMechanic.None;
             if(kind==HubNpcKind.Merchant){bool first=session.Progression.Profile.pendingFirstClearReward&&!session.Progression.Profile.firstClearRewardClaimed;merchantGemRarity=Rarity.Common;SelectMerchantMode(first?1:0,true);}
             inventoryHubNpc = kind;merchantShopOpen=kind==HubNpcKind.Merchant;smithShopOpen=kind==HubNpcKind.Blacksmith;npcShopScroll=Vector2.zero;
@@ -62,7 +62,8 @@ namespace Emberfall
         private void OpenTravelMap()
         {
             if (UITransitionBlocked || session == null || !session.HasStarted || session.IsDead || exitRequest.Open || saveFlow.Open) return;
-            travelReturnPause = session.Paused;
+            if(!CanSwitchFunction)return;
+            PrepareFunctionSwitch();travelReturnPause=false;
             travelError = null;travelMapTab=0;
             CancelHotbarPointer();
             panel = Panel.TravelMap;
