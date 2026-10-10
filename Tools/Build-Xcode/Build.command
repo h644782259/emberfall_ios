@@ -41,7 +41,9 @@ run_export() {
       sleep 15
       echo "[$sdk] Unity 仍在运行；最近日志："
       if [[ -f "$log" ]]; then tail -n 1 "$log" | cut -c 1-240; fi
-      echo '若持续出现 Licensing / LicenseClient，请退出 Unity 后重启 Unity Hub，并确认许可证正常。'
+      if [[ -f "$log" ]] && tail -n 1 "$log" | grep -q 'Licensing\|LicenseClient'; then
+        echo '正在等待授权；超时后脚本会自动恢复或给出退出原因。'
+      fi
     done
   ) &
   monitor_pid=$!

@@ -284,6 +284,7 @@ namespace Emberfall
         {
             UpdateMobileFrameRate();
             if (BackgroundPaused) return;
+            if((ModeFinished||DungeonCleared)&&!FinishedResultDismissed)UpdateTimeScale();
             if(PracticeActive){TickPractice();return;} // Practice owns its guarded potion input too.
             if(HasStarted)TickSideEvent();
             if (InputBlocked) return;
@@ -342,7 +343,7 @@ namespace Emberfall
         }
         private void UpdateTimeScale()
         {
-            Time.timeScale = pauseState.CanAdvance(HasStarted, Paused, uiBlocking || RunChoices.AwaitingChoice || RoomBranchChoiceOpen || DungeonSelectionOpen || ((ModeFinished||DungeonCleared)&&!FinishedResultDismissed), IsDead) ? 1 : 0;
+            Time.timeScale = pauseState.CanAdvance(HasStarted, Paused, uiBlocking || RunChoices.AwaitingChoice || RoomBranchChoiceOpen || DungeonSelectionOpen || (FinishedResultReady&&!FinishedResultDismissed), IsDead) ? 1 : 0;
             UpdateMobileFrameRate();
         }
 
