@@ -529,9 +529,9 @@ namespace Emberfall
             if(InDungeon&&!boss) { float share=Mathf.Clamp(6f/Mathf.Max(6,wavePopulation),.5f,1f);experience=Mathf.RoundToInt(experience*share);gold=Mathf.Max(1,Mathf.RoundToInt(gold*share)); }
             if(InDungeon)gold=Mathf.RoundToInt(gold*(1f+.15f*TierRewardBand.Of(DungeonTier)));
             if(chapterKill)experience=chapterExperience;
-            // Queue before callbacks or loot delivery can fail. An outer combat
-            // finally ends the action and persists every admitted reward.
-            if (!InDungeon && CombatImpactBatch.InAction) CombatImpactBatch.AfterCurrentAction(Progression.Save);
+            // Queue before callbacks or loot delivery can fail; LateUpdate persists
+            // the admitted rewards once all combat producers in this frame finish.
+            if (!InDungeon) pendingWildernessSave=Progression;
             int potions=InDungeon&&(boss||Random.Range(0,100)<AdventureRewardRules.PotionChance(DungeonTier))?1+TierRewardBand.Of(DungeonTier)/2:0;
             if(InDungeon)
             {
@@ -540,7 +540,7 @@ namespace Emberfall
                 runPickupGold=(int)System.Math.Min(int.MaxValue,(long)runPickupGold+gold);
                 RunPickupPotions=(int)System.Math.Min(int.MaxValue,(long)RunPickupPotions+potions);
             }
-            else Progression.GrantEnemyKillReward(gold,experience,deferSave:CombatImpactBatch.InAction);
+            else Progression.GrantEnemyKillReward(gold,experience,deferSave:true);
             if(!InDungeon)LogSystem("+"+gold+" 金币 · +"+experience+" 经验");
             if (Random.Range(0,100)<AdventureRewardRules.EnemyEquipmentChance(boss,enemy.Tier!=EnemyController.ThreatTier.Normal))
             {
@@ -551,7 +551,6 @@ namespace Emberfall
             transientObjects.RemoveAll(go => go == null);
             transientObjects.Add(enemy.gameObject);
             // Coalesce kills from one combat action into one durable snapshot.
-            if(!InDungeon)CombatImpactBatch.AfterCurrentAction(Progression.Save);
             if(ChapterActive)FinalizeChapterBoss();
             if(RoomChainRun!=null)FinalizeRoomChain();
             if(ModeRun!=null)FinalizeArenaResult();
@@ -562,9 +561,17 @@ namespace Emberfall
             }
         }
 
+        private ProgressionService pendingWildernessSave;
         private int checkpointRoom=-1;
         private void LateUpdate()
         {
+            // Coalesce all kills admitted this frame after combat producers finish.
+            // Normal pause, exit and scene-transition saves still flush the live profile.
+            if(pendingWildernessSave!=null&&!CombatImpactBatch.InAction)
+            {
+                var owner=pendingWildernessSave;pendingWildernessSave=null;
+                if(object.ReferenceEquals(owner,Progression))owner.Save();
+            }
             if(!InDungeon||BackgroundPaused||Progression==null||!Progression.DungeonStageActive)return;
             int completed=ChapterActive&&ChapterRun.DoorUnlocked?ChapterRoomIndex:RoomChainRun!=null&&RoomChainRun.DoorUnlocked?RoomChainRun.Room.Index:-1;
             if(completed<0||completed==checkpointRoom)return;
@@ -685,6 +692,7 @@ namespace Emberfall
 
         private void OnProgressChanged()
         {
+            if(Progression.EnemyRewardWithoutBuildChange)return;
             if (Player != null && HasStarted)
             {
                 Player.RefreshStats(false);
